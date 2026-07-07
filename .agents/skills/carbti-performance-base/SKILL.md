@@ -1,5 +1,5 @@
 ---
-name: CarBTI 성능 기반 규칙
+name: carbti-performance-base
 description: CarBTI 앱에 새 화면/기능을 추가할 때 지켜야 할 성능·인터랙션 규칙. 페이지·라우트·버튼·로딩 UI를 만들 때마다 자동 적용.
 ---
 
