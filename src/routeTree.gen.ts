@@ -9,9 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DiagnosisRouteImport } from './routes/diagnosis'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResultTypeCodeRouteImport } from './routes/result.$typeCode'
+import { Route as DiagnosisGateRouteImport } from './routes/diagnosis.gate'
 
+const DiagnosisRoute = DiagnosisRouteImport.update({
+  id: '/diagnosis',
+  path: '/diagnosis',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -22,35 +29,54 @@ const ResultTypeCodeRoute = ResultTypeCodeRouteImport.update({
   path: '/result/$typeCode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosisGateRoute = DiagnosisGateRouteImport.update({
+  id: '/gate',
+  path: '/gate',
+  getParentRoute: () => DiagnosisRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/diagnosis': typeof DiagnosisRouteWithChildren
+  '/diagnosis/gate': typeof DiagnosisGateRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/diagnosis': typeof DiagnosisRouteWithChildren
+  '/diagnosis/gate': typeof DiagnosisGateRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/diagnosis': typeof DiagnosisRouteWithChildren
+  '/diagnosis/gate': typeof DiagnosisGateRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/result/$typeCode'
+  fullPaths: '/' | '/diagnosis' | '/diagnosis/gate' | '/result/$typeCode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/result/$typeCode'
-  id: '__root__' | '/' | '/result/$typeCode'
+  to: '/' | '/diagnosis' | '/diagnosis/gate' | '/result/$typeCode'
+  id: '__root__' | '/' | '/diagnosis' | '/diagnosis/gate' | '/result/$typeCode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DiagnosisRoute: typeof DiagnosisRouteWithChildren
   ResultTypeCodeRoute: typeof ResultTypeCodeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/diagnosis': {
+      id: '/diagnosis'
+      path: '/diagnosis'
+      fullPath: '/diagnosis'
+      preLoaderRoute: typeof DiagnosisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,11 +91,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultTypeCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnosis/gate': {
+      id: '/diagnosis/gate'
+      path: '/gate'
+      fullPath: '/diagnosis/gate'
+      preLoaderRoute: typeof DiagnosisGateRouteImport
+      parentRoute: typeof DiagnosisRoute
+    }
   }
 }
 
+interface DiagnosisRouteChildren {
+  DiagnosisGateRoute: typeof DiagnosisGateRoute
+}
+
+const DiagnosisRouteChildren: DiagnosisRouteChildren = {
+  DiagnosisGateRoute: DiagnosisGateRoute,
+}
+
+const DiagnosisRouteWithChildren = DiagnosisRoute._addFileChildren(
+  DiagnosisRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DiagnosisRoute: DiagnosisRouteWithChildren,
   ResultTypeCodeRoute: ResultTypeCodeRoute,
 }
 export const routeTree = rootRouteImport
