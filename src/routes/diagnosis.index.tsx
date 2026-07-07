@@ -18,7 +18,7 @@ const searchSchema = z.object({
   q: z.number().int().min(1).max(TOTAL_QUESTIONS).catch(1),
 });
 
-export const Route = createFileRoute("/diagnosis")({
+export const Route = createFileRoute("/diagnosis/")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
