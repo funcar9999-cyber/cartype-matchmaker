@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DiagnosisRouteImport } from './routes/diagnosis'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResultTypeCodeRouteImport } from './routes/result.$typeCode'
+import { Route as DiagnosisGateRouteImport } from './routes/diagnosis.gate'
 
 const DiagnosisRoute = DiagnosisRouteImport.update({
   id: '/diagnosis',
@@ -28,34 +29,42 @@ const ResultTypeCodeRoute = ResultTypeCodeRouteImport.update({
   path: '/result/$typeCode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosisGateRoute = DiagnosisGateRouteImport.update({
+  id: '/gate',
+  path: '/gate',
+  getParentRoute: () => DiagnosisRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/diagnosis': typeof DiagnosisRoute
+  '/diagnosis': typeof DiagnosisRouteWithChildren
+  '/diagnosis/gate': typeof DiagnosisGateRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/diagnosis': typeof DiagnosisRoute
+  '/diagnosis': typeof DiagnosisRouteWithChildren
+  '/diagnosis/gate': typeof DiagnosisGateRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/diagnosis': typeof DiagnosisRoute
+  '/diagnosis': typeof DiagnosisRouteWithChildren
+  '/diagnosis/gate': typeof DiagnosisGateRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/diagnosis' | '/result/$typeCode'
+  fullPaths: '/' | '/diagnosis' | '/diagnosis/gate' | '/result/$typeCode'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/diagnosis' | '/result/$typeCode'
-  id: '__root__' | '/' | '/diagnosis' | '/result/$typeCode'
+  to: '/' | '/diagnosis' | '/diagnosis/gate' | '/result/$typeCode'
+  id: '__root__' | '/' | '/diagnosis' | '/diagnosis/gate' | '/result/$typeCode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DiagnosisRoute: typeof DiagnosisRoute
+  DiagnosisRoute: typeof DiagnosisRouteWithChildren
   ResultTypeCodeRoute: typeof ResultTypeCodeRoute
 }
 
@@ -82,12 +91,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultTypeCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnosis/gate': {
+      id: '/diagnosis/gate'
+      path: '/gate'
+      fullPath: '/diagnosis/gate'
+      preLoaderRoute: typeof DiagnosisGateRouteImport
+      parentRoute: typeof DiagnosisRoute
+    }
   }
 }
 
+interface DiagnosisRouteChildren {
+  DiagnosisGateRoute: typeof DiagnosisGateRoute
+}
+
+const DiagnosisRouteChildren: DiagnosisRouteChildren = {
+  DiagnosisGateRoute: DiagnosisGateRoute,
+}
+
+const DiagnosisRouteWithChildren = DiagnosisRoute._addFileChildren(
+  DiagnosisRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DiagnosisRoute: DiagnosisRoute,
+  DiagnosisRoute: DiagnosisRouteWithChildren,
   ResultTypeCodeRoute: ResultTypeCodeRoute,
 }
 export const routeTree = rootRouteImport
