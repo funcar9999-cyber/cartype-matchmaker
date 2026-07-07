@@ -1,4 +1,12 @@
+import { useNavigate } from "@tanstack/react-router";
+
 export function HeroCard() {
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    void navigate({ to: "/diagnosis/onboarding" });
+  };
+
   return (
     <section
       className="mb-3 rounded-2xl p-5 text-white shadow-[0_12px_30px_-12px_rgba(15,127,255,0.55)]"
@@ -26,7 +34,7 @@ export function HeroCard() {
       </p>
       <button
         type="button"
-        onClick={() => console.log("navigate:/diagnosis/onboarding")}
+        onClick={handleStart}
         className="mt-4 w-full rounded-xl bg-white py-3 font-medium text-brand-primary transition-opacity hover:opacity-95"
         style={{ fontSize: "14px" }}
       >
