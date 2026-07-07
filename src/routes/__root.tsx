@@ -77,14 +77,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "CarBTI · 1분 자동차 DNA 진단" },
+      {
+        name: "description",
+        content:
+          "카BTI 취향 진단과 마이데이터 승인예측을 결합해 할부·리스·렌트 중 가장 유리한 방법을 추천합니다.",
+      },
+      { name: "author", content: "CarBTI" },
+      { property: "og:title", content: "CarBTI · 1분 자동차 DNA 진단" },
+      {
+        property: "og:description",
+        content: "신용과 취향을 결합한 국내 유일 신차 매칭 서비스",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -92,6 +98,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://cdn.jsdelivr.net", crossOrigin: "" },
+      {
+        rel: "stylesheet",
+        href: "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css",
+      },
     ],
   }),
   shellComponent: RootShell,
