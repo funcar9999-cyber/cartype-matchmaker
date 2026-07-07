@@ -91,6 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "CarBTI · 1분 자동차 DNA 진단" },
+      { name: "description", content: "카BTI 취향 진단과 마이데이터 승인예측을 결합해 할부·리스·렌트 중 가장 유리한 방법을 추천합니다." },
+      { property: "og:description", content: "카BTI 취향 진단과 마이데이터 승인예측을 결합해 할부·리스·렌트 중 가장 유리한 방법을 추천합니다." },
+      { name: "twitter:description", content: "카BTI 취향 진단과 마이데이터 승인예측을 결합해 할부·리스·렌트 중 가장 유리한 방법을 추천합니다." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/00d135e6-3796-4386-b04c-18b386b9292d/id-preview-af2698d7--fed076d1-d751-4e53-af79-521fcb0e2bc7.lovable.app-1783437422718.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/00d135e6-3796-4386-b04c-18b386b9292d/id-preview-af2698d7--fed076d1-d751-4e53-af79-521fcb0e2bc7.lovable.app-1783437422718.png" },
     ],
     links: [
       {
