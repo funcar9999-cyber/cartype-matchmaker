@@ -26,13 +26,14 @@ export const Route = createFileRoute("/diagnosis/gate")({
 
 // 브랜드 도트 배경용 팔레트
 const CONFETTI_COLORS = ["#F59E0B", "#0F7FFF", "#6B47FF", "#EF4444", "#10B981"];
-const CONFETTI_DOTS = Array.from({ length: 6 }, (_, i) => ({
-  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-  top: [8, 22, 40, 58, 74, 88][i] + Math.random() * 4,
-  left: [12, 82, 28, 68, 18, 78][i] + Math.random() * 4,
-  duration: 3 + (i % 3),
-  delay: (i * 0.4).toFixed(1),
-}));
+const CONFETTI_DOTS = [
+  { top: 9, left: 14, duration: 3, delay: "0.0" },
+  { top: 23, left: 84, duration: 4, delay: "0.4" },
+  { top: 41, left: 29, duration: 5, delay: "0.8" },
+  { top: 59, left: 70, duration: 3, delay: "1.2" },
+  { top: 75, left: 19, duration: 4, delay: "1.6" },
+  { top: 88, left: 80, duration: 5, delay: "2.0" },
+].map((d, i) => ({ ...d, color: CONFETTI_COLORS[i % CONFETTI_COLORS.length] }));
 
 function GatePage() {
   const { code: searchCode } = Route.useSearch();
