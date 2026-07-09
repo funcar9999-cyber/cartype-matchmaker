@@ -1,62 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { CAR_DB, findCarByName, type Car } from "@/lib/car-db";
 import { BUDGET_TIERS, type CarbtiType } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
-
-type MethodKey = "installment" | "lease" | "rent";
-
-function methodKey(method: string): MethodKey {
-  if (method === "리스") return "lease";
-  if (method === "장기렌트") return "rent";
-  return "installment"; // 할부 / 현금+할부
-}
-
-function methodLabel(k: MethodKey): string {
-  return k === "lease" ? "리스" : k === "rent" ? "장기렌트" : "할부";
-}
-
-function parseMonthly(demo: string): number | null {
-  const m = demo.match(/(\d+)/);
-  return m ? Number(m[1]) : null;
-}
-
-function monthlyBand(v: number): string {
-  return `월 ${v}만원대 (예시)`;
-}
-
-// 파워트레인 매칭: E → 전기, G → 가솔린·하이브리드
-function powertrainOk(car: Car, axis: "E" | "G"): boolean {
-  if (axis === "E") return car.powertrain === "전기";
-  return car.powertrain === "가솔린" || car.powertrain === "하이브리드";
-}
-
-// 1축 매칭: C → 경형/소형/준중형, W → 그 외
-function purposeOk(car: Car, axis: "C" | "W"): boolean {
-  const city = ["경형", "소형", "준중형"] as const;
-  const isCity = (city as readonly string[]).includes(car.segment);
-  return axis === "C" ? isCity : !isCity;
-}
-
-function pickCarForBand(
-  type: CarbtiType,
-  bandManwon: number,
-  mKey: MethodKey,
-): Car | null {
-  const pt = type.code[2] as "E" | "G";
-  const pp = type.code[0] as "C" | "W";
-  const pool = CAR_DB.filter(
-    (c) => powertrainOk(c, pt) && purposeOk(c, pp),
-  );
-  const scored = pool
-    .map((c) => {
-      const v = parseMonthly(c.monthlyDemo[mKey]);
-      return v == null ? null : { car: c, diff: Math.abs(v - bandManwon) };
-    })
-    .filter((x): x is { car: Car; diff: number } => x !== null)
-    .sort((a, b) => a.diff - b.diff);
-  return scored[0]?.car ?? null;
-}
 
 const BUDGET_STORAGE_KEY = "carbti:budget";
 
@@ -92,7 +37,6 @@ export function BudgetTiers({
     }
   };
 
-  const mKey = methodKey(type.bestPayment.method);
   const bands = useMemo(
     () => ({
       stable: Math.round(budget * 0.7),
@@ -102,30 +46,18 @@ export function BudgetTiers({
     [budget],
   );
 
-  const fallback = TIER_CARS[type.code];
+  const tiers = TIER_CARS[type.code];
 
   const cards = BUDGET_TIERS.map((tier) => {
-    const band = bands[tier.key];
-    const picked = pickCarForBand(type, band, mKey);
-    const fallbackCarName = fallback ? fallback[tier.key].car : null;
-    const carName = picked
-      ? `${picked.brand} ${picked.name}`
-      : fallbackCarName ?? "-";
-    // 폴백 시에도 CAR_DB에서 데모 값을 찾아 밴드에 맞춘 형식으로 노출
-    const monthly =
-      picked
-        ? monthlyBand(parseMonthly(picked.monthlyDemo[mKey]) ?? band)
-        : (() => {
-            const c = fallbackCarName ? findCarByName(fallbackCarName) : null;
-            const v = c ? parseMonthly(c.monthlyDemo[mKey]) : null;
-            return monthlyBand(v ?? band);
-          })();
+    const t = tiers ? tiers[tier.key] : null;
     return {
       key: tier.key,
       name: tier.name,
       tagline: tier.tagline,
-      carName,
-      monthly,
+      band: bands[tier.key],
+      carName: t?.car ?? "-",
+      method: t?.method ?? "",
+      monthly: t?.monthly ? `${t.monthly} (예시)` : "",
     };
   });
 
@@ -177,7 +109,7 @@ export function BudgetTiers({
           className="mb-2 text-slate-500"
           style={{ fontSize: "11px", lineHeight: 1.4 }}
         >
-          말씀해주신 월 {budgetLabel} 기준 (예시)
+          말씀해주신 월 {budgetLabel} 기준의 예산 구간이에요. 차량 매칭은 마이데이터를 연결하면 내 조건 기준으로 정교해져요.
         </div>
       )}
 
@@ -200,20 +132,36 @@ export function BudgetTiers({
             {unlocked ? (
               <div className="mt-3">
                 <div
-                  className="font-medium text-slate-900"
+                  className="font-medium text-brand-primary"
+                  style={{ fontSize: "11px" }}
+                >
+                  월 ~{c.band}만원대
+                </div>
+                <div
+                  className="mt-2 font-medium text-slate-900"
                   style={{ fontSize: "12px", lineHeight: 1.4 }}
                 >
                   {c.carName}
                 </div>
                 <div className="mt-1 text-slate-500" style={{ fontSize: "10px" }}>
-                  {methodLabel(mKey)}
+                  {c.method}
                 </div>
                 <div
-                  className="mt-1 font-medium text-brand-primary"
-                  style={{ fontSize: "11px" }}
+                  className="mt-1 text-slate-500"
+                  style={{ fontSize: "10px" }}
                 >
                   {c.monthly}
                 </div>
+                <div
+                  className="hidden"
+                  style={{ fontSize: "12px", lineHeight: 1.4 }}
+                >
+                  {/* legacy holder kept minimal to preserve JSX shape below */}
+                </div>
+                <div
+                  className="font-medium text-slate-900"
+                  style={{ fontSize: "0px" }}
+                />
               </div>
             ) : (
               <>
