@@ -1,5 +1,8 @@
+import { Link } from "@tanstack/react-router";
+
 import type { CarbtiType } from "@/lib/carbti-types";
 import { circled } from "@/lib/carbti-types";
+import { findCarByName } from "@/lib/car-db";
 
 export function RecommendedCars({ type }: { type: CarbtiType }) {
   return (
@@ -15,20 +18,46 @@ export function RecommendedCars({ type }: { type: CarbtiType }) {
       </div>
 
       <ul>
-        {type.topCars.slice(0, 2).map((model, idx) => (
-          <li
-            key={model}
-            className={
-              "flex items-center py-2 " +
-              (idx < 1 ? "border-b border-slate-200" : "")
-            }
-          >
-            <span style={{ fontSize: "12px" }}>
-              <span className="text-slate-400">{circled(idx + 1)}</span>{" "}
-              {model}
-            </span>
-          </li>
-        ))}
+        {type.topCars.slice(0, 2).map((model, idx) => {
+          const car = findCarByName(model);
+          const rowClass =
+            "flex items-center justify-between py-2 " +
+            (idx < 1 ? "border-b border-slate-200" : "");
+          const inner = (
+            <>
+              <span style={{ fontSize: "12px" }}>
+                <span className="text-slate-400">{circled(idx + 1)}</span>{" "}
+                {model}
+              </span>
+              {car && (
+                <span
+                  className="text-brand-primary"
+                  style={{ fontSize: "11px" }}
+                >
+                  &gt; 자세히
+                </span>
+              )}
+            </>
+          );
+          if (car) {
+            return (
+              <li key={model} className={rowClass}>
+                <Link
+                  to="/cars/$id"
+                  params={{ id: car.id }}
+                  className="flex w-full items-center justify-between"
+                >
+                  {inner}
+                </Link>
+              </li>
+            );
+          }
+          return (
+            <li key={model} className={rowClass}>
+              {inner}
+            </li>
+          );
+        })}
       </ul>
 
       <div
