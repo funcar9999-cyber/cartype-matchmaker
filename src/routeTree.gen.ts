@@ -13,6 +13,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosisIndexRouteImport } from './routes/diagnosis.index'
+import { Route as CarsIndexRouteImport } from './routes/cars.index'
 import { Route as ResultTypeCodeRouteImport } from './routes/result.$typeCode'
 import { Route as MydataResultRouteImport } from './routes/mydata.result'
 import { Route as MydataIntroRouteImport } from './routes/mydata.intro'
@@ -38,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
 const DiagnosisIndexRoute = DiagnosisIndexRouteImport.update({
   id: '/diagnosis/',
   path: '/diagnosis/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarsIndexRoute = CarsIndexRouteImport.update({
+  id: '/cars/',
+  path: '/cars/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResultTypeCodeRoute = ResultTypeCodeRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
+  '/cars/': typeof CarsIndexRoute
   '/diagnosis/': typeof DiagnosisIndexRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
+  '/cars': typeof CarsIndexRoute
   '/diagnosis': typeof DiagnosisIndexRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
+  '/cars/': typeof CarsIndexRoute
   '/diagnosis/': typeof DiagnosisIndexRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/mydata/intro'
     | '/mydata/result'
     | '/result/$typeCode'
+    | '/cars/'
     | '/diagnosis/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/mydata/intro'
     | '/mydata/result'
     | '/result/$typeCode'
+    | '/cars'
     | '/diagnosis'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/mydata/intro'
     | '/mydata/result'
     | '/result/$typeCode'
+    | '/cars/'
     | '/diagnosis/'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   MydataIntroRoute: typeof MydataIntroRoute
   MydataResultRoute: typeof MydataResultRoute
   ResultTypeCodeRoute: typeof ResultTypeCodeRoute
+  CarsIndexRoute: typeof CarsIndexRoute
   DiagnosisIndexRoute: typeof DiagnosisIndexRoute
 }
 
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/diagnosis'
       fullPath: '/diagnosis/'
       preLoaderRoute: typeof DiagnosisIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cars/': {
+      id: '/cars/'
+      path: '/cars'
+      fullPath: '/cars/'
+      preLoaderRoute: typeof CarsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/result/$typeCode': {
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   MydataIntroRoute: MydataIntroRoute,
   MydataResultRoute: MydataResultRoute,
   ResultTypeCodeRoute: ResultTypeCodeRoute,
+  CarsIndexRoute: CarsIndexRoute,
   DiagnosisIndexRoute: DiagnosisIndexRoute,
 }
 export const routeTree = rootRouteImport

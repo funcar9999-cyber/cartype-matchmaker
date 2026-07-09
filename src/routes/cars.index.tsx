@@ -13,7 +13,7 @@ import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 
-export const Route = createFileRoute("/cars")({
+export const Route = createFileRoute("/cars/")({
   head: () => ({
     meta: [
       { title: "차량 둘러보기 · CarBTI" },
