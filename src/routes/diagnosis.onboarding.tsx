@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ANSWERS_STORAGE_KEY, type Answer } from "@/lib/carbti-questions";
 
 export const Route = createFileRoute("/diagnosis/onboarding")({
   head: () => ({
@@ -23,6 +24,25 @@ function OnboardingPage() {
 
   const handleStart = () => {
     void navigate({ to: "/diagnosis", search: { q: 1 } });
+  };
+
+  const startFromExample = (maps: "C" | "W") => {
+    if (typeof window !== "undefined") {
+      try {
+        const answer: Answer = {
+          questionId: 1,
+          dimension: "purpose",
+          maps,
+        };
+        sessionStorage.setItem(
+          ANSWERS_STORAGE_KEY,
+          JSON.stringify([answer]),
+        );
+      } catch {
+        /* ignore */
+      }
+    }
+    void navigate({ to: "/diagnosis", search: { q: 2 } });
   };
 
   return (
@@ -66,7 +86,7 @@ function OnboardingPage() {
             className="text-slate-500"
             style={{ fontSize: "13px", lineHeight: 1.5 }}
           >
-            15개 간단한 질문으로
+            15문항 · 한 문항에 5초면 충분해요
             <br />
             나의 자동차 DNA를 발견하세요
           </p>
@@ -124,18 +144,28 @@ function OnboardingPage() {
               className="mb-2 font-medium uppercase text-slate-400"
               style={{ fontSize: "10px", letterSpacing: "0.1em" }}
             >
-              문항 예시 미리보기
+              눌러보세요 — 바로 시작돼요
             </div>
             <div className="mb-2 font-medium" style={{ fontSize: "13px" }}>
               차를 주로 어떤 상황에서 탈 것 같나요?
             </div>
             <div className="flex gap-1.5">
-              <div className="flex flex-1 items-center justify-center rounded-lg border border-slate-200 p-2 text-center text-slate-600" style={{ fontSize: "10px" }}>
+              <button
+                type="button"
+                onClick={() => startFromExample("C")}
+                className="flex flex-1 items-center justify-center rounded-lg border border-slate-200 p-2 text-center text-slate-600 transition-colors hover:border-brand-primary hover:text-brand-primary"
+                style={{ fontSize: "10px" }}
+              >
                 🏙️ 매일 출퇴근
-              </div>
-              <div className="flex flex-1 items-center justify-center rounded-lg border border-slate-200 p-2 text-center text-slate-600" style={{ fontSize: "10px" }}>
+              </button>
+              <button
+                type="button"
+                onClick={() => startFromExample("W")}
+                className="flex flex-1 items-center justify-center rounded-lg border border-slate-200 p-2 text-center text-slate-600 transition-colors hover:border-brand-primary hover:text-brand-primary"
+                style={{ fontSize: "10px" }}
+              >
                 🏞️ 주말 여행
-              </div>
+              </button>
             </div>
           </div>
         </main>

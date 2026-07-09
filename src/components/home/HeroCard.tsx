@@ -30,7 +30,7 @@ export function HeroCard() {
         나의 자동차 DNA
       </h1>
       <p className="mt-1.5" style={{ fontSize: "12px", opacity: 0.9 }}>
-        신용과 취향을 결합한 국내 유일 매칭
+        나에게 맞는 차부터, 할부·리스·렌트 중 뭐가 유리한지까지
       </p>
       <button
         type="button"
