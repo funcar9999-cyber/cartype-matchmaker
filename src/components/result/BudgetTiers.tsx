@@ -152,16 +152,6 @@ export function BudgetTiers({
                 >
                   {c.monthly}
                 </div>
-                <div
-                  className="hidden"
-                  style={{ fontSize: "12px", lineHeight: 1.4 }}
-                >
-                  {/* legacy holder kept minimal to preserve JSX shape below */}
-                </div>
-                <div
-                  className="font-medium text-slate-900"
-                  style={{ fontSize: "0px" }}
-                />
               </div>
             ) : (
               <>
