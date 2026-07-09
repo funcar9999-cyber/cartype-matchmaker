@@ -128,7 +128,7 @@ function CarDetail() {
               한눈에 보기
             </div>
             <ul>
-              {car.highlights.map((h) => (
+              {car.highlights.map((h: string) => (
                 <li key={h} className="flex items-start gap-2 py-1.5">
                   <span className="flex-shrink-0" style={{ fontSize: "12px", color: "#10B981" }}>
                     ✓

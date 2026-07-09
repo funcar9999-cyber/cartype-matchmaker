@@ -20,6 +20,7 @@ import { Route as MydataIntroRouteImport } from './routes/mydata.intro'
 import { Route as MydataConnectingRouteImport } from './routes/mydata.connecting'
 import { Route as DiagnosisOnboardingRouteImport } from './routes/diagnosis.onboarding'
 import { Route as DiagnosisGateRouteImport } from './routes/diagnosis.gate'
+import { Route as CarsIdRouteImport } from './routes/cars.$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -76,11 +77,17 @@ const DiagnosisGateRoute = DiagnosisGateRouteImport.update({
   path: '/diagnosis/gate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CarsIdRoute = CarsIdRouteImport.update({
+  id: '/cars/$id',
+  path: '/cars/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
   '/mydata/connecting': typeof MydataConnectingRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
   '/mydata/connecting': typeof MydataConnectingRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
   '/mydata/connecting': typeof MydataConnectingRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy'
     | '/terms'
+    | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
     | '/mydata/connecting'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy'
     | '/terms'
+    | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
     | '/mydata/connecting'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/privacy'
     | '/terms'
+    | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
     | '/mydata/connecting'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  CarsIdRoute: typeof CarsIdRoute
   DiagnosisGateRoute: typeof DiagnosisGateRoute
   DiagnosisOnboardingRoute: typeof DiagnosisOnboardingRoute
   MydataConnectingRoute: typeof MydataConnectingRoute
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosisGateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cars/$id': {
+      id: '/cars/$id'
+      path: '/cars/$id'
+      fullPath: '/cars/$id'
+      preLoaderRoute: typeof CarsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  CarsIdRoute: CarsIdRoute,
   DiagnosisGateRoute: DiagnosisGateRoute,
   DiagnosisOnboardingRoute: DiagnosisOnboardingRoute,
   MydataConnectingRoute: MydataConnectingRoute,
