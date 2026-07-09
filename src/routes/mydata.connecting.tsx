@@ -12,9 +12,9 @@ export const Route = createFileRoute("/mydata/connecting")({
 });
 
 const STEPS = [
-  "본인 확인 중...",
-  "금융 정보 불러오는 중...",
-  "예산 계산 중...",
+  "본인 확인 중이에요…",
+  "금융 정보를 불러오고 있어요…",
+  "예산을 계산하고 있어요…",
 ];
 
 function MydataConnectingPage() {
