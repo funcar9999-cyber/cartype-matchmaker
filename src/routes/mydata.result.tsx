@@ -206,7 +206,7 @@ function MydataResultPage() {
         <QuoteRequestSheet
           open={quoteOpen}
           onOpenChange={setQuoteOpen}
-          context={{ defaultCarName: tiers.standard.car }}
+          context={{ defaultCarName: type.topCars[0] }}
         />
       </div>
 
