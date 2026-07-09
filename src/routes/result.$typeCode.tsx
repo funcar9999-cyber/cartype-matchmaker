@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useRef } from "react";
 
 import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
@@ -52,10 +52,15 @@ function ResultNotFound() {
 
 function ResultPage() {
   const { type } = Route.useLoaderData();
+  const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
 
   const scrollToShare = () => {
     shareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const goMydata = () => {
+    void navigate({ to: "/mydata/intro" });
   };
 
   return (
@@ -65,9 +70,7 @@ function ResultPage() {
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />
           <RecommendedCars type={type} />
-          <BudgetTiers
-            onCtaClick={() => console.log("navigate:/mydata/connect")}
-          />
+          <BudgetTiers onCtaClick={goMydata} />
 
           {/* 3대 혜택 */}
           <section className="mb-3 rounded-2xl bg-slate-50 p-4">
@@ -141,7 +144,7 @@ function ResultPage() {
             </div>
             <button
               type="button"
-              onClick={() => console.log("navigate:/mydata/connect")}
+              onClick={goMydata}
               className="mt-4 w-full rounded-xl bg-brand-primary py-3 font-medium text-white"
               style={{ fontSize: "13px" }}
             >
