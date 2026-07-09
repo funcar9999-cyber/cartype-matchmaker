@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ConsultRouteImport } from './routes/consult'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosisIndexRouteImport } from './routes/diagnosis.index'
@@ -31,6 +32,11 @@ const TermsRoute = TermsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultRoute = ConsultRouteImport.update({
+  id: '/consult',
+  path: '/consult',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompareRoute = CompareRouteImport.update({
@@ -92,6 +98,7 @@ const CarsIdRoute = CarsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
+  '/consult': typeof ConsultRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/cars/$id': typeof CarsIdRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
+  '/consult': typeof ConsultRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/cars/$id': typeof CarsIdRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
+  '/consult': typeof ConsultRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/cars/$id': typeof CarsIdRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/compare'
+    | '/consult'
     | '/privacy'
     | '/terms'
     | '/cars/$id'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/compare'
+    | '/consult'
     | '/privacy'
     | '/terms'
     | '/cars/$id'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/compare'
+    | '/consult'
     | '/privacy'
     | '/terms'
     | '/cars/$id'
@@ -186,6 +198,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CompareRoute: typeof CompareRoute
+  ConsultRoute: typeof ConsultRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   CarsIdRoute: typeof CarsIdRoute
@@ -213,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consult': {
+      id: '/consult'
+      path: '/consult'
+      fullPath: '/consult'
+      preLoaderRoute: typeof ConsultRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compare': {
@@ -298,6 +318,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CompareRoute: CompareRoute,
+  ConsultRoute: ConsultRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   CarsIdRoute: CarsIdRoute,
