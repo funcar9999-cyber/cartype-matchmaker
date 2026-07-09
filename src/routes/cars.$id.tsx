@@ -1,8 +1,10 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
-import { KAKAO_CHANNEL_URL, TIER_CARS } from "@/lib/mydata-tiers";
+import { TIER_CARS } from "@/lib/mydata-tiers";
+import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 
 export const Route = createFileRoute("/cars/$id")({
   head: ({ params }) => {
@@ -40,6 +42,7 @@ export const Route = createFileRoute("/cars/$id")({
 function CarDetail() {
   const { car } = Route.useLoaderData();
   const navigate = useNavigate();
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   // 이 차와 어울리는 CarBTI 유형 역참조
   const matchingTypes = Object.values(CARBTI_TYPES).filter((t) => {
@@ -177,15 +180,14 @@ function CarDetail() {
           >
             이 차, 3방식으로 비교하기
           </button>
-          <a
-            href={KAKAO_CHANNEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 block w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="mt-2 w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
             style={{ fontSize: "13px" }}
           >
             상담사에게 물어보기
-          </a>
+          </button>
 
           <p
             className="mt-4 px-1 text-slate-400"
@@ -194,6 +196,11 @@ function CarDetail() {
             {CAR_LEGAL_DISCLAIMER}
           </p>
         </main>
+        <QuoteRequestSheet
+          open={quoteOpen}
+          onOpenChange={setQuoteOpen}
+          context={{ defaultCarName: `${car.brand} ${car.name}` }}
+        />
       </div>
     </div>
   );
