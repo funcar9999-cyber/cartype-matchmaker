@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { TopBar } from "@/components/home/TopBar";
 import { HeroCard } from "@/components/home/HeroCard";
 import { TrustStrip } from "@/components/home/TrustStrip";
 import { QuickActions } from "@/components/home/QuickActions";
 import { TypeShowcase } from "@/components/home/TypeShowcase";
+import { ContractCases } from "@/components/home/ContractCases";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { FloatingChatButton } from "@/components/home/FloatingChatButton";
 
@@ -21,6 +22,17 @@ function Index() {
           <TrustStrip />
           <QuickActions />
           <TypeShowcase />
+          <ContractCases />
+          <footer
+            className="mt-4 flex justify-center gap-3 pb-2 text-slate-400"
+            style={{ fontSize: "10px" }}
+          >
+            <Link to="/about">회사 소개</Link>
+            <span>·</span>
+            <Link to="/privacy">개인정보처리방침</Link>
+            <span>·</span>
+            <Link to="/terms">이용약관</Link>
+          </footer>
         </main>
         <BottomTabBar />
         <FloatingChatButton />

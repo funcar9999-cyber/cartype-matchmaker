@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { BUDGET_TIERS, type CarbtiType } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
+import { findCarByName } from "@/lib/car-db";
 
 const BUDGET_STORAGE_KEY = "carbti:budget";
 
@@ -50,6 +52,7 @@ export function BudgetTiers({
 
   const cards = BUDGET_TIERS.map((tier) => {
     const t = tiers ? tiers[tier.key] : null;
+    const carId = t ? findCarByName(t.car)?.id : undefined;
     return {
       key: tier.key,
       name: tier.name,
@@ -58,6 +61,7 @@ export function BudgetTiers({
       carName: t?.car ?? "-",
       method: t?.method ?? "",
       monthly: t?.monthly ? `${t.monthly} (예시)` : "",
+      carId,
     };
   });
 
@@ -152,6 +156,16 @@ export function BudgetTiers({
                 >
                   {c.monthly}
                 </div>
+                {c.carId && (
+                  <Link
+                    to="/compare"
+                    search={{ car: c.carId }}
+                    className="mt-2 inline-block text-brand-primary"
+                    style={{ fontSize: "10px" }}
+                  >
+                    3방식 비교 →
+                  </Link>
+                )}
               </div>
             ) : (
               <>
