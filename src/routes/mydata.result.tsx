@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 
 import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import {
-  KAKAO_CHANNEL_URL,
   MYDATA_DEMO_DISCLAIMER,
   TIER_CARS,
   TIER_LABELS,
   type TierCar,
 } from "@/lib/mydata-tiers";
+import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 
 export const Route = createFileRoute("/mydata/result")({
   head: () => ({
@@ -23,6 +23,8 @@ export const Route = createFileRoute("/mydata/result")({
 function MydataResultPage() {
   const navigate = useNavigate();
   const [code, setCode] = useState<string | null>(null);
+  const [selfBudget, setSelfBudget] = useState<number | null>(null);
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -32,6 +34,11 @@ function MydataResultPage() {
       return;
     }
     setCode(stored);
+    const b = sessionStorage.getItem("carbti:budget");
+    if (b) {
+      const v = Number(b);
+      if (Number.isFinite(v)) setSelfBudget(v);
+    }
   }, [navigate]);
 
   if (!code) return null;
@@ -99,6 +106,12 @@ function MydataResultPage() {
                 <span className="text-slate-500">월 납입 여력</span>
                 <span className="text-slate-900">약 55만원</span>
               </li>
+              {selfBudget != null && (
+                <li className="flex justify-between">
+                  <span className="text-slate-500">직접 입력 예산</span>
+                  <span className="text-slate-900">월 {selfBudget}만원</span>
+                </li>
+              )}
             </ul>
           </section>
 
@@ -156,18 +169,14 @@ function MydataResultPage() {
           </section>
 
           {/* 최종 CTA */}
-          <a
-            href={KAKAO_CHANNEL_URL}
-            target="_blank"
-            rel="noopener"
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
             className="flex w-full items-center justify-center gap-2 rounded-xl py-4 font-medium text-white"
-            style={{
-              backgroundColor: "#0F7FFF",
-              fontSize: "16px",
-            }}
+            style={{ backgroundColor: "#0F7FFF", fontSize: "16px" }}
           >
             이 결과로 무료 상담 받기 💬
-          </a>
+          </button>
           <p
             className="mt-2 text-center text-slate-500"
             style={{ fontSize: "11px", lineHeight: 1.5 }}
@@ -194,6 +203,11 @@ function MydataResultPage() {
             {MYDATA_DEMO_DISCLAIMER}
           </p>
         </main>
+        <QuoteRequestSheet
+          open={quoteOpen}
+          onOpenChange={setQuoteOpen}
+          context={{ defaultCarName: tiers.standard.car }}
+        />
       </div>
 
       <style>{`
