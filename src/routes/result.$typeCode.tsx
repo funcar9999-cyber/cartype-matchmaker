@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useRef } from "react";
 
-import { CARBTI_TYPES } from "@/lib/carbti-types";
+import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import { ResultTopBar } from "@/components/result/ResultTopBar";
 import { TypeHeroCard } from "@/components/result/TypeHeroCard";
 import { RecommendedCars } from "@/components/result/RecommendedCars";
@@ -64,6 +64,32 @@ function ResultPage() {
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />
           <RecommendedCars type={type} />
+
+          {/* 3대 혜택 */}
+          <section className="mb-3 rounded-2xl bg-slate-50 p-4">
+            <div
+              className="mb-2 uppercase text-slate-500"
+              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
+            >
+              지금 확인할 수 있어요
+            </div>
+            <ul>
+              {type.benefits.map((b: string) => (
+                <li key={b} className="flex items-start gap-2.5 py-1.5">
+                  <span
+                    className="flex-shrink-0"
+                    style={{ fontSize: "14px", color: "#10B981" }}
+                  >
+                    ✓
+                  </span>
+                  <span className="text-slate-900" style={{ fontSize: "12px" }}>
+                    {b}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
           <ShareSection ref={shareRef} />
           <LockedDivider />
 
@@ -108,6 +134,14 @@ function ResultPage() {
               1분 안에 안전하게 연동 · 언제든 해지 가능
             </p>
           </section>
+
+          {/* 법적 고지 */}
+          <p
+            className="mt-4 px-1 text-slate-400"
+            style={{ fontSize: "10px", lineHeight: 1.6 }}
+          >
+            {LEGAL_DISCLAIMER}
+          </p>
         </main>
       </div>
     </div>
