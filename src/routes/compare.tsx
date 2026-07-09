@@ -193,17 +193,17 @@ function ComparePage() {
           </section>
 
           {type && (
-            <div
-              className="mb-3 rounded-xl border border-brand-primary/30 bg-brand-primary/5 px-3 py-2.5"
-              style={{ fontSize: "12px" }}
-            >
-              <span className="text-slate-900">
-                <span className="font-medium">{type.name}</span>은 통상{" "}
-                <span className="font-medium text-brand-primary">
-                  {type.bestPayment.method}
-                </span>
-                가 잘 맞아요
+          <div
+            className="mb-3 rounded-xl border border-brand-primary/30 bg-brand-primary/5 px-3 py-2.5"
+            style={{ fontSize: "12px" }}
+          >
+            <span className="text-slate-900">
+              <span className="font-medium">{type.name} 유형</span>은 통상{" "}
+              <span className="font-medium text-brand-primary">
+                {type.bestPayment.method}
               </span>
+              가 잘 맞아요
+            </span>
               <Link
                 to="/result/$typeCode"
                 params={{ typeCode: type.code }}
