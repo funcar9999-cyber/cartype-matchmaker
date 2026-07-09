@@ -65,7 +65,7 @@ function MydataIntroPage() {
               style={{ fontSize: "12px", lineHeight: 1.6 }}
             >
               연결하는 순간, 안정형·표준형·드림형이
-              <br />내 소득·신용 기준으로 열립니다
+              <br />내 소득·신용 기준으로 열려요
             </p>
           </section>
 
@@ -107,6 +107,12 @@ function MydataIntroPage() {
                 </li>
               ))}
             </ol>
+            <p
+              className="mt-2 pl-1 text-slate-500"
+              style={{ fontSize: "10px", lineHeight: 1.5 }}
+            >
+              * 마이데이터: 내 금융정보를 안전하게 불러오는 금융위원회 인증 방식이에요
+            </p>
           </section>
 
           {/* 신뢰 블록 */}
