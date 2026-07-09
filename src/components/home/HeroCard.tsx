@@ -44,7 +44,7 @@ export function HeroCard() {
         className="mt-2 text-center"
         style={{ fontSize: "10px", opacity: 0.8 }}
       >
-        이미 12,847명이 진단 완료 · 평균 2분
+        평균 2분 · 회원가입 없이 바로 시작
       </p>
     </section>
   );

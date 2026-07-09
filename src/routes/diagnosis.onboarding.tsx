@@ -98,7 +98,7 @@ function OnboardingPage() {
                   16가지 유형 중 하나
                 </div>
                 <div className="text-slate-500" style={{ fontSize: "11px", lineHeight: 1.4 }}>
-                  당신의 유형과 어울리는 차 TOP 3를 알려드려요
+                  당신의 유형과 어울리는 대표 차량, 그리고 내 예산에 맞는 선택지를 알려드려요
                 </div>
               </div>
             </div>

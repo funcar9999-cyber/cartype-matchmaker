@@ -107,20 +107,36 @@ function ResultPage() {
             </div>
             <div
               className="space-y-2 select-none"
-              style={{ filter: "blur(6px)", pointerEvents: "none" }}
-              aria-hidden
             >
               <div className="flex justify-between" style={{ fontSize: "12px" }}>
                 <span>승인 확률</span>
-                <span className="font-medium">87%</span>
+                <span
+                  className="font-medium"
+                  style={{ filter: "blur(6px)" }}
+                  aria-hidden="true"
+                >
+                  --%
+                </span>
               </div>
               <div className="flex justify-between" style={{ fontSize: "12px" }}>
                 <span>예상 월 납입금</span>
-                <span className="font-medium">62만원</span>
+                <span
+                  className="font-medium"
+                  style={{ filter: "blur(6px)" }}
+                  aria-hidden="true"
+                >
+                  --만원
+                </span>
               </div>
               <div className="flex justify-between" style={{ fontSize: "12px" }}>
                 <span>유리한 금융사</span>
-                <span className="font-medium">○○캐피탈</span>
+                <span
+                  className="font-medium"
+                  style={{ filter: "blur(6px)" }}
+                  aria-hidden="true"
+                >
+                  -----
+                </span>
               </div>
             </div>
             <button
