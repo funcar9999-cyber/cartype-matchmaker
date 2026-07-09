@@ -111,11 +111,16 @@ export function QuoteRequestSheet({
             style={{ fontSize: "12px" }}
           >
             <option value="미정">미정</option>
-            {CAR_DB.map((c) => (
-              <option key={c.id} value={`${c.brand} ${c.name}`}>
-                {c.brand} {c.name}
-              </option>
-            ))}
+            {CAR_DB.map((c) => {
+              const display = c.name.startsWith(c.brand)
+                ? c.name
+                : `${c.brand} ${c.name}`;
+              return (
+                <option key={c.id} value={display}>
+                  {display}
+                </option>
+              );
+            })}
           </select>
         </Row>
 
