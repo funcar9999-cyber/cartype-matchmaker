@@ -11,14 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ConsultRouteImport } from './routes/consult'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosisIndexRouteImport } from './routes/diagnosis.index'
+import { Route as CarsIndexRouteImport } from './routes/cars.index'
 import { Route as ResultTypeCodeRouteImport } from './routes/result.$typeCode'
 import { Route as MydataResultRouteImport } from './routes/mydata.result'
 import { Route as MydataIntroRouteImport } from './routes/mydata.intro'
 import { Route as MydataConnectingRouteImport } from './routes/mydata.connecting'
 import { Route as DiagnosisOnboardingRouteImport } from './routes/diagnosis.onboarding'
 import { Route as DiagnosisGateRouteImport } from './routes/diagnosis.gate'
+import { Route as CarsIdRouteImport } from './routes/cars.$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -30,6 +34,16 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsultRoute = ConsultRouteImport.update({
+  id: '/consult',
+  path: '/consult',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -38,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
 const DiagnosisIndexRoute = DiagnosisIndexRouteImport.update({
   id: '/diagnosis/',
   path: '/diagnosis/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarsIndexRoute = CarsIndexRouteImport.update({
+  id: '/cars/',
+  path: '/cars/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResultTypeCodeRoute = ResultTypeCodeRouteImport.update({
@@ -70,93 +89,126 @@ const DiagnosisGateRoute = DiagnosisGateRouteImport.update({
   path: '/diagnosis/gate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CarsIdRoute = CarsIdRouteImport.update({
+  id: '/cars/$id',
+  path: '/cars/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/compare': typeof CompareRoute
+  '/consult': typeof ConsultRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
   '/mydata/connecting': typeof MydataConnectingRoute
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
+  '/cars/': typeof CarsIndexRoute
   '/diagnosis/': typeof DiagnosisIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/compare': typeof CompareRoute
+  '/consult': typeof ConsultRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
   '/mydata/connecting': typeof MydataConnectingRoute
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
+  '/cars': typeof CarsIndexRoute
   '/diagnosis': typeof DiagnosisIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/compare': typeof CompareRoute
+  '/consult': typeof ConsultRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
   '/mydata/connecting': typeof MydataConnectingRoute
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
+  '/cars/': typeof CarsIndexRoute
   '/diagnosis/': typeof DiagnosisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/compare'
+    | '/consult'
     | '/privacy'
     | '/terms'
+    | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
     | '/mydata/connecting'
     | '/mydata/intro'
     | '/mydata/result'
     | '/result/$typeCode'
+    | '/cars/'
     | '/diagnosis/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/compare'
+    | '/consult'
     | '/privacy'
     | '/terms'
+    | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
     | '/mydata/connecting'
     | '/mydata/intro'
     | '/mydata/result'
     | '/result/$typeCode'
+    | '/cars'
     | '/diagnosis'
   id:
     | '__root__'
     | '/'
+    | '/compare'
+    | '/consult'
     | '/privacy'
     | '/terms'
+    | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
     | '/mydata/connecting'
     | '/mydata/intro'
     | '/mydata/result'
     | '/result/$typeCode'
+    | '/cars/'
     | '/diagnosis/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CompareRoute: typeof CompareRoute
+  ConsultRoute: typeof ConsultRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  CarsIdRoute: typeof CarsIdRoute
   DiagnosisGateRoute: typeof DiagnosisGateRoute
   DiagnosisOnboardingRoute: typeof DiagnosisOnboardingRoute
   MydataConnectingRoute: typeof MydataConnectingRoute
   MydataIntroRoute: typeof MydataIntroRoute
   MydataResultRoute: typeof MydataResultRoute
   ResultTypeCodeRoute: typeof ResultTypeCodeRoute
+  CarsIndexRoute: typeof CarsIndexRoute
   DiagnosisIndexRoute: typeof DiagnosisIndexRoute
 }
 
@@ -176,6 +228,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consult': {
+      id: '/consult'
+      path: '/consult'
+      fullPath: '/consult'
+      preLoaderRoute: typeof ConsultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -188,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/diagnosis'
       fullPath: '/diagnosis/'
       preLoaderRoute: typeof DiagnosisIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cars/': {
+      id: '/cars/'
+      path: '/cars'
+      fullPath: '/cars/'
+      preLoaderRoute: typeof CarsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/result/$typeCode': {
@@ -232,19 +305,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosisGateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cars/$id': {
+      id: '/cars/$id'
+      path: '/cars/$id'
+      fullPath: '/cars/$id'
+      preLoaderRoute: typeof CarsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CompareRoute: CompareRoute,
+  ConsultRoute: ConsultRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  CarsIdRoute: CarsIdRoute,
   DiagnosisGateRoute: DiagnosisGateRoute,
   DiagnosisOnboardingRoute: DiagnosisOnboardingRoute,
   MydataConnectingRoute: MydataConnectingRoute,
   MydataIntroRoute: MydataIntroRoute,
   MydataResultRoute: MydataResultRoute,
   ResultTypeCodeRoute: ResultTypeCodeRoute,
+  CarsIndexRoute: CarsIndexRoute,
   DiagnosisIndexRoute: DiagnosisIndexRoute,
 }
 export const routeTree = rootRouteImport
