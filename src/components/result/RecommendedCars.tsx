@@ -8,21 +8,19 @@ export function RecommendedCars({ type }: { type: CarbtiType }) {
         className="mb-1 uppercase text-slate-500"
         style={{ fontSize: "10px", letterSpacing: "0.1em" }}
       >
-        당신에게 어울리는 차 TOP 3
+        {type.name}의 대표 차량
       </div>
       <div className="mb-3 font-medium" style={{ fontSize: "13px" }}>
         {type.tagline}
       </div>
 
       <ul>
-        {type.topCars.map((model, idx) => (
+        {type.topCars.slice(0, 2).map((model, idx) => (
           <li
             key={model}
             className={
               "flex items-center py-2 " +
-              (idx < type.topCars.length - 1
-                ? "border-b border-slate-200"
-                : "")
+              (idx < 1 ? "border-b border-slate-200" : "")
             }
           >
             <span style={{ fontSize: "12px" }}>

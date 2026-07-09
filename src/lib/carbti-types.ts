@@ -121,3 +121,20 @@ export const formatTypeCode = (code: string) =>
 
 export const LEGAL_DISCLAIMER =
   "본 결과는 성향 진단에 따른 일반적 안내이며, 실제 금리·승인 여부·월 납입금은 금융사 심사에 따라 달라질 수 있습니다.";
+
+export interface BudgetTier {
+  key: "stable" | "standard" | "dream";
+  name: string;
+  tagline: string;
+}
+
+export const BUDGET_TIERS: BudgetTier[] = [
+  { key: "stable",   name: "안정형", tagline: "무리 없이 여유로운 선택" },
+  { key: "standard", name: "표준형", tagline: "내 조건에 균형 잡힌 선택" },
+  { key: "dream",    name: "드림형", tagline: "조금 욕심낸 선택" },
+];
+
+export const BUDGET_LOCK_COPY =
+  "마이데이터를 연결하면 내 소득·신용 기준의 현실 예산 매칭이 열려요";
+
+export const BUDGET_CTA_LABEL = "내 예산 맞춤 추천 열기";
