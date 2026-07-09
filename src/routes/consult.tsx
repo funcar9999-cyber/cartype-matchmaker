@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { CONSULT_FAQ } from "@/lib/car-db";
-import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
+import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 
 export const Route = createFileRoute("/consult")({
   head: () => ({
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/consult")({
 function ConsultPage() {
   const [code, setCode] = useState<string | null>(null);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -42,11 +43,10 @@ function ConsultPage() {
 
         <main className="flex-1 px-4 py-4">
           {/* 메인 카드 */}
-          <a
-            href={KAKAO_CHANNEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-2xl p-5 text-white shadow-[0_12px_30px_-12px_rgba(15,127,255,0.55)]"
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="block w-full rounded-2xl p-5 text-left text-white shadow-[0_12px_30px_-12px_rgba(15,127,255,0.55)]"
             style={{ background: "var(--gradient-hero)" }}
           >
             <span style={{ fontSize: "28px" }}>💬</span>
@@ -59,7 +59,7 @@ function ConsultPage() {
             <div className="mt-3 inline-flex items-center rounded-full bg-white/20 px-3 py-1.5" style={{ fontSize: "11px" }}>
               카카오톡 채널 열기 ↗
             </div>
-          </a>
+          </button>
 
           {/* 유형 요약 */}
           {type && (
@@ -145,6 +145,11 @@ function ConsultPage() {
         </main>
 
         <BottomTabBar />
+        <QuoteRequestSheet
+          open={quoteOpen}
+          onOpenChange={setQuoteOpen}
+          context={{}}
+        />
       </div>
     </div>
   );
