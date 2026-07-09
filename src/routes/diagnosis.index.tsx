@@ -10,7 +10,9 @@ import {
   ANSWERS_STORAGE_KEY,
   QUESTIONS,
   TOTAL_QUESTIONS,
+  VALUE_SCORE_STORAGE_KEY,
   computeCode,
+  computeValueScore,
   type Answer,
 } from "@/lib/carbti-questions";
 
@@ -62,10 +64,15 @@ function DiagnosisPage() {
     [answers, question.id],
   );
 
-  const handleSelect = (opt: { maps: string }) => {
+  const handleSelect = (opt: { maps: string; valueScoreDelta?: number }) => {
     const next: Answer[] = [
       ...answers.filter((a) => a.questionId !== question.id),
-      { questionId: question.id, dimension: question.dimension, maps: opt.maps },
+      {
+        questionId: question.id,
+        dimension: question.dimension,
+        maps: opt.maps,
+        valueScoreDelta: opt.valueScoreDelta,
+      },
     ];
     setAnswers(next);
 
@@ -75,9 +82,11 @@ function DiagnosisPage() {
       }, 180);
     } else {
       const code = computeCode(next);
+      const valueScore = computeValueScore(next);
       try {
         sessionStorage.setItem(ANSWERS_STORAGE_KEY, JSON.stringify(next));
         sessionStorage.setItem("carbti:diagnosis:code", code);
+        sessionStorage.setItem(VALUE_SCORE_STORAGE_KEY, String(valueScore));
       } catch {
         /* ignore */
       }
