@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
@@ -43,6 +43,13 @@ function CarDetail() {
   const { car } = Route.useLoaderData();
   const navigate = useNavigate();
   const [quoteOpen, setQuoteOpen] = useState(false);
+  const [myTypeCode, setMyTypeCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = sessionStorage.getItem("carbti:diagnosis:code");
+    if (stored && CARBTI_TYPES[stored]) setMyTypeCode(stored);
+  }, []);
 
   // 이 차와 어울리는 CarBTI 유형 역참조
   const matchingTypes = Object.values(CARBTI_TYPES).filter((t) => {
@@ -154,17 +161,29 @@ function CarDetail() {
                 이 차와 어울리는 카BTI 유형
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {matchingTypes.map((t) => (
-                  <Link
-                    key={t.code}
-                    to="/result/$typeCode"
-                    params={{ typeCode: t.code }}
-                    className="rounded-full border border-brand-primary/40 bg-white px-2.5 py-1 text-brand-primary"
-                    style={{ fontSize: "11px" }}
-                  >
-                    {t.code} · {t.name}
-                  </Link>
-                ))}
+                {matchingTypes.map((t) => {
+                  const isMine = t.code === myTypeCode;
+                  return (
+                    <Link
+                      key={t.code}
+                      to="/result/$typeCode"
+                      params={{ typeCode: t.code }}
+                      className={`rounded-full border px-2.5 py-1 ${
+                        isMine
+                          ? "border-brand-primary bg-brand-primary text-white"
+                          : "border-brand-primary/40 bg-white text-brand-primary"
+                      }`}
+                      style={{ fontSize: "11px" }}
+                    >
+                      {t.code} · {t.name}
+                      {isMine && (
+                        <span className="ml-1" style={{ fontSize: "10px" }}>
+                          · 내 유형 ✓
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
               </div>
             </section>
           )}
