@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { CARBTI_TYPES } from "@/lib/carbti-types";
@@ -142,6 +142,15 @@ function ConsultPage() {
           >
             금융상품판매대리·중개업 등록 사업자
           </p>
+          <div className="mt-2 text-center">
+            <Link
+              to="/about"
+              className="text-brand-primary underline underline-offset-2"
+              style={{ fontSize: "11px" }}
+            >
+              회사 소개 →
+            </Link>
+          </div>
         </main>
 
         <BottomTabBar />
