@@ -101,7 +101,7 @@ function ResultPage() {
             </ul>
           </section>
 
-          <ShareSection ref={shareRef} />
+          <ShareSection ref={shareRef} type={type} />
           <LockedDivider />
 
           {/* 2단 티저 (마이데이터 미연동 상태) */}
