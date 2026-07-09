@@ -256,7 +256,7 @@ export const COMPARE_ROWS: CompareRow[] = [
   { label: "초기 비용",       installment: "선수금·취등록세",     lease: "선수금(선택)",     rent: "보증금·선수금(선택)" },
   { label: "월 부담 구성",    installment: "원리금(이자 포함)",   lease: "리스료(잔가 반영)", rent: "렌트료(보험·정비 포함)" },
   { label: "자동차 보험",     installment: "본인 가입",          lease: "본인 가입",         rent: "렌트료에 포함" },
-  { label: "세금",           installment: "본인 부담",          lease: "본인 부담",         rent: "렌트사 부담" },
+  { label: "세금",           installment: "본인 부담",          lease: "리스료에 포함(통상)",         rent: "렌트사 부담" },
   { label: "번호판",         installment: "일반 번호판",         lease: "일반/전용 선택",    rent: "허·하·호 등 렌트 번호판" },
   { label: "사업자 비용처리", installment: "감가상각",           lease: "리스료 손비 처리",   rent: "렌트료 손비 처리" },
   { label: "중도 해지",       installment: "잔액 상환",          lease: "위약금 발생",       rent: "위약금 발생" },

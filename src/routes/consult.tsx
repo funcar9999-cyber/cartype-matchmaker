@@ -54,7 +54,7 @@ function ConsultPage() {
               카카오톡으로 바로 상담
             </div>
             <div className="mt-1" style={{ fontSize: "11px", opacity: 0.9 }}>
-              평일 09:00–19:00 · 회신 평균 15분 이내 (예시)
+              평일 09:00–19:00 · 영업시간 내 순차 답변
             </div>
             <div className="mt-3 inline-flex items-center rounded-full bg-white/20 px-3 py-1.5" style={{ fontSize: "11px" }}>
               카카오톡 채널 열기 ↗
