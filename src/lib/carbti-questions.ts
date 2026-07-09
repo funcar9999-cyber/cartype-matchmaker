@@ -228,15 +228,18 @@ export function computeCode(answers: Answer[]): string {
   const tally: Record<string, Record<string, number>> = {
     purpose: {}, ownership: {}, powertrain: {}, payment: {},
   };
+  const lastByDim: Record<string, string | undefined> = {};
   for (const a of answers) {
     if (!tally[a.dimension]) continue;
     tally[a.dimension][a.maps] = (tally[a.dimension][a.maps] ?? 0) + 1;
+    lastByDim[a.dimension] = a.maps;
   }
   return AXIS_ORDER.map((dim) => {
     const [a, b] = AXIS[dim];
     const ca = tally[dim][a] ?? 0;
     const cb = tally[dim][b] ?? 0;
-    return ca >= cb ? a : b;
+    if (ca === cb) return lastByDim[dim] ?? a;
+    return ca > cb ? a : b;
   }).join("");
 }
 
