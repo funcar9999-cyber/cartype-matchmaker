@@ -1,5 +1,5 @@
 import type { CarbtiType } from "@/lib/carbti-types";
-import { circled, formatManwon } from "@/lib/carbti-types";
+import { circled } from "@/lib/carbti-types";
 
 export function RecommendedCars({ type }: { type: CarbtiType }) {
   return (
@@ -11,26 +11,23 @@ export function RecommendedCars({ type }: { type: CarbtiType }) {
         당신에게 어울리는 차 TOP 3
       </div>
       <div className="mb-3 font-medium" style={{ fontSize: "13px" }}>
-        {type.subtitle}
+        {type.tagline}
       </div>
 
       <ul>
-        {type.recommendedCars.map((car, idx) => (
+        {type.topCars.map((model, idx) => (
           <li
-            key={car.rank}
+            key={model}
             className={
-              "flex items-center justify-between py-2 " +
-              (idx < type.recommendedCars.length - 1
+              "flex items-center py-2 " +
+              (idx < type.topCars.length - 1
                 ? "border-b border-slate-200"
                 : "")
             }
           >
             <span style={{ fontSize: "12px" }}>
-              <span className="text-slate-400">{circled(car.rank)}</span>{" "}
-              {car.model}
-            </span>
-            <span style={{ fontSize: "12px" }}>
-              {formatManwon(car.priceFrom)}
+              <span className="text-slate-400">{circled(idx + 1)}</span>{" "}
+              {model}
             </span>
           </li>
         ))}
@@ -46,7 +43,12 @@ export function RecommendedCars({ type }: { type: CarbtiType }) {
         className="rounded-lg border border-slate-200 bg-white px-3 py-2"
         style={{ fontSize: "11px" }}
       >
-        {type.optimalPayment}
+        <div className="font-medium text-slate-900">
+          {type.bestPayment.method}
+        </div>
+        <p className="mt-1 text-slate-500" style={{ lineHeight: 1.5 }}>
+          {type.bestPayment.reason}
+        </p>
       </div>
     </section>
   );
