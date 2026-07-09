@@ -1,4 +1,4 @@
-const tags = ["감성적", "유동성", "전기차 선호"];
+const tags = ["도심형", "트렌드", "전기차"];
 
 export function TypeShowcase() {
   return (
@@ -15,10 +15,10 @@ export function TypeShowcase() {
           className="mb-1 text-muted-foreground"
           style={{ fontSize: "10px" }}
         >
-          이번 주 TOP · 상위 12%
+          이번 주 TOP · 전체의 12%
         </div>
         <div className="font-medium" style={{ fontSize: "12px" }}>
-          CTEF · 도시의 트렌드세터 🔋
+          CTEF · 얼리어답터 🔋
         </div>
         <div className="mt-2 flex flex-wrap gap-1">
           {tags.map((t) => (
