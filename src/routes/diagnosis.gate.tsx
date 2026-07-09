@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
@@ -235,7 +235,15 @@ function GatePage() {
               className="mt-2.5 text-center text-slate-400"
               style={{ fontSize: "10px", lineHeight: 1.5 }}
             >
-              가입 시 서비스 이용약관 및 개인정보 처리방침에 동의합니다
+              가입 시{" "}
+              <Link to="/terms" className="underline">
+                서비스 이용약관
+              </Link>{" "}
+              및{" "}
+              <Link to="/privacy" className="underline">
+                개인정보 처리방침
+              </Link>
+              에 동의합니다
             </p>
           </div>
         </div>
