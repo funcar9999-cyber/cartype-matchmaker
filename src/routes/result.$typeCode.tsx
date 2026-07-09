@@ -5,6 +5,7 @@ import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import { ResultTopBar } from "@/components/result/ResultTopBar";
 import { TypeHeroCard } from "@/components/result/TypeHeroCard";
 import { RecommendedCars } from "@/components/result/RecommendedCars";
+import { BudgetTiers } from "@/components/result/BudgetTiers";
 import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
 
@@ -64,6 +65,9 @@ function ResultPage() {
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />
           <RecommendedCars type={type} />
+          <BudgetTiers
+            onCtaClick={() => console.log("navigate:/mydata/connect")}
+          />
 
           {/* 3대 혜택 */}
           <section className="mb-3 rounded-2xl bg-slate-50 p-4">
