@@ -14,6 +14,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosisIndexRouteImport } from './routes/diagnosis.index'
 import { Route as ResultTypeCodeRouteImport } from './routes/result.$typeCode'
+import { Route as MydataIntroRouteImport } from './routes/mydata.intro'
 import { Route as DiagnosisOnboardingRouteImport } from './routes/diagnosis.onboarding'
 import { Route as DiagnosisGateRouteImport } from './routes/diagnosis.gate'
 
@@ -42,6 +43,11 @@ const ResultTypeCodeRoute = ResultTypeCodeRouteImport.update({
   path: '/result/$typeCode',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MydataIntroRoute = MydataIntroRouteImport.update({
+  id: '/mydata/intro',
+  path: '/mydata/intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiagnosisOnboardingRoute = DiagnosisOnboardingRouteImport.update({
   id: '/diagnosis/onboarding',
   path: '/diagnosis/onboarding',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
+  '/mydata/intro': typeof MydataIntroRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
   '/diagnosis/': typeof DiagnosisIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
+  '/mydata/intro': typeof MydataIntroRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
   '/diagnosis': typeof DiagnosisIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
+  '/mydata/intro': typeof MydataIntroRoute
   '/result/$typeCode': typeof ResultTypeCodeRoute
   '/diagnosis/': typeof DiagnosisIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
+    | '/mydata/intro'
     | '/result/$typeCode'
     | '/diagnosis/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
+    | '/mydata/intro'
     | '/result/$typeCode'
     | '/diagnosis'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
+    | '/mydata/intro'
     | '/result/$typeCode'
     | '/diagnosis/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   DiagnosisGateRoute: typeof DiagnosisGateRoute
   DiagnosisOnboardingRoute: typeof DiagnosisOnboardingRoute
+  MydataIntroRoute: typeof MydataIntroRoute
   ResultTypeCodeRoute: typeof ResultTypeCodeRoute
   DiagnosisIndexRoute: typeof DiagnosisIndexRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultTypeCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mydata/intro': {
+      id: '/mydata/intro'
+      path: '/mydata/intro'
+      fullPath: '/mydata/intro'
+      preLoaderRoute: typeof MydataIntroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/diagnosis/onboarding': {
       id: '/diagnosis/onboarding'
       path: '/diagnosis/onboarding'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   DiagnosisGateRoute: DiagnosisGateRoute,
   DiagnosisOnboardingRoute: DiagnosisOnboardingRoute,
+  MydataIntroRoute: MydataIntroRoute,
   ResultTypeCodeRoute: ResultTypeCodeRoute,
   DiagnosisIndexRoute: DiagnosisIndexRoute,
 }
