@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import { ResultTopBar } from "@/components/result/ResultTopBar";
@@ -8,6 +8,8 @@ import { RecommendedCars } from "@/components/result/RecommendedCars";
 import { BudgetTiers } from "@/components/result/BudgetTiers";
 import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
+import { AnswerRecap } from "@/components/result/AnswerRecap";
+import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 
 export const Route = createFileRoute("/result/$typeCode")({
   head: ({ params }) => {
@@ -54,6 +56,7 @@ function ResultPage() {
   const { type } = Route.useLoaderData();
   const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   const scrollToShare = () => {
     shareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -69,8 +72,9 @@ function ResultPage() {
         <ResultTopBar onShareClick={scrollToShare} />
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />
+          <AnswerRecap />
           <RecommendedCars type={type} />
-          <BudgetTiers onCtaClick={goMydata} />
+          <BudgetTiers type={type} onCtaClick={goMydata} />
 
           {/* 3대 혜택 */}
           <section className="mb-3 rounded-2xl bg-slate-50 p-4">
@@ -158,6 +162,15 @@ function ResultPage() {
             </p>
           </section>
 
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="mt-3 w-full rounded-xl border border-border bg-white py-3 font-medium text-slate-900"
+            style={{ fontSize: "13px" }}
+          >
+            상담사에게 실제 견적 받기
+          </button>
+
           {/* 법적 고지 */}
           <p
             className="mt-4 px-1 text-slate-400"
@@ -166,6 +179,11 @@ function ResultPage() {
             {LEGAL_DISCLAIMER}
           </p>
         </main>
+        <QuoteRequestSheet
+          open={quoteOpen}
+          onOpenChange={setQuoteOpen}
+          context={{ defaultCarName: type.topCars[0] }}
+        />
       </div>
     </div>
   );
