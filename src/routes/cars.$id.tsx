@@ -151,6 +151,70 @@ function CarDetail() {
             </ul>
           </section>
 
+          {/* 방식별 월납입 */}
+          <section className="mt-3 rounded-2xl bg-slate-50 p-4">
+            <div
+              className="mb-2 uppercase text-slate-500"
+              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
+            >
+              이 차, 방식별 월납입
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { key: "installment" as const, label: "할부", value: car.monthlyDemo.installment },
+                { key: "lease" as const, label: "리스", value: car.monthlyDemo.lease },
+                { key: "rent" as const, label: "장기렌트", value: car.monthlyDemo.rent },
+              ].map((col) => {
+                const myType = myTypeCode ? CARBTI_TYPES[myTypeCode] : null;
+                const best = myType?.bestPayment.method;
+                const bestKey =
+                  best === "리스"
+                    ? "lease"
+                    : best === "장기렌트"
+                      ? "rent"
+                      : best === "할부" || best === "현금+할부"
+                        ? "installment"
+                        : null;
+                const isBest = bestKey === col.key;
+                return (
+                  <div
+                    key={col.key}
+                    className={`rounded-xl border bg-white p-3 text-center ${
+                      isBest ? "border-brand-primary" : "border-slate-200"
+                    }`}
+                  >
+                    {isBest && (
+                      <span
+                        className="mb-1 inline-block rounded bg-brand-primary px-1.5 py-0.5 text-white"
+                        style={{ fontSize: "9px" }}
+                      >
+                        내 유형 최적
+                      </span>
+                    )}
+                    <div
+                      className="text-slate-500"
+                      style={{ fontSize: "10px" }}
+                    >
+                      {col.label}
+                    </div>
+                    <div
+                      className="mt-0.5 font-medium text-slate-900"
+                      style={{ fontSize: "12px" }}
+                    >
+                      {col.value}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <p
+              className="mt-2 text-slate-400"
+              style={{ fontSize: "10px", lineHeight: 1.5 }}
+            >
+              통상 조건 기준 예시예요. 내 조건 기준 실제 견적은 아래에서 받아보세요.
+            </p>
+          </section>
+
           {/* 어울리는 유형 */}
           {matchingTypes.length > 0 && (
             <section className="mt-3 rounded-2xl bg-slate-50 p-4">
@@ -188,24 +252,26 @@ function CarDetail() {
             </section>
           )}
 
-          {/* CTA */}
+          {/* 주 CTA */}
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="mt-4 w-full rounded-xl bg-brand-primary py-3 font-medium text-white"
+            style={{ fontSize: "13px" }}
+          >
+            이 차로 견적 받기
+          </button>
+
+          {/* 보조 CTA */}
           <button
             type="button"
             onClick={() =>
               void navigate({ to: "/compare", search: { car: car.id } })
             }
-            className="mt-4 w-full rounded-xl bg-brand-primary py-3 font-medium text-white"
-            style={{ fontSize: "13px" }}
-          >
-            이 차, 3방식으로 비교하기
-          </button>
-          <button
-            type="button"
-            onClick={() => setQuoteOpen(true)}
             className="mt-2 w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
             style={{ fontSize: "13px" }}
           >
-            상담사에게 물어보기
+            방식별 자세히 비교 →
           </button>
 
           <p
