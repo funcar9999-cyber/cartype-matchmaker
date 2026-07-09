@@ -46,11 +46,11 @@ export function TypeHeroCard({ type }: { type: CarbtiType }) {
           className="inline-flex items-center gap-1 rounded-full px-4 py-2"
           style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
         >
-          <span style={{ fontSize: "11px" }}>전체 상위 </span>
+          <span style={{ fontSize: "11px" }}>전체의 </span>
           <span style={{ fontSize: "14px", fontWeight: 500 }}>
             {type.rarityPercent}%
           </span>
-          <span style={{ fontSize: "11px" }}> 희소 유형</span>
+          <span style={{ fontSize: "11px" }}>만 가진 유형</span>
         </span>
       </div>
     </section>
