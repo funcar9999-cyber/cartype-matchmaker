@@ -74,7 +74,7 @@ function ResultPage() {
               지금 확인할 수 있어요
             </div>
             <ul>
-              {type.benefits.map((b) => (
+              {type.benefits.map((b: string) => (
                 <li key={b} className="flex items-start gap-2.5 py-1.5">
                   <span
                     className="flex-shrink-0"
