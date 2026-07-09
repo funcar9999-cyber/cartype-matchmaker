@@ -10,8 +10,9 @@ import {
   type Car,
 } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
-import { KAKAO_CHANNEL_URL, TIER_CARS } from "@/lib/mydata-tiers";
+import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
+import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 
 type CompareSearch = { car?: string };
 
@@ -49,6 +50,7 @@ function ComparePage() {
   const navigate = useNavigate();
   const [code, setCode] = useState<string | null>(null);
   const [method, setMethod] = useState<Method>("installment");
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -223,15 +225,14 @@ function ComparePage() {
           >
             내 신용 기준으로 정확히 비교하기
           </button>
-          <a
-            href={KAKAO_CHANNEL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 block w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="mt-2 w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
             style={{ fontSize: "13px" }}
           >
             상담사에게 실제 견적 받기
-          </a>
+          </button>
 
           <p
             className="mt-4 px-1 text-slate-400"
@@ -242,6 +243,11 @@ function ComparePage() {
         </main>
 
         <BottomTabBar />
+        <QuoteRequestSheet
+          open={quoteOpen}
+          onOpenChange={setQuoteOpen}
+          context={{ defaultCarName: `${car.brand} ${car.name}` }}
+        />
       </div>
     </div>
   );
