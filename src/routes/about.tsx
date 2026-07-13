@@ -112,26 +112,29 @@ function AboutPage() {
             >
               사업자 정보
             </div>
-            {/* TODO: 정식 표기 예정 — 상호·등록번호·주소·연락처 확정 후 업데이트 */}
             <dl
               className="space-y-1.5 text-slate-500"
               style={{ fontSize: "11px" }}
             >
               <div className="flex gap-3">
                 <dt className="w-16">상호</dt>
-                <dd>정식 표기 예정</dd>
+                <dd>주식회사 펀카</dd>
               </div>
               <div className="flex gap-3">
                 <dt className="w-16">등록번호</dt>
-                <dd>정식 표기 예정</dd>
+                <dd>307-86-02844</dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="w-16">대표자</dt>
+                <dd>박지호</dd>
               </div>
               <div className="flex gap-3">
                 <dt className="w-16">주소</dt>
-                <dd>정식 표기 예정</dd>
+                <dd>경기도 수원시 경수대로 393, 3층</dd>
               </div>
               <div className="flex gap-3">
                 <dt className="w-16">연락처</dt>
-                <dd>정식 표기 예정</dd>
+                <dd>1668-5673</dd>
               </div>
             </dl>
           </section>
