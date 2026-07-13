@@ -33,14 +33,22 @@ function Index() {
           <ContractCases />
           <FinalDiagnosisCta />
           <footer
-            className="mt-4 flex justify-center gap-3 pb-2 text-slate-400"
+            className="mt-4 pb-4 text-slate-400"
             style={{ fontSize: "10px" }}
           >
-            <Link to="/about">회사 소개</Link>
-            <span>·</span>
-            <Link to="/privacy">개인정보처리방침</Link>
-            <span>·</span>
-            <Link to="/terms">이용약관</Link>
+            <div className="flex justify-center gap-3 pb-3">
+              <Link to="/about">회사 소개</Link>
+              <span>·</span>
+              <Link to="/privacy">개인정보처리방침</Link>
+              <span>·</span>
+              <Link to="/terms">이용약관</Link>
+            </div>
+            <div className="space-y-1 text-center" style={{ fontSize: "10px" }}>
+              <p>주식회사 펀카</p>
+              <p>사업자등록번호 307-86-02844 · 대표 박지호</p>
+              <p>경기도 수원시 경수대로 393, 3층</p>
+              <p>1668-5673</p>
+            </div>
           </footer>
         </main>
         <BottomTabBar />
