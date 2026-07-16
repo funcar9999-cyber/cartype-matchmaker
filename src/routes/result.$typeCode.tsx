@@ -1,5 +1,5 @@
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 
 import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import { ResultTopBar } from "@/components/result/ResultTopBar";
@@ -10,6 +10,7 @@ import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
 import { AnswerRecap } from "@/components/result/AnswerRecap";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/result/$typeCode")({
   head: ({ params }) => {
@@ -57,6 +58,18 @@ function ResultPage() {
   const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
   const [quoteOpen, setQuoteOpen] = useState(false);
+  // 접근 판정: 로그인 사용자 OR 세션에 진단 기록 있음 → 전체 결과, 둘 다 없으면 공유 뷰
+  const [access, setAccess] = useState<"loading" | "full" | "shared">("loading");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hasSessionDiag =
+      !!sessionStorage.getItem("carbti:diagnosis:code");
+    supabase.auth.getSession().then(({ data }) => {
+      const loggedIn = !!data.session?.user;
+      setAccess(loggedIn || hasSessionDiag ? "full" : "shared");
+    });
+  }, []);
 
   const scrollToShare = () => {
     shareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -65,6 +78,35 @@ function ResultPage() {
   const goMydata = () => {
     void navigate({ to: "/mydata/intro" });
   };
+
+  if (access === "loading") return null;
+
+  if (access === "shared") {
+    return (
+      <div className="min-h-screen bg-slate-100">
+        <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+          <ResultTopBar onShareClick={scrollToShare} />
+          <main className="flex-1 px-4 py-4">
+            <TypeHeroCard type={type} />
+            <RecommendedCars type={type} />
+            <Link
+              to="/diagnosis/onboarding"
+              className="mt-4 block w-full rounded-xl bg-brand-primary py-3 text-center font-medium text-white"
+              style={{ fontSize: "13px" }}
+            >
+              나도 1분 진단하기
+            </Link>
+            <p
+              className="mt-4 px-1 text-slate-400"
+              style={{ fontSize: "10px", lineHeight: 1.6 }}
+            >
+              {LEGAL_DISCLAIMER}
+            </p>
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-100">
