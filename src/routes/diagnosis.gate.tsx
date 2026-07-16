@@ -1,8 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { formatTypeCode } from "@/lib/carbti-types";
+import { supabase } from "@/lib/supabase";
+import {
+  claimAnonymousDiagnosis,
+  upsertProfileFromUser,
+} from "@/lib/carbti-data";
 
 const searchSchema = z.object({
   code: z.string().min(1).optional().catch(undefined),
@@ -39,6 +45,7 @@ function GatePage() {
   const { code: searchCode } = Route.useSearch();
   const navigate = useNavigate();
   const [code, setCode] = useState<string>(searchCode ?? "CTEF");
+  const [loggingIn, setLoggingIn] = useState(false);
 
   // sessionStorage에서 진단 결과 유형 코드 로드
   useEffect(() => {
@@ -46,6 +53,33 @@ function GatePage() {
     const stored = sessionStorage.getItem("carbti:diagnosis:code");
     if (stored) setCode(stored);
   }, []);
+
+  // 카카오 OAuth 복귀 시 세션 감지 → profiles upsert → diagnoses claim → 결과지 이동
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let cancelled = false;
+    const run = async (userId: string, user: { id: string; user_metadata?: Record<string, unknown> }) => {
+      await upsertProfileFromUser(user);
+      await claimAnonymousDiagnosis(userId);
+      const target = sessionStorage.getItem("carbti:diagnosis:code") ?? code;
+      if (!cancelled) {
+        void navigate({ to: "/result/$typeCode", params: { typeCode: target } });
+      }
+    };
+    supabase.auth.getSession().then(({ data }) => {
+      const u = data.session?.user;
+      if (u) void run(u.id, u);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        void run(session.user.id, session.user);
+      }
+    });
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
+  }, [code, navigate]);
 
   // 뒤로가기 확인 다이얼로그 (결과 유실 방지)
   useEffect(() => {
@@ -67,10 +101,20 @@ function GatePage() {
     };
   }, [navigate]);
 
-  const handleKakaoLogin = () => {
-    // 실제 OAuth 연결은 개발자가 별도 셋업. 현재는 로그 후 결과 페이지로 이동.
-    console.log("[CarBTI] Kakao login clicked", { code });
-    void navigate({ to: "/result/$typeCode", params: { typeCode: code } });
+  const handleKakaoLogin = async () => {
+    if (loggingIn) return;
+    setLoggingIn(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "kakao",
+      options: {
+        redirectTo: window.location.origin + "/diagnosis/gate",
+      },
+    });
+    if (error) {
+      setLoggingIn(false);
+      toast.error("카카오 로그인에 실패했어요. 잠시 후 다시 시도해주세요.");
+      console.warn("[kakao login]", error);
+    }
   };
 
   const formatted = formatTypeCode(code);
@@ -220,7 +264,8 @@ function GatePage() {
           <div className="pb-6">
             <button
               type="button"
-              onClick={handleKakaoLogin}
+              onClick={() => void handleKakaoLogin()}
+              disabled={loggingIn}
               className="flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-medium transition-transform duration-100 active:scale-[0.98]"
               style={{
                 backgroundColor: "#FEE500",
@@ -229,7 +274,7 @@ function GatePage() {
               }}
             >
               <span style={{ fontSize: "16px" }}>💬</span>
-              카카오로 3초만에 시작하기
+              {loggingIn ? "카카오로 이동 중…" : "카카오로 3초만에 시작하기"}
             </button>
             <p
               className="mt-2.5 text-center text-slate-400"
