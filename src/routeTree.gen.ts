@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as ConsultRouteImport } from './routes/consult'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as AboutRouteImport } from './routes/about'
@@ -33,6 +34,11 @@ const TermsRoute = TermsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsultRoute = ConsultRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/compare': typeof CompareRoute
   '/consult': typeof ConsultRoute
+  '/me': typeof MeRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/cars/$id': typeof CarsIdRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/compare': typeof CompareRoute
   '/consult': typeof ConsultRoute
+  '/me': typeof MeRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/cars/$id': typeof CarsIdRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/compare': typeof CompareRoute
   '/consult': typeof ConsultRoute
+  '/me': typeof MeRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/cars/$id': typeof CarsIdRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/compare'
     | '/consult'
+    | '/me'
     | '/privacy'
     | '/terms'
     | '/cars/$id'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/compare'
     | '/consult'
+    | '/me'
     | '/privacy'
     | '/terms'
     | '/cars/$id'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/compare'
     | '/consult'
+    | '/me'
     | '/privacy'
     | '/terms'
     | '/cars/$id'
@@ -212,6 +224,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CompareRoute: typeof CompareRoute
   ConsultRoute: typeof ConsultRoute
+  MeRoute: typeof MeRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   CarsIdRoute: typeof CarsIdRoute
@@ -239,6 +252,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consult': {
@@ -340,6 +360,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   CompareRoute: CompareRoute,
   ConsultRoute: ConsultRoute,
+  MeRoute: MeRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   CarsIdRoute: CarsIdRoute,

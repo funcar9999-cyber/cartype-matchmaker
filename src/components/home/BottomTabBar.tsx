@@ -1,12 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 
-type Tab = { icon: string; label: string; to: "/" | "/cars" | "/consult" | "/me"; disabled?: boolean };
+type Tab = { icon: string; label: string; to: "/" | "/cars" | "/consult" | "/me" };
 
 const tabs: Tab[] = [
   { icon: "🏠", label: "홈",     to: "/" },
   { icon: "🚙", label: "차량",   to: "/cars" },
   { icon: "💬", label: "상담",   to: "/consult" },
-  { icon: "👤", label: "내정보", to: "/me", disabled: true },
+  { icon: "👤", label: "내정보", to: "/me" },
 ];
 
 export function BottomTabBar() {
@@ -18,15 +18,7 @@ export function BottomTabBar() {
           t.to === "/" ? pathname === "/" : pathname.startsWith(t.to);
         const cls = `flex flex-1 flex-col items-center gap-0.5 py-2 ${
           isActive ? "font-medium text-brand-primary" : "font-normal text-muted-foreground"
-        } ${t.disabled ? "opacity-50" : ""}`;
-        if (t.disabled) {
-          return (
-            <button key={t.to} type="button" disabled className={cls}>
-              <span style={{ fontSize: "14px" }}>{t.icon}</span>
-              <span style={{ fontSize: "10px" }}>{t.label}</span>
-            </button>
-          );
-        }
+        }`;
         return (
           <Link key={t.to} to={t.to} className={cls}>
             <span style={{ fontSize: "14px" }}>{t.icon}</span>
