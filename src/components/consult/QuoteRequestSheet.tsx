@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { CAR_DB } from "@/lib/car-db";
+import { CAR_DB, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
+import { insertLead, type LeadSource } from "@/lib/carbti-data";
+import { supabase, DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
 
 type PayMethodChip = "할부" | "리스" | "장기렌트";
 const PAY_METHODS: PayMethodChip[] = ["할부", "리스", "장기렌트"];
@@ -17,6 +19,8 @@ function normalizeMethod(m: string | undefined): PayMethodChip {
 export type QuoteContext = {
   /** 페이지 문맥의 기본 차량 이름 (S10/S11 = 보던 차, 결과지/S8 = 대표 차량). 없으면 "미정" */
   defaultCarName?: string;
+  /** 시트를 연 위치 */
+  source: LeadSource;
 };
 
 export function QuoteRequestSheet({
@@ -63,6 +67,21 @@ export function QuoteRequestSheet({
   if (!open) return null;
 
   const handleSubmit = async () => {
+    // 리드 저장은 비동기로 던진다 (실패해도 UX는 진행)
+    void supabase.auth.getSession().then(({ data }) => {
+      const uid = data.session?.user?.id ?? null;
+      const dbId = sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY);
+      const car = carName !== "미정" ? findCarByName(carName) : null;
+      void insertLead({
+        source: context.source,
+        interestCarId: car?.id ?? null,
+        preferredMethod: method,
+        budgetManwon: budget,
+        contactPref: contactPref === "kakao" ? "chat_only" : "call_ok",
+        diagnosisId: dbId,
+        userId: uid,
+      });
+    });
     try {
       await navigator.clipboard.writeText(requestText);
     } catch {
