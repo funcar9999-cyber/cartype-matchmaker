@@ -15,6 +15,8 @@ import {
   computeValueScore,
   type Answer,
 } from "@/lib/carbti-questions";
+import { insertDiagnosis } from "@/lib/carbti-data";
+import { supabase } from "@/lib/supabase";
 
 const searchSchema = z.object({
   q: z.number().int().min(1).max(TOTAL_QUESTIONS).catch(1),
@@ -90,6 +92,11 @@ function DiagnosisPage() {
       } catch {
         /* ignore */
       }
+      // 백엔드 저장 (실패해도 진단 흐름은 계속)
+      void supabase.auth.getSession().then(({ data }) => {
+        const uid = data.session?.user?.id ?? null;
+        void insertDiagnosis({ code, valueScore, answers: next, userId: uid });
+      });
       setTimeout(() => {
         void navigate({ to: "/diagnosis/gate", search: { code } });
       }, 180);
