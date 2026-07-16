@@ -5,6 +5,9 @@ import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { useSession } from "@/hooks/use-session";
+import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/cars/$id")({
   head: ({ params }) => {
@@ -44,6 +47,27 @@ function CarDetail() {
   const navigate = useNavigate();
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [myTypeCode, setMyTypeCode] = useState<string | null>(null);
+  const { user } = useSession();
+  const [fav, setFav] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      setFav(false);
+      return;
+    }
+    void isFavorite(user.id, car.id).then(setFav);
+  }, [user, car.id]);
+
+  const handleFavClick = async () => {
+    if (!user) {
+      toast("카카오 로그인하면 찜 목록이 저장돼요");
+      void navigate({ to: "/diagnosis/gate" });
+      return;
+    }
+    const next = !fav;
+    setFav(next);
+    await toggleFavorite(user.id, car.id, next);
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -79,7 +103,15 @@ function CarDetail() {
           <div className="font-medium" style={{ fontSize: "13px" }}>
             차량 상세
           </div>
-          <span className="w-7" />
+          <button
+            type="button"
+            onClick={() => void handleFavClick()}
+            aria-label={fav ? "찜 해제" : "찜하기"}
+            className="flex h-7 w-7 items-center justify-center"
+            style={{ fontSize: "16px" }}
+          >
+            {fav ? "❤️" : "🤍"}
+          </button>
         </header>
 
         <main className="flex-1 px-4 py-4">
