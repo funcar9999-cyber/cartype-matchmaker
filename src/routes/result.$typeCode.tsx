@@ -182,7 +182,7 @@ function ResultPage() {
         <QuoteRequestSheet
           open={quoteOpen}
           onOpenChange={setQuoteOpen}
-          context={{ defaultCarName: type.topCars[0] }}
+          context={{ defaultCarName: type.topCars[0], source: "result" }}
         />
       </div>
     </div>

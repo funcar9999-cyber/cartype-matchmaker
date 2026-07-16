@@ -246,7 +246,7 @@ function ComparePage() {
         <QuoteRequestSheet
           open={quoteOpen}
           onOpenChange={setQuoteOpen}
-          context={{ defaultCarName: `${car.brand} ${car.name}` }}
+          context={{ defaultCarName: `${car.brand} ${car.name}`, source: "compare" }}
         />
       </div>
     </div>
