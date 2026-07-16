@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { BUDGET_TIERS, type CarbtiType } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { findCarByName } from "@/lib/car-db";
+import { updateSelfBudget } from "@/lib/carbti-data";
+import { DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
 
 const BUDGET_STORAGE_KEY = "carbti:budget";
 
@@ -16,6 +18,7 @@ export function BudgetTiers({
 }) {
   const [budget, setBudget] = useState<number>(50);
   const [unlocked, setUnlocked] = useState<boolean>(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -37,6 +40,11 @@ export function BudgetTiers({
     } catch {
       /* ignore */
     }
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      const dbId = sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY);
+      if (dbId) void updateSelfBudget(dbId, v);
+    }, 500);
   };
 
   const bands = useMemo(
