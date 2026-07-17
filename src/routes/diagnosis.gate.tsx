@@ -108,6 +108,7 @@ function GatePage() {
       provider: "kakao",
       options: {
         redirectTo: window.location.origin + "/diagnosis/gate",
+        scopes: "profile_nickname profile_image",
       },
     });
     if (error) {
