@@ -27,26 +27,27 @@ export async function insertDiagnosis(input: {
   answers: Answer[];
   userId: string | null;
 }) {
-  const { data, error } = await supabase
-    .from("diagnoses")
-    .insert({
-      code: input.code,
-      value_score: input.valueScore,
-      answers: input.answers,
-      user_id: input.userId,
-    })
-    .select("id")
-    .single();
+  const id =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const { error } = await supabase.from("diagnoses").insert({
+    id,
+    code: input.code,
+    value_score: input.valueScore,
+    answers: input.answers,
+    user_id: input.userId,
+  });
   if (error) {
     console.warn("[diagnosis insert]", error);
     return null;
   }
   try {
-    sessionStorage.setItem(DIAGNOSIS_DB_ID_KEY, data.id);
+    sessionStorage.setItem(DIAGNOSIS_DB_ID_KEY, id);
   } catch {
     /* ignore */
   }
-  return data.id as string;
+  return id;
 }
 
 export async function claimAnonymousDiagnosis(userId: string) {
