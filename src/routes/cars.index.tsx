@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 
 import {
   CAR_DB,
@@ -12,6 +13,7 @@ import {
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
+import { Emblem } from "@/components/common/Emblem";
 
 export const Route = createFileRoute("/cars/")({
   head: () => ({
@@ -29,16 +31,38 @@ function priceBucket(min: number) {
   return "high";
 }
 
-function CarThumb({ car, badge }: { car: Car; badge?: string }) {
+function CarThumb({ car, badge, accent }: { car: Car; badge?: string; accent?: string }) {
   return (
     <div
-      className={`relative flex h-24 items-center justify-center rounded-xl bg-gradient-to-br ${car.gradient}`}
+      className="relative flex h-24 flex-col items-center justify-center overflow-hidden rounded-xl px-2"
+      style={{ backgroundColor: "var(--navy)", color: "var(--ivory)" }}
     >
-      <span style={{ fontSize: "32px" }}>{car.emoji}</span>
+      <div
+        style={{
+          fontSize: "9px",
+          letterSpacing: "0.25em",
+          color: "var(--gold-soft)",
+          fontWeight: 700,
+          textTransform: "uppercase",
+        }}
+      >
+        {car.brand}
+      </div>
+      <div
+        className="mt-1 text-center"
+        style={{ fontSize: "15px", fontWeight: 800, letterSpacing: "-0.01em", lineHeight: 1.15 }}
+      >
+        {car.name.replace(car.brand, "").trim() || car.name}
+      </div>
       {badge ? (
         <span
-          className="absolute left-2 top-2 rounded-full bg-white/85 px-1.5 py-0.5 font-medium text-slate-700"
-          style={{ fontSize: "9px" }}
+          className="absolute left-2 top-2 rounded-full px-1.5 py-0.5"
+          style={{
+            fontSize: "9px",
+            fontWeight: 700,
+            backgroundColor: accent ?? "var(--gold)",
+            color: "var(--midnight)",
+          }}
         >
           {badge}
         </span>
@@ -47,29 +71,36 @@ function CarThumb({ car, badge }: { car: Car; badge?: string }) {
   );
 }
 
-function CarCard({ car, badge }: { car: Car; badge?: string }) {
+function CarCard({ car, badge, accent }: { car: Car; badge?: string; accent?: string }) {
   return (
     <Link
       to="/cars/$id"
       params={{ id: car.id }}
-      className="block rounded-xl border border-border bg-card p-2.5 transition-colors hover:bg-accent"
+      className="block rounded-xl p-2.5 transition active:scale-[0.98]"
+      style={{ backgroundColor: "var(--surface)", border: "1px solid var(--hairline)" }}
     >
-      <CarThumb car={car} badge={badge} />
-      <div className="mt-2 font-medium text-slate-900" style={{ fontSize: "12px" }}>
+      <CarThumb car={car} badge={badge} accent={accent} />
+      <div
+        className="mt-2"
+        style={{ fontSize: "12px", fontWeight: 700, color: "var(--ink)" }}
+      >
         {car.name}
       </div>
       <div className="mt-0.5 flex items-center gap-1">
         <span
-          className="rounded-full bg-slate-100 px-1.5 py-0.5 text-slate-600"
-          style={{ fontSize: "9px" }}
+          className="rounded-full px-1.5 py-0.5"
+          style={{
+            fontSize: "9px",
+            backgroundColor: "var(--ivory)",
+            color: "var(--warm-gray)",
+            border: "1px solid var(--hairline)",
+          }}
         >
           {car.powertrain}
         </span>
-        <span className="text-slate-500" style={{ fontSize: "9px" }}>
-          {car.segment}
-        </span>
+        <span style={{ fontSize: "9px", color: "var(--warm-gray)" }}>{car.segment}</span>
       </div>
-      <div className="mt-1 text-slate-500" style={{ fontSize: "10px" }}>
+      <div className="mt-1" style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
         {car.priceRange}
       </div>
     </Link>
@@ -117,25 +148,33 @@ function CarsIndex() {
     });
   }, [pt, pr]);
 
+  const typeAccent = type && type.code[2] === "E" ? "var(--teal)" : "var(--copper)";
+
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
-        <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 px-4 py-3 backdrop-blur">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div
+        className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
+        style={{ backgroundColor: "var(--ivory)" }}
+      >
+        <header
+          className="sticky top-0 z-40 border-b px-4 py-3 backdrop-blur"
+          style={{ borderColor: "var(--hairline)", backgroundColor: "rgba(245,244,240,0.9)" }}
+        >
           <div className="flex items-center gap-2">
             <button
               type="button"
               aria-label="뒤로가기"
               onClick={() => window.history.back()}
-              className="flex h-7 w-7 items-center justify-center text-foreground"
-              style={{ fontSize: "16px" }}
+              className="flex h-7 w-7 items-center justify-center"
+              style={{ color: "var(--ink)" }}
             >
-              ←
+              <ArrowLeft size={18} strokeWidth={1.75} />
             </button>
             <div>
-              <div className="font-medium" style={{ fontSize: "14px" }}>
+              <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>
                 차량 둘러보기
               </div>
-              <div className="text-slate-500" style={{ fontSize: "10px" }}>
+              <div style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
                 내 유형에 맞는 차부터 보여드려요
               </div>
             </div>
@@ -145,65 +184,58 @@ function CarsIndex() {
         <main className="flex-1 px-4 py-4">
           {/* 필터 */}
           <div className="mb-3 space-y-1.5">
-            <div className="-mx-4 overflow-x-auto px-4">
-              <div className="flex gap-1.5">
-                {POWERTRAIN_FILTERS.map((f) => (
-                  <button
-                    key={f.key}
-                    type="button"
-                    onClick={() => setPt(f.key)}
-                    className={`whitespace-nowrap rounded-full border px-3 py-1 ${
-                      pt === f.key
-                        ? "border-brand-primary bg-brand-primary text-white"
-                        : "border-border bg-white text-slate-600"
-                    }`}
-                    style={{ fontSize: "11px" }}
-                  >
-                    {f.label}
-                  </button>
-                ))}
+            {[
+              { list: POWERTRAIN_FILTERS, value: pt, setter: setPt },
+              { list: PRICE_FILTERS, value: pr, setter: setPr },
+            ].map((row, idx) => (
+              <div key={idx} className="-mx-4 overflow-x-auto px-4">
+                <div className="flex gap-1.5">
+                  {row.list.map((f) => {
+                    const active = row.value === f.key;
+                    return (
+                      <button
+                        key={f.key}
+                        type="button"
+                        onClick={() => row.setter(f.key)}
+                        className="whitespace-nowrap rounded-full px-3 py-1 transition active:scale-[0.98]"
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          backgroundColor: active ? "var(--midnight)" : "var(--surface)",
+                          color: active ? "var(--ivory)" : "var(--ink)",
+                          border: `1px solid ${active ? "var(--midnight)" : "var(--hairline)"}`,
+                        }}
+                      >
+                        {f.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-            <div className="-mx-4 overflow-x-auto px-4">
-              <div className="flex gap-1.5">
-                {PRICE_FILTERS.map((f) => (
-                  <button
-                    key={f.key}
-                    type="button"
-                    onClick={() => setPr(f.key)}
-                    className={`whitespace-nowrap rounded-full border px-3 py-1 ${
-                      pr === f.key
-                        ? "border-brand-primary bg-brand-primary text-white"
-                        : "border-border bg-white text-slate-600"
-                    }`}
-                    style={{ fontSize: "11px" }}
-                  >
-                    {f.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* 유형 맞춤 or 배너 */}
           {type && myCars.length > 0 ? (
             <section className="mb-4">
-              <div className="mb-2 flex items-baseline justify-between pl-1">
-                <h2 className="font-medium" style={{ fontSize: "13px" }}>
-                  {type.name}인 당신께
-                </h2>
+              <div className="mb-2 flex items-center justify-between pl-1">
+                <div className="flex items-center gap-2">
+                  <Emblem code={type.code} size={22} />
+                  <h2 style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>
+                    {type.name}인 당신께
+                  </h2>
+                </div>
                 <Link
                   to="/result/$typeCode"
                   params={{ typeCode: type.code }}
-                  className="text-brand-primary"
-                  style={{ fontSize: "10px" }}
+                  style={{ fontSize: "10px", color: "var(--gold)", fontWeight: 700 }}
                 >
                   결과 다시 보기 →
                 </Link>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {myCars.slice(0, 4).map((c) => (
-                  <CarCard key={c.id} car={c} badge={type.code} />
+                  <CarCard key={c.id} car={c} badge={type.code} accent={typeAccent} />
                 ))}
               </div>
             </section>
@@ -211,26 +243,37 @@ function CarsIndex() {
             <button
               type="button"
               onClick={() => void navigate({ to: "/diagnosis/onboarding" })}
-              className="mb-4 block w-full rounded-xl border border-brand-primary/40 bg-brand-primary/5 p-3 text-left"
+              className="mb-4 flex w-full items-center justify-between rounded-xl p-4 text-left transition active:scale-[0.98]"
+              style={{
+                backgroundColor: "var(--midnight)",
+                color: "var(--ivory)",
+                boxShadow: "var(--shadow-dark)",
+              }}
             >
-              <div className="font-medium text-brand-primary" style={{ fontSize: "12px" }}>
-                1분 진단하면 내 유형 맞춤 추천이 열려요
+              <div>
+                <div style={{ fontSize: "12px", fontWeight: 700 }}>
+                  1분 진단하면 내 유형 맞춤 추천이 열려요
+                </div>
+                <div className="mt-0.5" style={{ fontSize: "10px", color: "var(--gold-soft)" }}>
+                  지금 카BTI 진단 시작
+                </div>
               </div>
-              <div className="mt-0.5 text-slate-500" style={{ fontSize: "10px" }}>
-                지금 카BTI 진단 시작 →
-              </div>
+              <ChevronRight size={18} color="var(--gold)" />
             </button>
           )}
 
           {/* 전체 */}
           <section>
-            <h2 className="mb-2 pl-1 font-medium" style={{ fontSize: "13px" }}>
+            <h2
+              className="mb-2 pl-1"
+              style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}
+            >
               전체 차량 ({filtered.length})
             </h2>
             {filtered.length === 0 ? (
               <div
-                className="rounded-xl border border-dashed border-border p-6 text-center text-slate-500"
-                style={{ fontSize: "12px" }}
+                className="rounded-xl border border-dashed p-6 text-center"
+                style={{ borderColor: "var(--hairline)", color: "var(--warm-gray)", fontSize: "12px" }}
               >
                 조건에 맞는 차량이 없어요.
               </div>
@@ -244,8 +287,8 @@ function CarsIndex() {
           </section>
 
           <p
-            className="mt-4 px-1 text-slate-400"
-            style={{ fontSize: "10px", lineHeight: 1.6 }}
+            className="mt-4 px-1"
+            style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}
           >
             {CAR_LIST_DISCLAIMER}
           </p>
