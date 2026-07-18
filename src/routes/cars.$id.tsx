@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ArrowLeft, Heart, Check } from "lucide-react";
 
 import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
@@ -30,11 +31,16 @@ export const Route = createFileRoute("/cars/$id")({
   },
   component: CarDetail,
   notFoundComponent: () => (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center">
+    <div
+      className="flex min-h-screen items-center justify-center px-4 text-center"
+      style={{ backgroundColor: "var(--ivory)", color: "var(--ink)" }}
+    >
       <div>
-        <h1 className="text-lg font-medium">차량을 찾을 수 없습니다</h1>
-        <p className="mt-2 text-sm text-muted-foreground">목록에서 다시 선택해 주세요.</p>
-        <Link to="/cars" className="mt-4 inline-block text-brand-primary" style={{ fontSize: "12px" }}>
+        <h1 style={{ fontSize: "16px", fontWeight: 700 }}>차량을 찾을 수 없습니다</h1>
+        <p className="mt-2" style={{ fontSize: "12px", color: "var(--warm-gray)" }}>
+          목록에서 다시 선택해 주세요.
+        </p>
+        <Link to="/cars" className="mt-4 inline-block" style={{ fontSize: "12px", color: "var(--gold)", fontWeight: 700 }}>
           차량 목록으로 →
         </Link>
       </div>
@@ -87,110 +93,166 @@ function CarDetail() {
     return inTop || inTier;
   });
 
+  const sectionLabel = {
+    fontSize: "10.5px",
+    letterSpacing: "0.25em",
+    color: "var(--warm-gray)",
+    fontWeight: 700,
+  } as const;
+  const cardStyle = {
+    backgroundColor: "var(--surface)",
+    border: "1px solid var(--hairline)",
+    boxShadow: "var(--shadow-card)",
+  } as const;
+
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
-        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-background/90 px-4 py-3 backdrop-blur">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div
+        className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
+        style={{ backgroundColor: "var(--ivory)" }}
+      >
+        <header
+          className="sticky top-0 z-40 flex items-center justify-between border-b px-4 py-3 backdrop-blur"
+          style={{ borderColor: "var(--hairline)", backgroundColor: "rgba(245,244,240,0.9)" }}
+        >
           <button
             type="button"
             aria-label="뒤로가기"
             onClick={() => window.history.back()}
-            className="flex h-7 w-7 items-center justify-center text-foreground"
-            style={{ fontSize: "16px" }}
+            className="flex h-7 w-7 items-center justify-center"
+            style={{ color: "var(--ink)" }}
           >
-            ←
+            <ArrowLeft size={18} strokeWidth={1.75} />
           </button>
-          <div className="font-medium" style={{ fontSize: "13px" }}>
-            차량 상세
-          </div>
+          <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>차량 상세</div>
           <button
             type="button"
             onClick={() => void handleFavClick()}
             aria-label={fav ? "찜 해제" : "찜하기"}
             className="flex h-7 w-7 items-center justify-center"
-            style={{ fontSize: "16px" }}
           >
-            {fav ? "❤️" : "🤍"}
+            <Heart
+              size={18}
+              strokeWidth={1.75}
+              color={fav ? "var(--copper)" : "var(--ink)"}
+              fill={fav ? "var(--copper)" : "none"}
+            />
           </button>
         </header>
 
         <main className="flex-1 px-4 py-4">
-          {/* 히어로 썸네일 */}
+          {/* 히어로 — 다크 네이비 쇼룸 */}
           <div
-            className={`flex h-44 items-center justify-center rounded-2xl bg-gradient-to-br ${car.gradient}`}
+            className="flex h-44 flex-col items-center justify-center rounded-2xl px-6 text-center"
+            style={{
+              backgroundColor: "var(--navy)",
+              color: "var(--ivory)",
+              boxShadow: "var(--shadow-dark)",
+            }}
           >
-            <span style={{ fontSize: "72px" }}>{car.emoji}</span>
-          </div>
-
-          <div className="mt-3">
-            <div className="text-slate-500" style={{ fontSize: "11px" }}>
+            <div
+              style={{
+                fontSize: "11px",
+                letterSpacing: "0.3em",
+                color: "var(--gold-soft)",
+                fontWeight: 700,
+                textTransform: "lowercase",
+              }}
+            >
               {car.brand}
             </div>
-            <h1 className="mt-0.5 font-medium" style={{ fontSize: "18px" }}>
-              {car.name}
-            </h1>
-            <div className="mt-1.5 flex flex-wrap gap-1">
+            <div
+              className="mt-2"
+              style={{
+                fontSize: "clamp(26px, 8vw, 34px)",
+                fontWeight: 800,
+                letterSpacing: "-0.01em",
+                lineHeight: 1.1,
+              }}
+            >
+              {car.name.replace(car.brand, "").trim() || car.name}
+            </div>
+            <div className="mt-3 flex gap-1.5">
               <span
-                className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-700"
-                style={{ fontSize: "10px" }}
+                className="rounded-full px-2 py-0.5"
+                style={{ fontSize: "10px", backgroundColor: "rgba(245,244,240,0.12)", color: "var(--ivory)" }}
               >
                 {car.segment}
               </span>
               <span
-                className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-700"
-                style={{ fontSize: "10px" }}
+                className="rounded-full px-2 py-0.5"
+                style={{ fontSize: "10px", backgroundColor: "rgba(245,244,240,0.12)", color: "var(--ivory)" }}
               >
                 {car.powertrain}
               </span>
             </div>
           </div>
 
+          {/* 주 CTA */}
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="mt-3 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--midnight)",
+              color: "var(--ivory)",
+              fontSize: "14px",
+              fontWeight: 700,
+              boxShadow: "var(--shadow-dark)",
+            }}
+          >
+            이 차로 견적 받기
+          </button>
+          <button
+            type="button"
+            onClick={() => void navigate({ to: "/compare", search: { car: car.id } })}
+            className="mt-2 w-full rounded-xl py-3 text-center transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--hairline)",
+              color: "var(--ink)",
+              fontSize: "13px",
+              fontWeight: 700,
+            }}
+          >
+            방식별 자세히 비교 →
+          </button>
+
           {/* 가격대 */}
-          <section className="mt-4 rounded-2xl bg-slate-50 p-4">
+          <section className="mt-4 rounded-2xl p-5" style={cardStyle}>
+            <div className="mb-1" style={sectionLabel}>가격대</div>
             <div
-              className="mb-1 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
+              style={{
+                fontSize: "28px",
+                fontWeight: 800,
+                color: "var(--ink)",
+                letterSpacing: "-0.01em",
+                fontVariantNumeric: "tabular-nums",
+              }}
             >
-              가격대
-            </div>
-            <div className="font-medium text-slate-900" style={{ fontSize: "16px" }}>
               {car.priceRange}
             </div>
-            <p className="mt-1 text-slate-400" style={{ fontSize: "10px", lineHeight: 1.5 }}>
+            <p className="mt-1" style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}>
               예시 가격 · 트림별 상이 · 공식 가격표 기준 업데이트 예정
             </p>
           </section>
 
           {/* highlights */}
-          <section className="mt-3 rounded-2xl bg-slate-50 p-4">
-            <div
-              className="mb-2 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-            >
-              한눈에 보기
-            </div>
+          <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
+            <div className="mb-2" style={sectionLabel}>한눈에 보기</div>
             <ul>
               {car.highlights.map((h: string) => (
                 <li key={h} className="flex items-start gap-2 py-1.5">
-                  <span className="flex-shrink-0" style={{ fontSize: "12px", color: "#10B981" }}>
-                    ✓
-                  </span>
-                  <span className="text-slate-900" style={{ fontSize: "12px" }}>
-                    {h}
-                  </span>
+                  <Check size={14} color="var(--teal)" strokeWidth={2.5} className="mt-0.5 flex-shrink-0" />
+                  <span style={{ fontSize: "12.5px", color: "var(--ink)", lineHeight: 1.5 }}>{h}</span>
                 </li>
               ))}
             </ul>
           </section>
 
           {/* 방식별 월납입 */}
-          <section className="mt-3 rounded-2xl bg-slate-50 p-4">
-            <div
-              className="mb-2 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-            >
-              이 차, 방식별 월납입
-            </div>
+          <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
+            <div className="mb-3" style={sectionLabel}>이 차, 방식별 월납입</div>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { key: "installment" as const, label: "할부", value: car.monthlyDemo.installment },
@@ -211,27 +273,45 @@ function CarDetail() {
                 return (
                   <div
                     key={col.key}
-                    className={`rounded-xl border bg-white p-3 text-center ${
-                      isBest ? "border-brand-primary" : "border-slate-200"
-                    }`}
+                    className="relative rounded-xl p-3 text-center"
+                    style={{
+                      backgroundColor: isBest ? "var(--navy)" : "var(--ivory)",
+                      border: `1px solid ${isBest ? "var(--navy)" : "var(--hairline)"}`,
+                      color: isBest ? "var(--ivory)" : "var(--ink)",
+                      minHeight: 84,
+                    }}
                   >
                     {isBest && (
                       <span
-                        className="mb-1 inline-block rounded bg-brand-primary px-1.5 py-0.5 text-white"
-                        style={{ fontSize: "9px" }}
+                        className="absolute -top-2 left-1/2 inline-block -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5"
+                        style={{
+                          fontSize: "9px",
+                          fontWeight: 700,
+                          backgroundColor: "var(--gold)",
+                          color: "var(--midnight)",
+                          letterSpacing: "0.05em",
+                        }}
                       >
                         내 유형 최적
                       </span>
                     )}
                     <div
-                      className="text-slate-500"
-                      style={{ fontSize: "10px" }}
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.15em",
+                        color: isBest ? "var(--gold-soft)" : "var(--warm-gray)",
+                        fontWeight: 700,
+                      }}
                     >
                       {col.label}
                     </div>
                     <div
-                      className="mt-0.5 font-medium text-slate-900"
-                      style={{ fontSize: "12px" }}
+                      className="mt-1.5"
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 800,
+                        fontVariantNumeric: "tabular-nums",
+                      }}
                     >
                       {col.value}
                     </div>
@@ -239,44 +319,35 @@ function CarDetail() {
                 );
               })}
             </div>
-            <p
-              className="mt-2 text-slate-400"
-              style={{ fontSize: "10px", lineHeight: 1.5 }}
-            >
-              통상 조건 기준 예시예요. 내 조건 기준 실제 견적은 아래에서 받아보세요.
+            <p className="mt-3" style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}>
+              통상 조건 기준 예시예요. 내 조건 기준 실제 견적은 위에서 받아보세요.
             </p>
           </section>
 
           {/* 어울리는 유형 */}
           {matchingTypes.length > 0 && (
-            <section className="mt-3 rounded-2xl bg-slate-50 p-4">
-              <div
-                className="mb-2 uppercase text-slate-500"
-                style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-              >
-                이 차와 어울리는 카BTI 유형
-              </div>
+            <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
+              <div className="mb-3" style={sectionLabel}>이 차와 어울리는 카BTI 유형</div>
               <div className="flex flex-wrap gap-1.5">
                 {matchingTypes.map((t) => {
                   const isMine = t.code === myTypeCode;
+                  const acc = t.code[2] === "E" ? "var(--teal)" : "var(--copper)";
                   return (
                     <Link
                       key={t.code}
                       to="/result/$typeCode"
                       params={{ typeCode: t.code }}
-                      className={`rounded-full border px-2.5 py-1 ${
-                        isMine
-                          ? "border-brand-primary bg-brand-primary text-white"
-                          : "border-brand-primary/40 bg-white text-brand-primary"
-                      }`}
-                      style={{ fontSize: "11px" }}
+                      className="rounded-full px-2.5 py-1 transition active:scale-[0.98]"
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        backgroundColor: "var(--surface)",
+                        border: `1.5px solid ${isMine ? "var(--gold)" : acc}`,
+                        color: isMine ? "var(--gold)" : acc,
+                      }}
                     >
                       {t.code} · {t.name}
-                      {isMine && (
-                        <span className="ml-1" style={{ fontSize: "10px" }}>
-                          · 내 유형 ✓
-                        </span>
-                      )}
+                      {isMine && <span className="ml-1">✓</span>}
                     </Link>
                   );
                 })}
@@ -284,32 +355,7 @@ function CarDetail() {
             </section>
           )}
 
-          {/* 주 CTA */}
-          <button
-            type="button"
-            onClick={() => setQuoteOpen(true)}
-            className="mt-4 w-full rounded-xl bg-brand-primary py-3 font-medium text-white"
-            style={{ fontSize: "13px" }}
-          >
-            이 차로 견적 받기
-          </button>
-
-          {/* 보조 CTA */}
-          <button
-            type="button"
-            onClick={() =>
-              void navigate({ to: "/compare", search: { car: car.id } })
-            }
-            className="mt-2 w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
-            style={{ fontSize: "13px" }}
-          >
-            방식별 자세히 비교 →
-          </button>
-
-          <p
-            className="mt-4 px-1 text-slate-400"
-            style={{ fontSize: "10px", lineHeight: 1.6 }}
-          >
+          <p className="mt-4 px-1" style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}>
             {CAR_LEGAL_DISCLAIMER}
           </p>
         </main>
