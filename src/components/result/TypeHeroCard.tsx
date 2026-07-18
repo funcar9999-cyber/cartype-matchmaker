@@ -1,5 +1,4 @@
 import type { CarbtiType } from "@/lib/carbti-types";
-import { formatTypeCode } from "@/lib/carbti-types";
 import { Emblem } from "@/components/common/Emblem";
 
 export function TypeHeroCard({ type }: { type: CarbtiType }) {
@@ -27,14 +26,15 @@ export function TypeHeroCard({ type }: { type: CarbtiType }) {
           <div
             className="mb-2"
             style={{
-              fontSize: "44px",
-              letterSpacing: "0.25em",
+              fontSize: "clamp(32px, 11vw, 44px)",
+              letterSpacing: "8px",
               fontWeight: 800,
               lineHeight: 1,
               fontVariantNumeric: "tabular-nums",
+              whiteSpace: "nowrap",
             }}
           >
-            {formatTypeCode(type.code)}
+            {type.code}
           </div>
           <div style={{ fontSize: "10px", letterSpacing: "0.2em", color: "var(--gold-soft)", fontWeight: 700 }}>
             {powertrainLabel}

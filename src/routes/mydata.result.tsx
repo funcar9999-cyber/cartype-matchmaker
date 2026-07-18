@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ArrowLeft, MessageCircle } from "lucide-react";
 
 import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import {
@@ -50,136 +51,120 @@ function MydataResultPage() {
     void navigate({ to: "/result/$typeCode", params: { typeCode: code } });
   };
 
+  const sectionLabel = {
+    fontSize: "10.5px",
+    letterSpacing: "0.25em",
+    color: "var(--warm-gray)",
+    fontWeight: 700,
+  } as const;
+
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
-        {/* 헤더 */}
-        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-background/90 px-4 py-3 backdrop-blur">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div
+        className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
+        style={{ backgroundColor: "var(--ivory)" }}
+      >
+        <header
+          className="sticky top-0 z-40 flex items-center justify-between border-b px-4 py-3 backdrop-blur"
+          style={{ borderColor: "var(--hairline)", backgroundColor: "rgba(245,244,240,0.9)" }}
+        >
           <button
             type="button"
             aria-label="뒤로가기"
             onClick={() => window.history.back()}
-            className="flex h-7 w-7 items-center justify-center text-foreground"
-            style={{ fontSize: "16px" }}
+            className="flex h-7 w-7 items-center justify-center"
+            style={{ color: "var(--ink)" }}
           >
-            ←
+            <ArrowLeft size={18} strokeWidth={1.75} />
           </button>
-          <div className="font-medium text-slate-900" style={{ fontSize: "13px" }}>
-            예산 매칭 결과
-          </div>
+          <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>예산 매칭 결과</div>
           <div className="h-7 w-7" />
         </header>
 
-        {/* 데모 배지 */}
         <div
-          className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-amber-800"
-          style={{ fontSize: "11px" }}
+          className="border-b px-4 py-2 text-center"
+          style={{
+            borderColor: "var(--hairline)",
+            backgroundColor: "var(--surface)",
+            fontSize: "10.5px",
+            letterSpacing: "0.2em",
+            color: "var(--gold)",
+            fontWeight: 700,
+          }}
         >
-          데모 시뮬레이션 · 예시 데이터입니다
+          DEMO · 예시 데이터
         </div>
 
         <main className="flex-1 px-4 py-4">
-          {/* 프로필 카드 */}
-          <section className="mb-3 rounded-2xl bg-slate-50 p-4">
+          {/* 프로필 카드 (다크 네이비) */}
+          <section
+            className="mb-4 rounded-2xl p-5"
+            style={{
+              backgroundColor: "var(--navy)",
+              color: "var(--ivory)",
+              boxShadow: "var(--shadow-dark)",
+            }}
+          >
             <div
-              className="mb-1 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
+              className="mb-2"
+              style={{ fontSize: "10.5px", letterSpacing: "0.25em", color: "var(--gold)", fontWeight: 700 }}
             >
-              내 마이데이터 프로필 (예시)
+              MY DATA PROFILE
             </div>
-            <div
-              className="mb-2 font-medium text-slate-900"
-              style={{ fontSize: "14px" }}
-            >
-              김카비 님 <span className="text-slate-400">(예시)</span>
+            <div className="mb-3" style={{ fontSize: "16px", fontWeight: 800 }}>
+              김카비 님{" "}
+              <span style={{ color: "var(--gold-soft)", fontSize: "11px", fontWeight: 400 }}>(예시)</span>
             </div>
-            <ul className="space-y-1" style={{ fontSize: "12px" }}>
-              <li className="flex justify-between">
-                <span className="text-slate-500">연소득</span>
-                <span className="text-slate-900">4,200만원</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-500">신용</span>
-                <span className="text-slate-900">우수 (NICE 800점대)</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-500">월 납입 여력</span>
-                <span className="text-slate-900">약 55만원</span>
-              </li>
+            <ul className="space-y-1.5" style={{ fontSize: "12px" }}>
+              <ProfileRow label="연소득" value="4,200만원" />
+              <ProfileRow label="신용" value="우수 (NICE 800점대)" />
+              <ProfileRow label="월 납입 여력" value="약 55만원" />
               {selfBudget != null && (
-                <li className="flex justify-between">
-                  <span className="text-slate-500">직접 입력 예산</span>
-                  <span className="text-slate-900">월 {selfBudget}만원</span>
-                </li>
+                <ProfileRow label="직접 입력 예산" value={`월 ${selfBudget}만원`} />
               )}
             </ul>
           </section>
 
           {/* 티어 3카드 */}
-          <section className="mb-3">
-            <div
-              className="mb-2 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-            >
-              내 예산으로 가능한 선택지
-            </div>
+          <section className="mb-4">
+            <div className="mb-2 pl-1" style={sectionLabel}>내 예산으로 가능한 선택지</div>
             <div className="grid grid-cols-3 gap-2">
-              <TierCard
-                label={TIER_LABELS.stable.name}
-                tagline={TIER_LABELS.stable.tagline}
-                data={tiers.stable}
-                delay={0}
-              />
-              <TierCard
-                label={TIER_LABELS.standard.name}
-                tagline={TIER_LABELS.standard.tagline}
-                data={tiers.standard}
-                delay={120}
-                recommended
-              />
-              <TierCard
-                label={TIER_LABELS.dream.name}
-                tagline={TIER_LABELS.dream.tagline}
-                data={tiers.dream}
-                delay={240}
-              />
+              <TierCard label={TIER_LABELS.stable.name} tagline={TIER_LABELS.stable.tagline} data={tiers.stable} delay={0} />
+              <TierCard label={TIER_LABELS.standard.name} tagline={TIER_LABELS.standard.tagline} data={tiers.standard} delay={120} recommended />
+              <TierCard label={TIER_LABELS.dream.name} tagline={TIER_LABELS.dream.tagline} data={tiers.dream} delay={240} />
             </div>
           </section>
 
           {/* 상세 3줄 */}
-          <section className="mb-4 rounded-2xl bg-slate-50 p-4">
+          <section
+            className="mb-4 rounded-2xl p-4"
+            style={{ backgroundColor: "var(--surface)", border: "1px solid var(--hairline)" }}
+          >
             <ul className="space-y-2" style={{ fontSize: "12px" }}>
-              <li className="flex justify-between">
-                <span className="text-slate-500">예상 승인 가능성</span>
-                <span className="font-medium text-slate-900">높음 (예시)</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-500">예상 월 납입</span>
-                <span className="font-medium text-slate-900">
-                  표준형 기준 (예시)
-                </span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-slate-500">어울리는 금융 방식</span>
-                <span className="font-medium text-slate-900">
-                  {type.bestPayment.method}
-                </span>
-              </li>
+              <ProfileRow label="예상 승인 가능성" value="높음 (예시)" light />
+              <ProfileRow label="예상 월 납입" value="표준형 기준 (예시)" light />
+              <ProfileRow label="어울리는 금융 방식" value={type.bestPayment.method} light gold />
             </ul>
           </section>
 
-          {/* 최종 CTA */}
           <button
             type="button"
             onClick={() => setQuoteOpen(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl py-4 font-medium text-white"
-            style={{ backgroundColor: "#0F7FFF", fontSize: "16px" }}
+            className="flex w-full items-center justify-center gap-2 rounded-xl py-4 transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--midnight)",
+              color: "var(--ivory)",
+              fontSize: "14px",
+              fontWeight: 700,
+              boxShadow: "var(--shadow-dark)",
+            }}
           >
-            이 결과로 무료 상담 받기 💬
+            이 결과로 무료 상담 받기
+            <MessageCircle size={16} color="var(--gold)" strokeWidth={1.75} />
           </button>
           <p
-            className="mt-2 text-center text-slate-500"
-            style={{ fontSize: "11px", lineHeight: 1.5 }}
+            className="mt-2 text-center"
+            style={{ fontSize: "11px", lineHeight: 1.5, color: "var(--warm-gray)" }}
           >
             상담사가 실제 견적과 승인 가능성을 확인해드려요
             <br />강요 없는 무료 상담
@@ -188,15 +173,21 @@ function MydataResultPage() {
           <button
             type="button"
             onClick={goBackToResult}
-            className="mt-3 w-full rounded-xl border border-slate-200 bg-white py-3 font-medium text-slate-700"
-            style={{ fontSize: "13px" }}
+            className="mt-3 w-full rounded-xl py-3 transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--hairline)",
+              color: "var(--ink)",
+              fontSize: "13px",
+              fontWeight: 700,
+            }}
           >
             결과지로 돌아가기
           </button>
 
           <p
-            className="mt-4 px-1 text-slate-400"
-            style={{ fontSize: "10px", lineHeight: 1.6 }}
+            className="mt-4 px-1"
+            style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}
           >
             {LEGAL_DISCLAIMER}
             <br />
@@ -220,6 +211,40 @@ function MydataResultPage() {
   );
 }
 
+function ProfileRow({
+  label,
+  value,
+  light,
+  gold,
+}: {
+  label: string;
+  value: string;
+  light?: boolean;
+  gold?: boolean;
+}) {
+  return (
+    <li className="flex justify-between">
+      <span
+        style={{
+          color: light ? "var(--warm-gray)" : "var(--gold-soft)",
+          opacity: light ? 1 : 0.85,
+        }}
+      >
+        {label}
+      </span>
+      <span
+        style={{
+          color: gold ? "var(--gold)" : light ? "var(--ink)" : "var(--ivory)",
+          fontWeight: 700,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {value}
+      </span>
+    </li>
+  );
+}
+
 function TierCard({
   label,
   tagline,
@@ -235,55 +260,66 @@ function TierCard({
 }) {
   return (
     <div
-      className={
-        "relative rounded-xl border bg-white p-3 " +
-        (recommended ? "border-brand-primary" : "border-slate-200")
-      }
+      className="relative rounded-xl p-3"
       style={{
+        backgroundColor: recommended ? "var(--navy)" : "var(--surface)",
+        color: recommended ? "var(--ivory)" : "var(--ink)",
+        border: `1px solid ${recommended ? "var(--navy)" : "var(--hairline)"}`,
         animation: `carbti-unlock 700ms ease-out ${delay}ms both`,
+        boxShadow: recommended ? "var(--shadow-dark)" : "var(--shadow-card)",
       }}
     >
       {recommended && (
         <span
-          className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-brand-primary px-2 py-0.5 font-medium text-white"
-          style={{ fontSize: "9px" }}
+          className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full px-2 py-0.5"
+          style={{
+            fontSize: "9px",
+            fontWeight: 800,
+            backgroundColor: "var(--gold)",
+            color: "var(--midnight)",
+            letterSpacing: "0.1em",
+          }}
         >
           추천
         </span>
       )}
+      <div style={{ fontSize: "12px", fontWeight: 800 }}>{label}</div>
       <div
-        className="font-medium text-slate-900"
-        style={{ fontSize: "12px" }}
-      >
-        {label}
-      </div>
-      <div
-        className="mt-0.5 text-slate-500"
-        style={{ fontSize: "10px", lineHeight: 1.4 }}
+        className="mt-0.5"
+        style={{
+          fontSize: "10px",
+          lineHeight: 1.4,
+          color: recommended ? "var(--gold-soft)" : "var(--warm-gray)",
+        }}
       >
         {tagline}
       </div>
-      <div
-        className="mt-3 font-medium text-slate-900"
-        style={{ fontSize: "12px", lineHeight: 1.4 }}
-      >
+      <div className="mt-3" style={{ fontSize: "12px", lineHeight: 1.4, fontWeight: 700 }}>
         {data.car}
       </div>
       <div
-        className="mt-1 text-slate-500"
-        style={{ fontSize: "10px" }}
+        className="mt-1"
+        style={{
+          fontSize: "10px",
+          color: recommended ? "var(--gold-soft)" : "var(--warm-gray)",
+        }}
       >
         {data.method}
       </div>
       <div
-        className="mt-2 font-medium text-brand-primary"
-        style={{ fontSize: "11px" }}
+        className="mt-2"
+        style={{
+          fontSize: "12px",
+          fontWeight: 800,
+          color: "var(--gold)",
+          fontVariantNumeric: "tabular-nums",
+        }}
       >
         {data.monthly}
       </div>
       <div
-        className="mt-1 text-slate-400"
-        style={{ fontSize: "9px" }}
+        className="mt-1"
+        style={{ fontSize: "9px", color: recommended ? "var(--gold-soft)" : "var(--warm-gray)", opacity: 0.7 }}
       >
         (예시)
       </div>

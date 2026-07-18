@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 import {
   CAR_DB,
@@ -62,131 +63,212 @@ function ComparePage() {
     (carParam && CAR_DB.find((c) => c.id === carParam)) || pickDefaultCar(code);
   const type = code ? CARBTI_TYPES[code] : null;
 
+  const bestKey: Method =
+    type?.bestPayment.method === "리스"
+      ? "lease"
+      : type?.bestPayment.method === "장기렌트"
+        ? "rent"
+        : "installment";
+  const sectionLabel = {
+    fontSize: "10.5px",
+    letterSpacing: "0.25em",
+    color: "var(--warm-gray)",
+    fontWeight: 700,
+  } as const;
+
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
-        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-background/90 px-4 py-3 backdrop-blur">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div
+        className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
+        style={{ backgroundColor: "var(--ivory)" }}
+      >
+        <header
+          className="sticky top-0 z-40 flex items-center justify-between border-b px-4 py-3 backdrop-blur"
+          style={{ borderColor: "var(--hairline)", backgroundColor: "rgba(245,244,240,0.9)" }}
+        >
           <button
             type="button"
             aria-label="뒤로가기"
             onClick={() => window.history.back()}
-            className="flex h-7 w-7 items-center justify-center text-foreground"
-            style={{ fontSize: "16px" }}
+            className="flex h-7 w-7 items-center justify-center"
+            style={{ color: "var(--ink)" }}
           >
-            ←
+            <ArrowLeft size={18} strokeWidth={1.75} />
           </button>
-          <div className="font-medium" style={{ fontSize: "13px" }}>
-            3방식 비교
-          </div>
+          <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>3방식 비교</div>
           <span className="w-7" />
         </header>
 
         <main className="flex-1 px-4 py-4">
-          {/* 배지 */}
+          {/* 데모 배지 */}
           <div
-            className="mb-3 rounded-lg bg-slate-100 px-3 py-2 text-slate-600"
-            style={{ fontSize: "11px", lineHeight: 1.5 }}
+            className="mb-3 inline-block rounded-full px-3 py-1"
+            style={{
+              fontSize: "10.5px",
+              color: "var(--gold)",
+              fontWeight: 700,
+              border: "1px solid var(--gold)",
+              letterSpacing: "0.05em",
+            }}
           >
-            월 납입 예시는 통상 조건 기준 시뮬레이션입니다
+            DEMO · 통상 조건 시뮬레이션
           </div>
 
           {/* 선택 차량 카드 */}
-          <section className="mb-3 rounded-2xl border border-border bg-card p-3">
+          <section
+            className="mb-4 rounded-2xl p-3"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--hairline)",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-16 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${car.gradient}`}
+                className="flex h-16 w-24 flex-shrink-0 flex-col items-center justify-center rounded-lg px-1 text-center"
+                style={{ backgroundColor: "var(--navy)", color: "var(--ivory)" }}
               >
-                <span style={{ fontSize: "28px" }}>{car.emoji}</span>
+                <div
+                  style={{
+                    fontSize: "8px",
+                    letterSpacing: "0.2em",
+                    color: "var(--gold-soft)",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {car.brand}
+                </div>
+                <div style={{ fontSize: "12px", fontWeight: 800, lineHeight: 1.1 }}>
+                  {car.name.replace(car.brand, "").trim() || car.name}
+                </div>
               </div>
               <div className="flex-1">
-                <div className="text-slate-500" style={{ fontSize: "10px" }}>
-                  {car.brand} · {car.segment} · {car.powertrain}
+                <div style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
+                  {car.segment} · {car.powertrain}
                 </div>
-                <div className="mt-0.5 font-medium" style={{ fontSize: "13px" }}>
+                <div
+                  className="mt-0.5"
+                  style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}
+                >
                   {car.name}
                 </div>
-                <div className="mt-0.5 text-slate-500" style={{ fontSize: "10px" }}>
+                <div className="mt-0.5" style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
                   {car.priceRange}
                 </div>
               </div>
-              <Link
-                to="/cars"
-                className="text-brand-primary"
-                style={{ fontSize: "11px" }}
-              >
+              <Link to="/cars" style={{ fontSize: "11px", color: "var(--gold)", fontWeight: 700 }}>
                 변경 →
               </Link>
             </div>
           </section>
 
           {/* 월 납입 예시 3카드 */}
-          <section className="mb-3">
-            <div
-              className="mb-2 pl-1 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-            >
-              월 납입 예시
-            </div>
+          <section className="mb-4">
+            <div className="mb-2 pl-1" style={sectionLabel}>월 납입 예시</div>
             <div className="grid grid-cols-3 gap-2">
-              {(Object.keys(METHOD_LABELS) as Method[]).map((m) => (
-                <div
-                  key={m}
-                  className="rounded-xl border border-border bg-white p-2.5 text-center"
-                >
-                  <div className="text-slate-500" style={{ fontSize: "10px" }}>
-                    {METHOD_LABELS[m]}
+              {(Object.keys(METHOD_LABELS) as Method[]).map((m) => {
+                const isBest = type ? bestKey === m : false;
+                return (
+                  <div
+                    key={m}
+                    className="relative rounded-xl p-3 text-center"
+                    style={{
+                      backgroundColor: isBest ? "var(--navy)" : "var(--surface)",
+                      border: `1px solid ${isBest ? "var(--navy)" : "var(--hairline)"}`,
+                      color: isBest ? "var(--ivory)" : "var(--ink)",
+                      minHeight: 84,
+                    }}
+                  >
+                    {isBest && (
+                      <span
+                        className="absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5"
+                        style={{
+                          fontSize: "9px",
+                          fontWeight: 700,
+                          backgroundColor: "var(--gold)",
+                          color: "var(--midnight)",
+                        }}
+                      >
+                        내 유형 최적
+                      </span>
+                    )}
+                    <div
+                      style={{
+                        fontSize: "10px",
+                        letterSpacing: "0.15em",
+                        color: isBest ? "var(--gold-soft)" : "var(--warm-gray)",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {METHOD_LABELS[m]}
+                    </div>
+                    <div
+                      className="mt-1.5"
+                      style={{ fontSize: "13px", fontWeight: 800, fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {car.monthlyDemo[m]}
+                    </div>
                   </div>
-                  <div className="mt-1 font-medium text-slate-900" style={{ fontSize: "12px" }}>
-                    {car.monthlyDemo[m]}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <p
-              className="mt-2 px-1 text-slate-400"
-              style={{ fontSize: "10px", lineHeight: 1.5 }}
+              className="mt-2 px-1"
+              style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}
             >
               {COMPARE_LEGAL_NOTE}
             </p>
           </section>
 
           {/* 구조 비교 — 방식별 탭 */}
-          <section className="mb-3">
-            <div
-              className="mb-2 pl-1 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-            >
-              구조 비교
-            </div>
+          <section className="mb-4">
+            <div className="mb-2 pl-1" style={sectionLabel}>구조 비교</div>
             <div className="mb-2 flex gap-1.5">
-              {(Object.keys(METHOD_LABELS) as Method[]).map((m) => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => setMethod(m)}
-                  className={`flex-1 rounded-full border px-3 py-1.5 ${
-                    method === m
-                      ? "border-brand-primary bg-brand-primary text-white"
-                      : "border-border bg-white text-slate-600"
-                  }`}
-                  style={{ fontSize: "11px" }}
-                >
-                  {METHOD_LABELS[m]}
-                </button>
-              ))}
+              {(Object.keys(METHOD_LABELS) as Method[]).map((m) => {
+                const active = method === m;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setMethod(m)}
+                    className="flex-1 rounded-full px-3 py-1.5 transition active:scale-[0.98]"
+                    style={{
+                      fontSize: "11.5px",
+                      fontWeight: 700,
+                      backgroundColor: active ? "var(--midnight)" : "var(--surface)",
+                      color: active ? "var(--ivory)" : "var(--ink)",
+                      border: `1px solid ${active ? "var(--midnight)" : "var(--hairline)"}`,
+                    }}
+                  >
+                    {METHOD_LABELS[m]}
+                  </button>
+                );
+              })}
             </div>
-            <div className="overflow-hidden rounded-2xl border border-border bg-white">
+            <div
+              className="overflow-hidden rounded-2xl"
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--hairline)" }}
+            >
               {COMPARE_ROWS.map((row, i) => (
                 <div
                   key={row.label}
-                  className={`grid grid-cols-[92px_1fr] items-start gap-3 px-3 py-2.5 ${
-                    i < COMPARE_ROWS.length - 1 ? "border-b border-slate-100" : ""
-                  }`}
+                  className="grid grid-cols-[92px_1fr] items-start gap-3 px-4 py-3"
+                  style={{
+                    borderTop: i === 0 ? "none" : "1px solid var(--hairline)",
+                  }}
                 >
-                  <div className="text-slate-500" style={{ fontSize: "11px" }}>
+                  <div
+                    style={{
+                      fontSize: "10.5px",
+                      color: "var(--warm-gray)",
+                      fontWeight: 700,
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     {row.label}
                   </div>
-                  <div className="text-slate-900" style={{ fontSize: "12px", lineHeight: 1.5 }}>
+                  <div style={{ fontSize: "12px", color: "var(--ink)", lineHeight: 1.5 }}>
                     {row[method]}
                   </div>
                 </div>
@@ -195,22 +277,25 @@ function ComparePage() {
           </section>
 
           {type && (
-          <div
-            className="mb-3 rounded-xl border border-brand-primary/30 bg-brand-primary/5 px-3 py-2.5"
-            style={{ fontSize: "12px" }}
-          >
-            <span className="text-slate-900">
-              <span className="font-medium">{type.name} 유형</span>은 통상{" "}
-              <span className="font-medium text-brand-primary">
+            <div
+              className="mb-3 rounded-xl px-3 py-3"
+              style={{
+                fontSize: "12px",
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--hairline)",
+                color: "var(--ink)",
+              }}
+            >
+              <span style={{ fontWeight: 700 }}>{type.name} 유형</span>은 통상{" "}
+              <span style={{ fontWeight: 700, color: "var(--gold)" }}>
                 {type.bestPayment.method}
               </span>
               가 잘 맞아요
-            </span>
               <Link
                 to="/result/$typeCode"
                 params={{ typeCode: type.code }}
-                className="ml-1 text-brand-primary underline underline-offset-2"
-                style={{ fontSize: "11px" }}
+                className="ml-2 underline underline-offset-2"
+                style={{ fontSize: "11px", color: "var(--gold)", fontWeight: 700 }}
               >
                 결과 보기
               </Link>
@@ -220,24 +305,33 @@ function ComparePage() {
           <button
             type="button"
             onClick={() => void navigate({ to: "/mydata/intro" })}
-            className="w-full rounded-xl bg-brand-primary py-3 font-medium text-white"
-            style={{ fontSize: "13px" }}
+            className="w-full rounded-xl py-3.5 transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--midnight)",
+              color: "var(--ivory)",
+              fontSize: "14px",
+              fontWeight: 700,
+              boxShadow: "var(--shadow-dark)",
+            }}
           >
             내 신용 기준으로 정확히 비교하기
           </button>
           <button
             type="button"
             onClick={() => setQuoteOpen(true)}
-            className="mt-2 w-full rounded-xl border border-border bg-white py-3 text-center font-medium text-slate-900"
-            style={{ fontSize: "13px" }}
+            className="mt-2 w-full rounded-xl py-3 text-center transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--hairline)",
+              color: "var(--ink)",
+              fontSize: "13px",
+              fontWeight: 700,
+            }}
           >
             상담사에게 실제 견적 받기
           </button>
 
-          <p
-            className="mt-4 px-1 text-slate-400"
-            style={{ fontSize: "10px", lineHeight: 1.6 }}
-          >
+          <p className="mt-4 px-1" style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}>
             {CAR_LEGAL_DISCLAIMER}
           </p>
         </main>
