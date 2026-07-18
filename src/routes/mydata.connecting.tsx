@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Check, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/mydata/connecting")({
   head: () => ({
@@ -36,52 +37,64 @@ function MydataConnectingPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--midnight)" }}>
+      <div
+        className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
+        style={{ background: "var(--gradient-hero)", color: "var(--ivory)" }}
+      >
         <main className="flex flex-1 flex-col items-center justify-center px-6 py-8">
           <div
-            className="mb-4 inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-amber-700"
-            style={{ fontSize: "10px" }}
+            className="mb-6 inline-flex items-center rounded-full px-3 py-1"
+            style={{
+              fontSize: "10px",
+              letterSpacing: "0.15em",
+              color: "var(--gold)",
+              fontWeight: 700,
+              border: "1px solid var(--gold)",
+            }}
           >
-            데모 시뮬레이션
+            DEMO SIMULATION
           </div>
 
-          {/* 스피너 */}
+          {/* 골드 링 스피너 */}
           <div
-            className="mb-6 h-12 w-12 rounded-full border-4 border-slate-200 border-t-brand-primary"
-            style={{ animation: "carbti-spin 0.9s linear infinite" }}
+            className="mb-8 h-14 w-14 rounded-full"
+            style={{
+              border: "3px solid rgba(201,169,106,0.2)",
+              borderTopColor: "var(--gold)",
+              animation: "carbti-spin 1s linear infinite",
+            }}
           />
           <style>{`@keyframes carbti-spin { to { transform: rotate(360deg); } }`}</style>
 
-          {/* 체크리스트 */}
-          <ul className="w-full max-w-[280px] space-y-3">
+          <div
+            className="mb-6"
+            style={{ fontSize: "10.5px", letterSpacing: "0.3em", color: "var(--gold)", fontWeight: 700 }}
+          >
+            C O N N E C T I N G
+          </div>
+
+          <ul className="w-full max-w-[300px] space-y-3">
             {STEPS.map((step, i) => {
               const done = i < doneCount;
               const active = i === doneCount;
               return (
-                <li
-                  key={step}
-                  className="flex items-center gap-2.5"
-                  style={{ fontSize: "13px" }}
-                >
+                <li key={step} className="flex items-center gap-3" style={{ fontSize: "13px" }}>
                   <span
-                    className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full"
                     style={{
-                      backgroundColor: done ? "#10B981" : "#E2E8F0",
-                      color: done ? "#fff" : "#64748B",
-                      fontSize: "11px",
+                      backgroundColor: done ? "var(--gold)" : "transparent",
+                      border: done ? "none" : "1px solid rgba(245,244,240,0.25)",
+                      color: "var(--midnight)",
                     }}
                   >
-                    {done ? "✓" : ""}
+                    {done && <Check size={13} strokeWidth={2.5} />}
                   </span>
                   <span
-                    className={
-                      done
-                        ? "text-slate-900"
-                        : active
-                          ? "text-slate-900"
-                          : "text-slate-400"
-                    }
+                    style={{
+                      color: done || active ? "var(--ivory)" : "rgba(245,244,240,0.4)",
+                      fontWeight: done || active ? 700 : 400,
+                    }}
                   >
                     {step}
                   </span>
@@ -90,12 +103,10 @@ function MydataConnectingPage() {
             })}
           </ul>
 
-          <p
-            className="mt-10 text-center text-slate-500"
-            style={{ fontSize: "11px" }}
-          >
-            🔒 모든 정보는 암호화되어 전송됩니다
-          </p>
+          <div className="mt-12 flex items-center gap-2" style={{ fontSize: "11px", color: "rgba(245,244,240,0.6)" }}>
+            <Lock size={12} color="var(--gold-soft)" strokeWidth={1.75} />
+            모든 정보는 암호화되어 전송돼요
+          </div>
         </main>
       </div>
     </div>
