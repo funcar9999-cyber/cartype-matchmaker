@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { Link2, Instagram, Download, MessageCircle } from "lucide-react";
 
 import type { CarbtiType } from "@/lib/carbti-types";
-import { formatTypeCode } from "@/lib/carbti-types";
 
 async function copyLink(): Promise<{ ok: boolean; url: string }> {
   const url = typeof window !== "undefined" ? window.location.href : "";
