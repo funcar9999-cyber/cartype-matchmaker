@@ -1,57 +1,59 @@
 import type { CarbtiType } from "@/lib/carbti-types";
 import { formatTypeCode } from "@/lib/carbti-types";
+import { Emblem } from "@/components/common/Emblem";
 
 export function TypeHeroCard({ type }: { type: CarbtiType }) {
+  const isE = type.code[2] === "E";
+  const powertrainLabel = isE ? "ELECTRIC" : "GASOLINE · HEV";
+  const glow = isE ? "var(--gradient-hero)" : "var(--gradient-hero-copper)";
+
   return (
     <section
-      className="mb-4 rounded-2xl p-6 text-center text-white shadow-[0_16px_40px_-16px_rgba(15,127,255,0.55)]"
+      className="mb-4 overflow-hidden rounded-2xl p-6"
       style={{
-        background: "linear-gradient(160deg, #0F7FFF 0%, #6B47FF 100%)",
+        background: glow,
+        color: "var(--ivory)",
+        boxShadow: "var(--shadow-dark)",
       }}
     >
       <div
-        className="mb-2 uppercase"
-        style={{ fontSize: "10px", opacity: 0.8, letterSpacing: "0.15em" }}
+        className="mb-3"
+        style={{ fontSize: "10.5px", letterSpacing: "0.25em", color: "var(--gold)", fontWeight: 700 }}
       >
         YOUR CARBTI
       </div>
-      <div
-        className="mb-1 font-medium"
-        style={{ fontSize: "34px", letterSpacing: "0.15em" }}
-      >
-        {formatTypeCode(type.code)}
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <div
+            className="mb-2"
+            style={{
+              fontSize: "44px",
+              letterSpacing: "0.25em",
+              fontWeight: 800,
+              lineHeight: 1,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {formatTypeCode(type.code)}
+          </div>
+          <div style={{ fontSize: "10px", letterSpacing: "0.2em", color: "var(--gold-soft)", fontWeight: 700 }}>
+            {powertrainLabel}
+          </div>
+        </div>
+        <Emblem code={type.code} size={88} />
       </div>
-      <div className="mb-3">
-        <span
-          className="inline-block rounded-lg px-2 py-1"
-          style={{
-            fontSize: "10px",
-            backgroundColor: "rgba(255,255,255,0.2)",
-          }}
-        >
-          {type.powertrainBadge}
-        </span>
-      </div>
-      <h1 className="mb-2 font-medium" style={{ fontSize: "18px" }}>
+      <h1 className="mt-4" style={{ fontSize: "20px", fontWeight: 800 }}>
         {type.name}
       </h1>
-      <p
-        className="mb-3"
-        style={{ fontSize: "12px", opacity: 0.9, lineHeight: 1.5 }}
-      >
+      <p className="mt-2" style={{ fontSize: "12px", opacity: 0.75, lineHeight: 1.6 }}>
         {type.description}
       </p>
-      <div className="flex justify-center">
-        <span
-          className="inline-flex items-center gap-1 rounded-full px-4 py-2"
-          style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
-        >
-          <span style={{ fontSize: "11px" }}>전체의 </span>
-          <span style={{ fontSize: "14px", fontWeight: 500 }}>
-            {type.rarityPercent}%
-          </span>
-          <span style={{ fontSize: "11px" }}>만 가진 유형</span>
+      <div className="mt-4 border-t pt-3" style={{ borderColor: "rgba(201,169,106,0.3)" }}>
+        <span style={{ fontSize: "11px", opacity: 0.75 }}>전체의 </span>
+        <span style={{ fontSize: "18px", fontWeight: 800, color: "var(--gold)", fontVariantNumeric: "tabular-nums" }}>
+          상위 {type.rarityPercent}%
         </span>
+        <span style={{ fontSize: "11px", opacity: 0.75 }}>만 가진 유형</span>
       </div>
     </section>
   );

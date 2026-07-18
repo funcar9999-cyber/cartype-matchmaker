@@ -118,8 +118,8 @@ function DiagnosisPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
         <div className="px-4 pt-3">
           <DiagnosisTopBar
             current={current}

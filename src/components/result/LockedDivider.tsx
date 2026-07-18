@@ -1,16 +1,18 @@
 export function LockedDivider() {
   return (
-    <div className="relative my-5 border-t-2 border-dashed border-slate-300">
+    <div className="my-5 flex items-center gap-3">
+      <div className="flex-1 border-t" style={{ borderColor: "var(--hairline)" }} />
       <span
-        className="absolute left-1/2 -translate-x-1/2 bg-white px-3 text-slate-500"
         style={{
-          top: "-10px",
           fontSize: "10px",
-          letterSpacing: "0.1em",
+          letterSpacing: "0.25em",
+          color: "var(--warm-gray)",
+          fontWeight: 700,
         }}
       >
-        ━━━ 잠긴 정보 ━━━
+        LOCKED
       </span>
+      <div className="flex-1 border-t" style={{ borderColor: "var(--hairline)" }} />
     </div>
   );
 }
