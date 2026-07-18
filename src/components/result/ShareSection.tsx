@@ -66,7 +66,21 @@ function drawShareImage(type: CarbtiType): string | null {
   // code
   ctx.fillStyle = "#F5F4F0";
   ctx.font = font(160, 800);
-  ctx.fillText(formatTypeCode(type.code), W / 2, 1120);
+  ctx.save();
+  const codeText = type.code;
+  // 8px letter-spacing at 160px -> emulate by scaling glyphs individually
+  const letterSpacing = 40;
+  ctx.font = font(160, 800);
+  const widths = codeText.split("").map((ch) => ctx.measureText(ch).width);
+  const totalW = widths.reduce((a, b) => a + b, 0) + letterSpacing * (codeText.length - 1);
+  let x = W / 2 - totalW / 2;
+  ctx.textAlign = "left";
+  for (let i = 0; i < codeText.length; i++) {
+    ctx.fillText(codeText[i], x, 1120);
+    x += widths[i] + letterSpacing;
+  }
+  ctx.restore();
+  ctx.textAlign = "center";
 
   // powertrain label
   ctx.fillStyle = "#C9A96A";
