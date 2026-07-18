@@ -1,46 +1,20 @@
 import { useEffect, useState } from "react";
-
 import { ANSWERS_STORAGE_KEY, type Answer } from "@/lib/carbti-questions";
 
-type Mapping = { icon: string; said: string; picked: string };
+type Mapping = { said: string; picked: string };
 
-// 축·값별 대표 문장 (§2 표 기반)
 const MAP: Record<string, Record<string, Mapping>> = {
   powertrain: {
-    E: {
-      icon: "🔋",
-      said: "\"전기차 갈 준비 완료\"라고 하셨어요",
-      picked: "→ 전기차 라인업을 추천했어요",
-    },
-    G: {
-      icon: "⛽",
-      said: "\"주유가 아직은 편하다\"라고 하셨어요",
-      picked: "→ 가솔린·하이브리드를 추천했어요",
-    },
+    E: { said: "전기차 갈 준비 완료", picked: "전기차 라인업을 추천" },
+    G: { said: "주유가 아직은 편하다", picked: "가솔린·하이브리드를 추천" },
   },
   payment: {
-    F: {
-      icon: "🔄",
-      said: "\"월 요금에 다 포함이면 좋겠다\"라고 하셨어요",
-      picked: "→ 리스·장기렌트를 추천했어요",
-    },
-    S: {
-      icon: "🏠",
-      said: "\"내 손으로 챙겨야 진짜 내 차\"라고 하셨어요",
-      picked: "→ 할부·소유 방식을 추천했어요",
-    },
+    F: { said: "월 요금에 다 포함이면 좋겠다", picked: "리스·장기렌트를 추천" },
+    S: { said: "내 손으로 챙겨야 진짜 내 차", picked: "할부·소유 방식을 추천" },
   },
   purpose: {
-    C: {
-      icon: "🏙️",
-      said: "\"도심·출퇴근 위주로 탄다\"라고 하셨어요",
-      picked: "→ 도심에 편한 차종을 추천했어요",
-    },
-    W: {
-      icon: "🛣️",
-      said: "\"장거리·여행이 잦다\"라고 하셨어요",
-      picked: "→ 장거리에 강한 차종을 추천했어요",
-    },
+    C: { said: "도심·출퇴근 위주로 탄다", picked: "도심에 편한 차종을 추천" },
+    W: { said: "장거리·여행이 잦다", picked: "장거리에 강한 차종을 추천" },
   },
 };
 
@@ -56,9 +30,7 @@ export function AnswerRecap() {
       if (!raw) return;
       const parsed = JSON.parse(raw) as Answer[];
       if (Array.isArray(parsed) && parsed.length > 0) setAnswers(parsed);
-    } catch {
-      /* ignore */
-    }
+    } catch { /* ignore */ }
   }, []);
 
   if (!answers) return null;
@@ -73,22 +45,31 @@ export function AnswerRecap() {
   if (rows.length === 0) return null;
 
   return (
-    <section className="mb-3 rounded-2xl bg-slate-50 p-4">
+    <section
+      className="mb-4 rounded-2xl p-5"
+      style={{ backgroundColor: "var(--surface)", border: "1px solid var(--hairline)", boxShadow: "var(--shadow-card)" }}
+    >
       <div
-        className="mb-2 uppercase text-slate-500"
-        style={{ fontSize: "10px", letterSpacing: "0.1em" }}
+        className="mb-4"
+        style={{ fontSize: "10.5px", letterSpacing: "0.25em", color: "var(--warm-gray)", fontWeight: 700 }}
       >
-        이렇게 답하셨죠?
+        당신의 선택이 말해준 것
       </div>
-      <ul className="space-y-2">
+      <ul className="space-y-3.5">
         {rows.map((r) => (
-          <li key={r.dim} className="flex items-start gap-2">
-            <span className="flex-shrink-0" style={{ fontSize: "14px" }}>
-              {r.icon}
-            </span>
-            <span className="text-slate-900" style={{ fontSize: "12px", lineHeight: 1.5 }}>
-              {r.said} <span className="text-slate-500">{r.picked}</span>
-            </span>
+          <li key={r.dim} className="flex gap-3">
+            <div
+              className="w-0.5 flex-shrink-0 self-stretch rounded-full"
+              style={{ backgroundColor: "var(--teal)" }}
+            />
+            <div className="flex-1">
+              <div style={{ fontSize: "13px", color: "var(--ink)", fontWeight: 500, lineHeight: 1.4 }}>
+                “{r.said}”
+              </div>
+              <div className="mt-1" style={{ fontSize: "11px", color: "var(--warm-gray)" }}>
+                → {r.picked}
+              </div>
+            </div>
           </li>
         ))}
       </ul>
