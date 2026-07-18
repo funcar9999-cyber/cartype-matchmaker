@@ -191,10 +191,10 @@ function ResultPage() {
             <button
               type="button"
               onClick={goMydata}
-              className="mt-4 w-full rounded-xl bg-brand-primary py-3 font-medium text-white"
-              style={{ fontSize: "13px" }}
+              className="mt-4 w-full rounded-xl py-3 font-medium transition-transform active:scale-[0.98]"
+              style={{ fontSize: "13px", backgroundColor: "var(--midnight)", color: "var(--ivory)" }}
             >
-              🔒 마이데이터 연결하고 전체 결과 보기
+              마이데이터 연결하고 전체 결과 보기
             </button>
             <p
               className="mt-2 text-center text-slate-500"
