@@ -5,7 +5,7 @@ import { CAR_DB, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
 import { insertLead, type LeadSource } from "@/lib/carbti-data";
-import { supabase, DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 type PayMethodChip = "할부" | "리스" | "장기렌트";
 const PAY_METHODS: PayMethodChip[] = ["할부", "리스", "장기렌트"];
@@ -32,23 +32,22 @@ export function QuoteRequestSheet({
   onOpenChange: (v: boolean) => void;
   context: QuoteContext;
 }) {
-  const [code, setCode] = useState<string | null>(null);
-  const [budget, setBudget] = useState<number | null>(null);
+  const { user, code: hookCode, budgetManwon, dbId } = useMyCarbti();
+  const [code, setCode] = useState<string | null>(hookCode);
+  const [budget, setBudget] = useState<number | null>(budgetManwon);
   const [carName, setCarName] = useState<string>(context.defaultCarName ?? "미정");
   const [method, setMethod] = useState<PayMethodChip>("할부");
   const [contactPref, setContactPref] = useState<"kakao" | "phone">("kakao");
 
-  // 세션에서 유형·예산 로드, 오픈될 때마다 최신 컨텍스트 반영
+  // 오픈될 때마다 훅 최신값·컨텍스트 반영
   useEffect(() => {
-    if (!open || typeof window === "undefined") return;
-    const c = sessionStorage.getItem("carbti:diagnosis:code");
-    const t = c && CARBTI_TYPES[c] ? c : null;
+    if (!open) return;
+    const t = hookCode && CARBTI_TYPES[hookCode] ? hookCode : null;
     setCode(t);
     setMethod(normalizeMethod(t ? CARBTI_TYPES[t].bestPayment.method : undefined));
-    const b = sessionStorage.getItem("carbti:budget");
-    setBudget(b ? Number(b) : null);
+    setBudget(budgetManwon);
     setCarName(context.defaultCarName ?? "미정");
-  }, [open, context.defaultCarName]);
+  }, [open, context.defaultCarName, hookCode, budgetManwon]);
 
   const type = code ? CARBTI_TYPES[code] : null;
 
@@ -68,19 +67,15 @@ export function QuoteRequestSheet({
 
   const handleSubmit = async () => {
     // 리드 저장은 비동기로 던진다 (실패해도 UX는 진행)
-    void supabase.auth.getSession().then(({ data }) => {
-      const uid = data.session?.user?.id ?? null;
-      const dbId = sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY);
-      const car = carName !== "미정" ? findCarByName(carName) : null;
-      void insertLead({
-        source: context.source,
-        interestCarId: car?.id ?? null,
-        preferredMethod: method,
-        budgetManwon: budget,
-        contactPref: contactPref === "kakao" ? "chat_only" : "call_ok",
-        diagnosisId: dbId,
-        userId: uid,
-      });
+    const car = carName !== "미정" ? findCarByName(carName) : null;
+    void insertLead({
+      source: context.source,
+      interestCarId: car?.id ?? null,
+      preferredMethod: method,
+      budgetManwon: budget,
+      contactPref: contactPref === "kakao" ? "chat_only" : "call_ok",
+      diagnosisId: dbId,
+      userId: user?.id ?? null,
     });
     try {
       await navigator.clipboard.writeText(requestText);
