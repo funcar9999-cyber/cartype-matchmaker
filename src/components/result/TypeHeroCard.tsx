@@ -1,5 +1,4 @@
 import type { CarbtiType } from "@/lib/carbti-types";
-import { formatTypeCode } from "@/lib/carbti-types";
 import { Emblem } from "@/components/common/Emblem";
 
 export function TypeHeroCard({ type }: { type: CarbtiType }) {
