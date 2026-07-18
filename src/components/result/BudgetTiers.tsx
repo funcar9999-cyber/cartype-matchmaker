@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 import { BUDGET_TIERS, type CarbtiType } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { findCarByName } from "@/lib/car-db";
-import { updateSelfBudget } from "@/lib/carbti-data";
-import { DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
-
-const BUDGET_STORAGE_KEY = "carbti:budget";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 function formatWon(manwon: number) {
   const won = manwon * 10000;
@@ -22,31 +19,15 @@ export function BudgetTiers({
   type: CarbtiType;
   onCtaClick: () => void;
 }) {
-  const [budget, setBudget] = useState<number>(70);
-  const [unlocked, setUnlocked] = useState<boolean>(false);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const raw = sessionStorage.getItem(BUDGET_STORAGE_KEY);
-    if (raw) {
-      const v = Number(raw);
-      if (Number.isFinite(v) && v >= 20 && v <= 100) {
-        setBudget(v);
-        setUnlocked(true);
-      }
-    }
-  }, []);
+  const { budgetManwon, setBudget: persistBudget } = useMyCarbti();
+  const initial = budgetManwon ?? 70;
+  const [budget, setBudget] = useState<number>(initial);
+  const [unlocked, setUnlocked] = useState<boolean>(budgetManwon != null);
 
   const handleChange = (v: number) => {
     setBudget(v);
     setUnlocked(true);
-    try { sessionStorage.setItem(BUDGET_STORAGE_KEY, String(v)); } catch {}
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => {
-      const dbId = sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY);
-      if (dbId) void updateSelfBudget(dbId, v);
-    }, 500);
+    persistBudget(v);
   };
 
   const bands = useMemo(
