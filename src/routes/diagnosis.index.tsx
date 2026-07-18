@@ -17,6 +17,7 @@ import {
 } from "@/lib/carbti-questions";
 import { insertDiagnosis } from "@/lib/carbti-data";
 import { supabase } from "@/lib/supabase";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 const searchSchema = z.object({
   q: z.number().int().min(1).max(TOTAL_QUESTIONS).catch(1),
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/diagnosis/")({
 function DiagnosisPage() {
   const navigate = useNavigate();
   const { q } = Route.useSearch();
+  const { refresh } = useMyCarbti();
   const current = q;
   const question = QUESTIONS[current - 1];
 
@@ -92,14 +94,23 @@ function DiagnosisPage() {
       } catch {
         /* ignore */
       }
-      // 백엔드 저장 (실패해도 진단 흐름은 계속)
-      void supabase.auth.getSession().then(({ data }) => {
+      // Q15 완료: 로그인 여부 확인 → DB 저장(await, 실패해도 진행) → 분기
+      void (async () => {
+        const { data } = await supabase.auth.getSession();
         const uid = data.session?.user?.id ?? null;
-        void insertDiagnosis({ code, valueScore, answers: next, userId: uid });
-      });
-      setTimeout(() => {
-        void navigate({ to: "/diagnosis/gate", search: { code } });
-      }, 180);
+        try {
+          await insertDiagnosis({ code, valueScore, answers: next, userId: uid });
+        } catch (e) {
+          console.warn("[diagnosis insert failed]", e);
+        }
+        // 훅 상태 갱신 (dbId·code 반영)
+        if (uid) await refresh();
+        if (uid) {
+          void navigate({ to: "/result/$typeCode", params: { typeCode: code } });
+        } else {
+          void navigate({ to: "/diagnosis/gate", search: { code } });
+        }
+      })();
     }
   };
 

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { Emblem } from "@/components/common/Emblem";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 export function ReturningBanner({
   onOpenQuote,
@@ -11,15 +11,8 @@ export function ReturningBanner({
   onOpenQuote: () => void;
 }) {
   const navigate = useNavigate();
-  const [code, setCode] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const c = sessionStorage.getItem("carbti:diagnosis:code");
-    if (c && CARBTI_TYPES[c]) setCode(c);
-  }, []);
-
-  if (!code) return null;
+  const { status, code } = useMyCarbti();
+  if (status === "loading" || !code || !CARBTI_TYPES[code]) return null;
   const type = CARBTI_TYPES[code];
 
   return (

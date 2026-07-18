@@ -6,7 +6,7 @@ import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
-import { useSession } from "@/hooks/use-session";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
 import { toast } from "sonner";
 
@@ -52,8 +52,7 @@ function CarDetail() {
   const { car } = Route.useLoaderData();
   const navigate = useNavigate();
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const [myTypeCode, setMyTypeCode] = useState<string | null>(null);
-  const { user } = useSession();
+  const { user, code: myTypeCode } = useMyCarbti();
   const [fav, setFav] = useState(false);
 
   useEffect(() => {
@@ -74,12 +73,6 @@ function CarDetail() {
     setFav(next);
     await toggleFavorite(user.id, car.id, next);
   };
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = sessionStorage.getItem("carbti:diagnosis:code");
-    if (stored && CARBTI_TYPES[stored]) setMyTypeCode(stored);
-  }, []);
 
   // 이 차와 어울리는 CarBTI 유형 역참조
   const matchingTypes = Object.values(CARBTI_TYPES).filter((t) => {

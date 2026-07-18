@@ -4,13 +4,10 @@ import { toast } from "sonner";
 import { User, Heart, ChevronRight, MessageCircle } from "lucide-react";
 
 import { BottomTabBar } from "@/components/home/BottomTabBar";
-import { useSession } from "@/hooks/use-session";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { CAR_DB } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
-import {
-  getMyLatestDiagnosis,
-  listMyFavorites,
-} from "@/lib/carbti-data";
+import { listMyFavorites } from "@/lib/carbti-data";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/me")({
@@ -25,22 +22,12 @@ export const Route = createFileRoute("/me")({
 
 function MePage() {
   const navigate = useNavigate();
-  const { user, loading } = useSession();
-  const [nickname, setNickname] = useState<string | null>(null);
-  const [diag, setDiag] = useState<{ id: string; code: string } | null>(null);
+  const { user, status, code, nickname } = useMyCarbti();
+  const loading = status === "loading";
   const [favIds, setFavIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from("profiles")
-      .select("kakao_nickname")
-      .eq("id", user.id)
-      .maybeSingle()
-      .then(({ data }) => setNickname((data?.kakao_nickname as string) ?? null));
-    void getMyLatestDiagnosis(user.id).then((d) => {
-      if (d) setDiag({ id: d.id as string, code: d.code as string });
-    });
     void listMyFavorites(user.id).then((rows) =>
       setFavIds(rows.map((r) => r.car_id as string)),
     );
@@ -128,10 +115,10 @@ function MePage() {
                 </div>
               </section>
 
-              {diag && CARBTI_TYPES[diag.code] && (
+              {code && CARBTI_TYPES[code] && (
                 <Link
                   to="/result/$typeCode"
-                  params={{ typeCode: diag.code }}
+                  params={{ typeCode: code }}
                   className="mb-3 block rounded-2xl p-4 transition active:scale-[0.99]"
                   style={cardStyle}
                 >
@@ -145,10 +132,10 @@ function MePage() {
                         fontWeight: 800,
                       }}
                     >
-                      {diag.code}
+                      {code}
                     </span>
                     <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>
-                      · {CARBTI_TYPES[diag.code].name}
+                      · {CARBTI_TYPES[code].name}
                     </span>
                   </div>
                   <div className="mt-2 flex items-center gap-1" style={{ fontSize: "11px", color: "var(--warm-gray)" }}>

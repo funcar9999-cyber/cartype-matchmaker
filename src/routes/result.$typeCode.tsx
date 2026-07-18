@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import { ResultTopBar } from "@/components/result/ResultTopBar";
@@ -10,7 +10,7 @@ import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
 import { AnswerRecap } from "@/components/result/AnswerRecap";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
-import { supabase } from "@/lib/supabase";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 export const Route = createFileRoute("/result/$typeCode")({
   head: ({ params }) => {
@@ -58,18 +58,15 @@ function ResultPage() {
   const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
   const [quoteOpen, setQuoteOpen] = useState(false);
-  // 접근 판정: 로그인 사용자 OR 세션에 진단 기록 있음 → 전체 결과, 둘 다 없으면 공유 뷰
-  const [access, setAccess] = useState<"loading" | "full" | "shared">("loading");
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const hasSessionDiag =
-      !!sessionStorage.getItem("carbti:diagnosis:code");
-    supabase.auth.getSession().then(({ data }) => {
-      const loggedIn = !!data.session?.user;
-      setAccess(loggedIn || hasSessionDiag ? "full" : "shared");
-    });
-  }, []);
+  const { status, source, code: myCode } = useMyCarbti();
+  // 접근 판정: 훅이 준비될 때까지 대기 → 로그인/세션 진단 있음 → full, 없음 → shared
+  const access: "loading" | "full" | "shared" =
+    status === "loading"
+      ? "loading"
+      : source === "none"
+        ? "shared"
+        : "full";
+  const viewingOthers = access === "full" && myCode && myCode !== type.code;
 
   const scrollToShare = () => {
     shareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -79,7 +76,19 @@ function ResultPage() {
     void navigate({ to: "/mydata/intro" });
   };
 
-  if (access === "loading") return null;
+  if (access === "loading") {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+        <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col items-center justify-center" style={{ backgroundColor: "var(--ivory)" }}>
+          <div
+            className="h-8 w-8 animate-spin rounded-full border-2"
+            style={{ borderColor: "var(--hairline)", borderTopColor: "var(--midnight)" }}
+            aria-label="로딩 중"
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (access === "shared") {
     return (
@@ -113,6 +122,25 @@ function ResultPage() {
       <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
         <ResultTopBar onShareClick={scrollToShare} />
         <main className="flex-1 px-4 py-4">
+          {viewingOthers && myCode && (
+            <Link
+              to="/result/$typeCode"
+              params={{ typeCode: myCode }}
+              className="mb-3 flex items-center justify-between rounded-2xl px-4 py-3 transition active:scale-[0.99]"
+              style={{
+                backgroundColor: "var(--navy)",
+                color: "var(--ivory)",
+                boxShadow: "var(--shadow-dark)",
+              }}
+            >
+              <span style={{ fontSize: "12px" }}>
+                지금 보는 유형은 {type.code}예요
+              </span>
+              <span style={{ fontSize: "12px", color: "var(--gold)", fontWeight: 700 }}>
+                내 결과 보기 ({myCode}) →
+              </span>
+            </Link>
+          )}
           <TypeHeroCard type={type} />
           <AnswerRecap />
           <RecommendedCars type={type} />
