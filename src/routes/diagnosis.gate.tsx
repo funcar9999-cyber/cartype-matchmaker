@@ -11,6 +11,7 @@ import {
   claimAnonymousDiagnosis,
   upsertProfileFromUser,
 } from "@/lib/carbti-data";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 const searchSchema = z.object({
   code: z.string().min(1).optional().catch(undefined),
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/diagnosis/gate")({
 function GatePage() {
   const { code: searchCode } = Route.useSearch();
   const navigate = useNavigate();
+  const { refresh } = useMyCarbti();
   const [code, setCode] = useState<string>(searchCode ?? "CTEF");
   const [loggingIn, setLoggingIn] = useState(false);
 
@@ -46,6 +48,7 @@ function GatePage() {
     const run = async (userId: string, user: { id: string; user_metadata?: Record<string, unknown> }) => {
       await upsertProfileFromUser(user);
       await claimAnonymousDiagnosis(userId);
+      await refresh();
       const target = sessionStorage.getItem("carbti:diagnosis:code") ?? code;
       if (!cancelled) void navigate({ to: "/result/$typeCode", params: { typeCode: target } });
     };
@@ -57,7 +60,7 @@ function GatePage() {
       if (event === "SIGNED_IN" && session?.user) void run(session.user.id, session.user);
     });
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
-  }, [code, navigate]);
+  }, [code, navigate, refresh]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
