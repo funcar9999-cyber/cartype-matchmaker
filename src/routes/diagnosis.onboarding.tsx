@@ -46,8 +46,8 @@ function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
         {/* 상단 바 */}
         <div className="flex items-center justify-between p-1 px-4 pb-5 pt-3">
           <button

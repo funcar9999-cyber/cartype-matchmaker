@@ -83,22 +83,22 @@ function ResultPage() {
 
   if (access === "shared") {
     return (
-      <div className="min-h-screen bg-slate-100">
-        <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+      <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+        <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
           <ResultTopBar onShareClick={scrollToShare} />
           <main className="flex-1 px-4 py-4">
             <TypeHeroCard type={type} />
             <RecommendedCars type={type} />
             <Link
               to="/diagnosis/onboarding"
-              className="mt-4 block w-full rounded-xl bg-brand-primary py-3 text-center font-medium text-white"
-              style={{ fontSize: "13px" }}
+              className="mt-4 block w-full rounded-xl py-3 text-center font-medium transition-transform active:scale-[0.98]"
+              style={{ fontSize: "13px", backgroundColor: "var(--midnight)", color: "var(--ivory)" }}
             >
               나도 1분 진단하기
             </Link>
             <p
-              className="mt-4 px-1 text-slate-400"
-              style={{ fontSize: "10px", lineHeight: 1.6 }}
+              className="mt-4 px-1"
+              style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}
             >
               {LEGAL_DISCLAIMER}
             </p>
@@ -109,8 +109,8 @@ function ResultPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
         <ResultTopBar onShareClick={scrollToShare} />
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />

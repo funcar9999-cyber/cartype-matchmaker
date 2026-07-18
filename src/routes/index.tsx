@@ -20,8 +20,11 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [quoteOpen, setQuoteOpen] = useState(false);
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+      <div
+        className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
+        style={{ backgroundColor: "var(--ivory)" }}
+      >
         <TopBar />
         <main className="flex-1 px-4 py-4">
           <HeroCard />
@@ -33,8 +36,8 @@ function Index() {
           <ContractCases />
           <FinalDiagnosisCta />
           <footer
-            className="mt-4 pb-4 text-slate-400"
-            style={{ fontSize: "10px" }}
+            className="mt-6 pb-4"
+            style={{ fontSize: "10px", color: "var(--warm-gray)" }}
           >
             <div className="flex justify-center gap-3 pb-3">
               <Link to="/about">회사 소개</Link>
