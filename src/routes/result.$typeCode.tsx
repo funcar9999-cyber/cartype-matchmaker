@@ -68,6 +68,27 @@ function ResultPage() {
         : "full";
   const viewingOthers = access === "full" && myCode && myCode !== type.code;
 
+  const OthersBanner = () =>
+    myCode ? (
+      <Link
+        to="/result/$typeCode"
+        params={{ typeCode: myCode }}
+        className="mb-3 flex items-center justify-between rounded-2xl px-4 py-3 transition active:scale-[0.99]"
+        style={{
+          backgroundColor: "var(--navy)",
+          color: "var(--ivory)",
+          boxShadow: "var(--shadow-dark)",
+        }}
+      >
+        <span style={{ fontSize: "12px" }}>
+          지금 보는 유형은 {type.code}예요
+        </span>
+        <span style={{ fontSize: "12px", color: "var(--gold)", fontWeight: 700 }}>
+          내 결과 보기 ({myCode}) →
+        </span>
+      </Link>
+    ) : null;
+
   const scrollToShare = () => {
     shareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -117,30 +138,39 @@ function ResultPage() {
     );
   }
 
+  if (viewingOthers) {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
+        <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
+          <ResultTopBar onShareClick={scrollToShare} />
+          <main className="flex-1 px-4 py-4">
+            <OthersBanner />
+            <TypeHeroCard type={type} />
+            <RecommendedCars type={type} />
+            <Link
+              to="/diagnosis/onboarding"
+              className="mt-4 block w-full rounded-xl py-3 text-center font-medium transition-transform active:scale-[0.98]"
+              style={{ fontSize: "13px", backgroundColor: "var(--midnight)", color: "var(--ivory)" }}
+            >
+              나도 1분 진단하기
+            </Link>
+            <p
+              className="mt-4 px-1"
+              style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}
+            >
+              {LEGAL_DISCLAIMER}
+            </p>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
       <div className="relative mx-auto flex min-h-screen max-w-[480px] flex-col" style={{ backgroundColor: "var(--ivory)" }}>
         <ResultTopBar onShareClick={scrollToShare} />
         <main className="flex-1 px-4 py-4">
-          {viewingOthers && myCode && (
-            <Link
-              to="/result/$typeCode"
-              params={{ typeCode: myCode }}
-              className="mb-3 flex items-center justify-between rounded-2xl px-4 py-3 transition active:scale-[0.99]"
-              style={{
-                backgroundColor: "var(--navy)",
-                color: "var(--ivory)",
-                boxShadow: "var(--shadow-dark)",
-              }}
-            >
-              <span style={{ fontSize: "12px" }}>
-                지금 보는 유형은 {type.code}예요
-              </span>
-              <span style={{ fontSize: "12px", color: "var(--gold)", fontWeight: 700 }}>
-                내 결과 보기 ({myCode}) →
-              </span>
-            </Link>
-          )}
           <TypeHeroCard type={type} />
           <AnswerRecap />
           <RecommendedCars type={type} />
