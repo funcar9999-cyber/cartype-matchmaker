@@ -50,7 +50,8 @@ function GatePage() {
       await claimAnonymousDiagnosis(userId);
       await refresh();
       const target = sessionStorage.getItem("carbti:diagnosis:code") ?? code;
-      if (!cancelled) void navigate({ to: "/result/$typeCode", params: { typeCode: target } });
+      void target;
+      if (!cancelled) void navigate({ to: "/diagnosis/reveal" });
     };
     supabase.auth.getSession().then(({ data }) => {
       const u = data.session?.user;

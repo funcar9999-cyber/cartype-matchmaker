@@ -18,6 +18,7 @@ import {
 import { insertDiagnosis } from "@/lib/carbti-data";
 import { supabase } from "@/lib/supabase";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
+import { patchPrecision, swapCycleFromQ2 } from "@/lib/precision";
 
 const searchSchema = z.object({
   q: z.number().int().min(1).max(TOTAL_QUESTIONS).catch(1),
@@ -80,6 +81,12 @@ function DiagnosisPage() {
     ];
     setAnswers(next);
 
+    // 본진단 Q2(교체주기) → 정밀 데이터의 swap_cycle 자동 채움
+    if (question.id === 2) {
+      const cycle = swapCycleFromQ2(opt.maps);
+      if (cycle) patchPrecision({ swap_cycle: cycle });
+    }
+
     if (current < TOTAL_QUESTIONS) {
       setTimeout(() => {
         void navigate({ to: "/diagnosis", search: { q: current + 1 } });
@@ -106,7 +113,7 @@ function DiagnosisPage() {
         // 훅 상태 갱신 (dbId·code 반영)
         if (uid) await refresh();
         if (uid) {
-          void navigate({ to: "/result/$typeCode", params: { typeCode: code } });
+          void navigate({ to: "/diagnosis/reveal" });
         } else {
           void navigate({ to: "/diagnosis/gate", search: { code } });
         }

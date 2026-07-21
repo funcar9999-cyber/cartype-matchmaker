@@ -22,6 +22,8 @@ import { Route as ResultTypeCodeRouteImport } from './routes/result.$typeCode'
 import { Route as MydataResultRouteImport } from './routes/mydata.result'
 import { Route as MydataIntroRouteImport } from './routes/mydata.intro'
 import { Route as MydataConnectingRouteImport } from './routes/mydata.connecting'
+import { Route as DiagnosisRevealRouteImport } from './routes/diagnosis.reveal'
+import { Route as DiagnosisPrecisionRouteImport } from './routes/diagnosis.precision'
 import { Route as DiagnosisOnboardingRouteImport } from './routes/diagnosis.onboarding'
 import { Route as DiagnosisGateRouteImport } from './routes/diagnosis.gate'
 import { Route as CarsIdRouteImport } from './routes/cars.$id'
@@ -91,6 +93,16 @@ const MydataConnectingRoute = MydataConnectingRouteImport.update({
   path: '/mydata/connecting',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosisRevealRoute = DiagnosisRevealRouteImport.update({
+  id: '/diagnosis/reveal',
+  path: '/diagnosis/reveal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosisPrecisionRoute = DiagnosisPrecisionRouteImport.update({
+  id: '/diagnosis/precision',
+  path: '/diagnosis/precision',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiagnosisOnboardingRoute = DiagnosisOnboardingRouteImport.update({
   id: '/diagnosis/onboarding',
   path: '/diagnosis/onboarding',
@@ -118,6 +130,8 @@ export interface FileRoutesByFullPath {
   '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
+  '/diagnosis/precision': typeof DiagnosisPrecisionRoute
+  '/diagnosis/reveal': typeof DiagnosisRevealRoute
   '/mydata/connecting': typeof MydataConnectingRoute
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
@@ -136,6 +150,8 @@ export interface FileRoutesByTo {
   '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
+  '/diagnosis/precision': typeof DiagnosisPrecisionRoute
+  '/diagnosis/reveal': typeof DiagnosisRevealRoute
   '/mydata/connecting': typeof MydataConnectingRoute
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
@@ -155,6 +171,8 @@ export interface FileRoutesById {
   '/cars/$id': typeof CarsIdRoute
   '/diagnosis/gate': typeof DiagnosisGateRoute
   '/diagnosis/onboarding': typeof DiagnosisOnboardingRoute
+  '/diagnosis/precision': typeof DiagnosisPrecisionRoute
+  '/diagnosis/reveal': typeof DiagnosisRevealRoute
   '/mydata/connecting': typeof MydataConnectingRoute
   '/mydata/intro': typeof MydataIntroRoute
   '/mydata/result': typeof MydataResultRoute
@@ -175,6 +193,8 @@ export interface FileRouteTypes {
     | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
+    | '/diagnosis/precision'
+    | '/diagnosis/reveal'
     | '/mydata/connecting'
     | '/mydata/intro'
     | '/mydata/result'
@@ -193,6 +213,8 @@ export interface FileRouteTypes {
     | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
+    | '/diagnosis/precision'
+    | '/diagnosis/reveal'
     | '/mydata/connecting'
     | '/mydata/intro'
     | '/mydata/result'
@@ -211,6 +233,8 @@ export interface FileRouteTypes {
     | '/cars/$id'
     | '/diagnosis/gate'
     | '/diagnosis/onboarding'
+    | '/diagnosis/precision'
+    | '/diagnosis/reveal'
     | '/mydata/connecting'
     | '/mydata/intro'
     | '/mydata/result'
@@ -230,6 +254,8 @@ export interface RootRouteChildren {
   CarsIdRoute: typeof CarsIdRoute
   DiagnosisGateRoute: typeof DiagnosisGateRoute
   DiagnosisOnboardingRoute: typeof DiagnosisOnboardingRoute
+  DiagnosisPrecisionRoute: typeof DiagnosisPrecisionRoute
+  DiagnosisRevealRoute: typeof DiagnosisRevealRoute
   MydataConnectingRoute: typeof MydataConnectingRoute
   MydataIntroRoute: typeof MydataIntroRoute
   MydataResultRoute: typeof MydataResultRoute
@@ -331,6 +357,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MydataConnectingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnosis/reveal': {
+      id: '/diagnosis/reveal'
+      path: '/diagnosis/reveal'
+      fullPath: '/diagnosis/reveal'
+      preLoaderRoute: typeof DiagnosisRevealRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnosis/precision': {
+      id: '/diagnosis/precision'
+      path: '/diagnosis/precision'
+      fullPath: '/diagnosis/precision'
+      preLoaderRoute: typeof DiagnosisPrecisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/diagnosis/onboarding': {
       id: '/diagnosis/onboarding'
       path: '/diagnosis/onboarding'
@@ -366,6 +406,8 @@ const rootRouteChildren: RootRouteChildren = {
   CarsIdRoute: CarsIdRoute,
   DiagnosisGateRoute: DiagnosisGateRoute,
   DiagnosisOnboardingRoute: DiagnosisOnboardingRoute,
+  DiagnosisPrecisionRoute: DiagnosisPrecisionRoute,
+  DiagnosisRevealRoute: DiagnosisRevealRoute,
   MydataConnectingRoute: MydataConnectingRoute,
   MydataIntroRoute: MydataIntroRoute,
   MydataResultRoute: MydataResultRoute,

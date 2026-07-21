@@ -1,5 +1,6 @@
 import { supabase, DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
 import type { Answer } from "@/lib/carbti-questions";
+import type { PrecisionCondition, PrecisionSituation } from "@/lib/precision";
 
 export async function upsertProfileFromUser(user: {
   id: string;
@@ -68,6 +69,17 @@ export async function updateSelfBudget(dbId: string, budget: number) {
     .update({ self_budget_manwon: budget })
     .eq("id", dbId);
   if (error) console.warn("[self budget]", error);
+}
+
+export async function updateDiagnosisPrecision(
+  dbId: string,
+  input: { situation: PrecisionSituation; condition: PrecisionCondition },
+) {
+  const { error } = await supabase
+    .from("diagnoses")
+    .update({ situation: input.situation, condition: input.condition })
+    .eq("id", dbId);
+  if (error) console.warn("[precision update]", error);
 }
 
 export type LeadSource =
@@ -141,7 +153,7 @@ export async function listMyFavorites(userId: string) {
 export async function getMyLatestDiagnosis(userId: string) {
   const { data, error } = await supabase
     .from("diagnoses")
-    .select("id, code, self_budget_manwon, created_at")
+    .select("id, code, self_budget_manwon, situation, condition, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(1)
