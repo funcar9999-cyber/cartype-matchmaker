@@ -278,7 +278,8 @@ function CarDetail() {
                       : best === "할부" || best === "현금+할부"
                         ? "installment"
                         : null;
-                const isBest = bestKey === col.key;
+                const isBest = car.isImport ? col.key === "lease" : bestKey === col.key;
+                const badgeLabel = car.isImport ? "수입차 추천" : "내 유형 최적";
                 return (
                   <div
                     key={col.key}
@@ -301,7 +302,7 @@ function CarDetail() {
                           letterSpacing: "0.05em",
                         }}
                       >
-                        내 유형 최적
+                        {badgeLabel}
                       </span>
                     )}
                     <div
