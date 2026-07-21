@@ -227,6 +227,118 @@ function ComparePage() {
             }
           />
 
+          {/* 한눈에 보는 핵심 차이 */}
+          <section className="mb-4">
+            <div className="mb-2 pl-1" style={sectionLabel}>한눈에 보는 핵심 차이</div>
+            <div
+              className="overflow-hidden rounded-2xl"
+              style={{ backgroundColor: "var(--surface)", border: "1px solid var(--hairline)" }}
+            >
+              <div className="overflow-x-auto">
+                <div style={{ minWidth: 360 }}>
+                  {/* header */}
+                  <div className="grid grid-cols-[88px_1fr_1fr_1fr] gap-0">
+                    <div style={{ borderBottom: "1px solid var(--hairline)" }} />
+                    {["할부", "리스", "장기렌트"].map((label) => (
+                      <div
+                        key={label}
+                        className="px-2 py-2.5 text-center"
+                        style={{
+                          borderLeft: "1px solid var(--hairline)",
+                          borderBottom: "1px solid var(--hairline)",
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          color: "var(--ink)",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        {label}
+                      </div>
+                    ))}
+                  </div>
+                  {/* rows */}
+                  {[
+                    {
+                      label: "신용정보상 부채",
+                      installment: "대출로 잡혀요",
+                      lease: "현행 기준 안 잡혀요",
+                      rent: "현행 기준 안 잡혀요",
+                    },
+                    {
+                      label: "사고 시 내 보험료",
+                      installment: "할증될 수 있어요",
+                      lease: "할증될 수 있어요 (본인 보험)",
+                      rent: "할증 없어요 (렌트사 보험)",
+                    },
+                    {
+                      label: "월 요금에 포함",
+                      installment: "원리금만",
+                      lease: "차량비 (보험·자동차세 별도)",
+                      rent: "보험·정비·세금 포함",
+                    },
+                  ].map((row, i) => (
+                    <div key={row.label} className="grid grid-cols-[88px_1fr_1fr_1fr] gap-0">
+                      <div
+                        className="px-2 py-3"
+                        style={{
+                          borderTop: i === 0 ? "none" : "1px solid var(--hairline)",
+                          fontSize: "10px",
+                          color: "var(--warm-gray)",
+                          fontWeight: 700,
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        {row.label}
+                      </div>
+                      <div
+                        className="px-2 py-3 text-center"
+                        style={{
+                          borderLeft: "1px solid var(--hairline)",
+                          borderTop: i === 0 ? "none" : "1px solid var(--hairline)",
+                          fontSize: "11px",
+                          color: "var(--ink)",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {row.installment}
+                      </div>
+                      <div
+                        className="px-2 py-3 text-center"
+                        style={{
+                          borderLeft: "1px solid var(--hairline)",
+                          borderTop: i === 0 ? "none" : "1px solid var(--hairline)",
+                          fontSize: "11px",
+                          color: "var(--ink)",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {row.lease}
+                      </div>
+                      <div
+                        className="px-2 py-3 text-center"
+                        style={{
+                          borderLeft: "1px solid var(--hairline)",
+                          borderTop: i === 0 ? "none" : "1px solid var(--hairline)",
+                          fontSize: "11px",
+                          color: "var(--ink)",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {row.rent}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p
+              className="mt-2 px-1"
+              style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}
+            >
+              부채 반영 여부는 현행 신용정보 기준이며, 은행 자체 심사 기준은 별개예요.
+            </p>
+          </section>
+
           {/* 구조 비교 — 방식별 탭 */}
           <section className="mb-4">
             <div className="mb-2 pl-1" style={sectionLabel}>구조 비교</div>
