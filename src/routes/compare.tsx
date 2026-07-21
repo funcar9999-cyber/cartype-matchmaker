@@ -14,6 +14,7 @@ import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { QuoteCalculator } from "@/components/quote-calculator";
 
 type CompareSearch = { car?: string };
 
@@ -163,63 +164,68 @@ function ComparePage() {
             </div>
           </section>
 
-          {/* 월 납입 예시 3카드 */}
-          <section className="mb-4">
-            <div className="mb-2 pl-1" style={sectionLabel}>월 납입 예시</div>
-            <div className="grid grid-cols-3 gap-2">
-              {(Object.keys(METHOD_LABELS) as Method[]).map((m) => {
-                const isBest = type ? bestKey === m : false;
-                return (
-                  <div
-                    key={m}
-                    className="relative rounded-xl p-3 text-center"
-                    style={{
-                      backgroundColor: isBest ? "var(--navy)" : "var(--surface)",
-                      border: `1px solid ${isBest ? "var(--navy)" : "var(--hairline)"}`,
-                      color: isBest ? "var(--ivory)" : "var(--ink)",
-                      minHeight: 84,
-                    }}
-                  >
-                    {isBest && (
-                      <span
-                        className="absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5"
+          {/* 실시간 견적 계산기 (폴백: 통상 월납입 예시 3카드) */}
+          <QuoteCalculator
+            key={car.id}
+            carId={car.id}
+            fallback={
+              <>
+                <div className="grid grid-cols-3 gap-2">
+                  {(Object.keys(METHOD_LABELS) as Method[]).map((m) => {
+                    const isBest = type ? bestKey === m : false;
+                    return (
+                      <div
+                        key={m}
+                        className="relative rounded-xl p-3 text-center"
                         style={{
-                          fontSize: "9px",
-                          fontWeight: 700,
-                          backgroundColor: "var(--gold)",
-                          color: "var(--midnight)",
+                          backgroundColor: isBest ? "var(--navy)" : "var(--surface)",
+                          border: `1px solid ${isBest ? "var(--navy)" : "var(--hairline)"}`,
+                          color: isBest ? "var(--ivory)" : "var(--ink)",
+                          minHeight: 84,
                         }}
                       >
-                        내 유형 최적
-                      </span>
-                    )}
-                    <div
-                      style={{
-                        fontSize: "10px",
-                        letterSpacing: "0.15em",
-                        color: isBest ? "var(--gold-soft)" : "var(--warm-gray)",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {METHOD_LABELS[m]}
-                    </div>
-                    <div
-                      className="mt-1.5"
-                      style={{ fontSize: "13px", fontWeight: 800, fontVariantNumeric: "tabular-nums" }}
-                    >
-                      {car.monthlyDemo[m]}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <p
-              className="mt-2 px-1"
-              style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}
-            >
-              {COMPARE_LEGAL_NOTE}
-            </p>
-          </section>
+                        {isBest && (
+                          <span
+                            className="absolute -top-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5"
+                            style={{
+                              fontSize: "9px",
+                              fontWeight: 700,
+                              backgroundColor: "var(--gold)",
+                              color: "var(--midnight)",
+                            }}
+                          >
+                            내 유형 최적
+                          </span>
+                        )}
+                        <div
+                          style={{
+                            fontSize: "10px",
+                            letterSpacing: "0.15em",
+                            color: isBest ? "var(--gold-soft)" : "var(--warm-gray)",
+                            fontWeight: 700,
+                          }}
+                        >
+                          {METHOD_LABELS[m]} <span style={{ opacity: 0.8 }}>(예시)</span>
+                        </div>
+                        <div
+                          className="mt-1.5"
+                          style={{ fontSize: "13px", fontWeight: 800, fontVariantNumeric: "tabular-nums" }}
+                        >
+                          {car.monthlyDemo[m]}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <p
+                  className="mt-2 px-1"
+                  style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}
+                >
+                  {COMPARE_LEGAL_NOTE}
+                </p>
+              </>
+            }
+          />
 
           {/* 구조 비교 — 방식별 탭 */}
           <section className="mb-4">
@@ -330,6 +336,12 @@ function ComparePage() {
           >
             상담사에게 실제 견적 받기
           </button>
+          <p
+            className="mt-1.5 text-center"
+            style={{ fontSize: "10.5px", color: "var(--warm-gray)" }}
+          >
+            이 조건 그대로 상담하시면 견적이 빨라져요
+          </p>
 
           <p className="mt-4 px-1" style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}>
             {CAR_LEGAL_DISCLAIMER}
