@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -904,6 +904,3 @@ function getWeekStart(): Date {
   monday.setHours(0, 0, 0, 0);
   return monday;
 }
-
-// keep unused-import silencer (useNavigate reserved for future actions)
-void useNavigate;
