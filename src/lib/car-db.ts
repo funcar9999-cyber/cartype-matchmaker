@@ -31,9 +31,15 @@ export interface Car {
   };
   highlights: [string, string, string];
   aliases?: string[];
+  isImport?: boolean;
 }
 
-export const CAR_DB: Car[] = [
+const IMPORT_BRANDS = new Set(["테슬라", "MINI", "BMW", "벤츠", "아우디", "볼보", "폭스바겐", "포르쉐", "렉서스", "토요타"]);
+export function isImportBrand(brand: string): boolean {
+  return IMPORT_BRANDS.has(brand);
+}
+
+const CAR_DB_RAW: Car[] = [
   { id: "casper-ev", name: "캐스퍼 일렉트릭", brand: "현대", segment: "경형", powertrain: "전기",
     emoji: "🔋", gradient: "from-sky-200 to-blue-300",
     priceRange: "2,700~3,150만원 (예시)", priceMinManwon: 2700, priceMaxManwon: 3150,
