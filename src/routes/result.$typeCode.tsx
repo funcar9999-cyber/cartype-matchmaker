@@ -5,12 +5,14 @@ import { CARBTI_TYPES, LEGAL_DISCLAIMER } from "@/lib/carbti-types";
 import { ResultTopBar } from "@/components/result/ResultTopBar";
 import { TypeHeroCard } from "@/components/result/TypeHeroCard";
 import { RecommendedCars } from "@/components/result/RecommendedCars";
+import { RecommendedTop3 } from "@/components/result/RecommendedTop3";
 import { BudgetTiers } from "@/components/result/BudgetTiers";
 import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
 import { AnswerRecap } from "@/components/result/AnswerRecap";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
+import { hasPrecision, useYachaMatch } from "@/hooks/use-yacha-match";
 
 export const Route = createFileRoute("/result/$typeCode")({
   head: ({ params }) => {
@@ -58,7 +60,7 @@ function ResultPage() {
   const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const { status, source, code: myCode } = useMyCarbti();
+  const { status, source, code: myCode, precision } = useMyCarbti();
   // 접근 판정: 훅이 준비될 때까지 대기 → 로그인/세션 진단 있음 → full, 없음 → shared
   const access: "loading" | "full" | "shared" =
     status === "loading"
@@ -67,6 +69,12 @@ function ResultPage() {
         ? "shared"
         : "full";
   const viewingOthers = access === "full" && myCode && myCode !== type.code;
+
+  const precisionReady = access === "full" && !viewingOthers && hasPrecision(precision);
+  const match = useYachaMatch(type.code, precision, precisionReady);
+  const engineFallback = precisionReady && !match.loading && (match.errored || match.data?.fallback === true);
+  const top3 = match.data?.top3 ?? [];
+  const showTop3 = precisionReady && !engineFallback && (match.loading || top3.length > 0);
 
   const OthersBanner = () =>
     myCode ? (
@@ -174,7 +182,35 @@ function ResultPage() {
           <TypeHeroCard type={type} />
           <AnswerRecap />
             <RecommendedCars type={type} personalize />
-          <BudgetTiers type={type} onCtaClick={goMydata} />
+          {showTop3 && <RecommendedTop3 items={top3} loading={match.loading} />}
+          {engineFallback && (
+            <section
+              className="mb-4 rounded-2xl p-4"
+              style={{
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--hairline)",
+                boxShadow: "var(--shadow-card)",
+              }}
+            >
+              <p style={{ fontSize: "12px", color: "var(--ink)", lineHeight: 1.55 }}>
+                예산에 맞는 추천을 찾지 못했어요 — 상담사와 설계해 보세요
+              </p>
+              <button
+                type="button"
+                onClick={() => setQuoteOpen(true)}
+                className="mt-3 w-full rounded-xl py-3 font-medium transition-transform active:scale-[0.98]"
+                style={{ backgroundColor: "var(--midnight)", color: "var(--ivory)", fontSize: "13px" }}
+              >
+                상담사와 설계 요청하기
+              </button>
+            </section>
+          )}
+          <BudgetTiers
+            type={type}
+            onCtaClick={goMydata}
+            matchTiers={precisionReady && !engineFallback ? match.data?.tiers ?? null : null}
+            onBudgetDebounced={precisionReady ? match.refetchWithBudget : undefined}
+          />
 
           {/* 3대 혜택 */}
           <section className="mb-3 rounded-2xl bg-slate-50 p-4">

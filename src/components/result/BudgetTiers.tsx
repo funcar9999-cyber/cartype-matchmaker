@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
@@ -6,6 +6,7 @@ import { BUDGET_TIERS, type CarbtiType } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { findCarByName } from "@/lib/car-db";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
+import type { MatchTierCar } from "@/hooks/use-yacha-match";
 
 function formatWon(manwon: number) {
   const won = manwon * 10000;
@@ -15,21 +16,34 @@ function formatWon(manwon: number) {
 export function BudgetTiers({
   type,
   onCtaClick,
+  matchTiers,
+  onBudgetDebounced,
 }: {
   type: CarbtiType;
   onCtaClick: () => void;
+  matchTiers?: { stable?: MatchTierCar; standard?: MatchTierCar; dream?: MatchTierCar } | null;
+  onBudgetDebounced?: (budget: number) => void;
 }) {
   const { budgetManwon, precision, setBudget: persistBudget } = useMyCarbti();
   const precisionBudget = precision.monthly_budget ?? null;
   const initial = budgetManwon ?? precisionBudget ?? 70;
   const [budget, setBudget] = useState<number>(initial);
   const [unlocked, setUnlocked] = useState<boolean>(budgetManwon != null || precisionBudget != null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleChange = (v: number) => {
     setBudget(v);
     setUnlocked(true);
     persistBudget(v);
+    if (onBudgetDebounced) {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => onBudgetDebounced(v), 500);
+    }
   };
+
+  useEffect(() => () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+  }, []);
 
   const bands = useMemo(
     () => ({
@@ -42,16 +56,20 @@ export function BudgetTiers({
 
   const tiers = TIER_CARS[type.code];
   const cards = BUDGET_TIERS.map((tier) => {
+    const match = matchTiers?.[tier.key];
     const t = tiers ? tiers[tier.key] : null;
-    const carId = t ? findCarByName(t.car)?.id : undefined;
+    const fallbackCarId = t ? findCarByName(t.car)?.id : undefined;
+    const carId = match?.car_id ?? fallbackCarId;
+    const carName = match?.name ?? t?.car ?? "-";
     return {
       key: tier.key,
       name: tier.name,
       tagline: tier.tagline,
       band: bands[tier.key],
-      carName: t?.car ?? "-",
-      method: t?.method ?? "",
-      monthly: t?.monthly ?? "",
+      carName,
+      priceRange: match?.price_range ?? null,
+      method: match ? "" : t?.method ?? "",
+      monthly: match ? "" : t?.monthly ?? "",
       carId,
     };
   });
@@ -149,12 +167,20 @@ export function BudgetTiers({
                   <div className="mt-2" style={{ fontSize: "12px", fontWeight: 700, lineHeight: 1.4 }}>
                     {c.carName}
                   </div>
-                  <div className="mt-1" style={{ fontSize: "10px", color: subFg }}>
-                    {c.method}
-                  </div>
-                  <div style={{ fontSize: "10px", color: subFg }}>
-                    {c.monthly && `${c.monthly} (예시)`}
-                  </div>
+                  {c.priceRange ? (
+                    <div className="mt-1" style={{ fontSize: "10px", color: subFg, fontVariantNumeric: "tabular-nums" }}>
+                      {c.priceRange}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mt-1" style={{ fontSize: "10px", color: subFg }}>
+                        {c.method}
+                      </div>
+                      <div style={{ fontSize: "10px", color: subFg }}>
+                        {c.monthly && `${c.monthly} (예시)`}
+                      </div>
+                    </>
+                  )}
                   {c.carId && (
                     <Link
                       to="/compare"
