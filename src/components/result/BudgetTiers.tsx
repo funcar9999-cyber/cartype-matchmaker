@@ -19,10 +19,11 @@ export function BudgetTiers({
   type: CarbtiType;
   onCtaClick: () => void;
 }) {
-  const { budgetManwon, setBudget: persistBudget } = useMyCarbti();
-  const initial = budgetManwon ?? 70;
+  const { budgetManwon, precision, setBudget: persistBudget } = useMyCarbti();
+  const precisionBudget = precision.monthly_budget ?? null;
+  const initial = budgetManwon ?? precisionBudget ?? 70;
   const [budget, setBudget] = useState<number>(initial);
-  const [unlocked, setUnlocked] = useState<boolean>(budgetManwon != null);
+  const [unlocked, setUnlocked] = useState<boolean>(budgetManwon != null || precisionBudget != null);
 
   const handleChange = (v: number) => {
     setBudget(v);

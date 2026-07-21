@@ -173,7 +173,7 @@ function ResultPage() {
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />
           <AnswerRecap />
-          <RecommendedCars type={type} />
+            <RecommendedCars type={type} personalize />
           <BudgetTiers type={type} onCtaClick={goMydata} />
 
           {/* 3대 혜택 */}
