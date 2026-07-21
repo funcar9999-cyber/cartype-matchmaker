@@ -211,6 +211,8 @@ const CAR_DB_RAW: Car[] = [
     highlights: ["국산 프리미엄 스포츠 세단", "후륜구동 주행감", "제네시스 브랜드 편의사양"] },
 ];
 
+export const CAR_DB: Car[] = CAR_DB_RAW.map((c) => ({ ...c, isImport: isImportBrand(c.brand) }));
+
 export function findCarByName(name: string): Car | undefined {
   const trimmed = name.trim();
   return CAR_DB.find(
