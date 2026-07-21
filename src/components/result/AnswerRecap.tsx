@@ -18,6 +18,22 @@ const MAP: Record<string, Record<string, Mapping>> = {
   },
 };
 
+// 금융 관련 개별 문항(F 선택 시) 교육형 문구
+const PAYMENT_EDU: Record<number, Mapping> = {
+  11: {
+    said: "새 차로 갈아타는 게 좋다",
+    picked: "잔존가치 하락을 금융사가 지는 리스·렌트가 교체 패턴에 맞아요",
+  },
+  12: {
+    said: "월 요금에 다 포함이면 좋겠다",
+    picked: "렌트는 보험·정비·세금까지 월정액에 포함돼요 — 관리는 맡기고 기름만 넣는 방식",
+  },
+  13: {
+    said: "초기 비용은 최소로",
+    picked: "리스·렌트는 취등록세 같은 초기 목돈 없이 시작해요",
+  },
+};
+
 const DIM_ORDER = ["powertrain", "payment", "purpose"] as const;
 
 export function AnswerRecap() {
@@ -35,12 +51,27 @@ export function AnswerRecap() {
 
   if (!answers) return null;
 
-  const rows = DIM_ORDER.map((dim) => {
+  const rows: Array<Mapping & { dim: string; key: string }> = [];
+  for (const dim of DIM_ORDER) {
+    if (dim === "payment") {
+      // 금융 관련 특정 문항(F)에 대한 교육형 문구를 우선 노출
+      const eduRows = answers
+        .filter((a) => a.dimension === "payment" && a.maps === "F" && PAYMENT_EDU[a.questionId])
+        .map((a) => ({ dim, key: `p-${a.questionId}`, ...PAYMENT_EDU[a.questionId] }));
+      if (eduRows.length > 0) {
+        rows.push(...eduRows);
+        continue;
+      }
+      const first = answers.find((a) => a.dimension === "payment");
+      const m = first ? MAP.payment[first.maps] : null;
+      if (m) rows.push({ dim, key: "p", ...m });
+      continue;
+    }
     const first = answers.find((a) => a.dimension === dim);
-    if (!first) return null;
+    if (!first) continue;
     const m = MAP[dim]?.[first.maps];
-    return m ? { dim, ...m } : null;
-  }).filter(Boolean) as Array<Mapping & { dim: string }>;
+    if (m) rows.push({ dim, key: dim, ...m });
+  }
 
   if (rows.length === 0) return null;
 
@@ -57,7 +88,7 @@ export function AnswerRecap() {
       </div>
       <ul className="space-y-3.5">
         {rows.map((r) => (
-          <li key={r.dim} className="flex gap-3">
+          <li key={r.key} className="flex gap-3">
             <div
               className="w-0.5 flex-shrink-0 self-stretch rounded-full"
               style={{ backgroundColor: "var(--teal)" }}
