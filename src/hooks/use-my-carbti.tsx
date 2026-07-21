@@ -12,6 +12,12 @@ import type { User } from "@supabase/supabase-js";
 import { supabase, DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { getMyLatestDiagnosis, updateSelfBudget } from "@/lib/carbti-data";
+import {
+  PRECISION_KEY,
+  readPrecision,
+  writePrecision,
+  type PrecisionData,
+} from "@/lib/precision";
 
 const CODE_KEY = "carbti:diagnosis:code";
 const BUDGET_KEY = "carbti:budget";
@@ -24,6 +30,7 @@ const SESSION_KEYS = [
   ANSWERS_KEY,
   VALUE_KEY,
   DIAGNOSIS_DB_ID_KEY,
+  PRECISION_KEY,
 ];
 
 export type MyCarbtiSource = "db" | "session" | "none";
@@ -37,6 +44,7 @@ export type MyCarbtiState = {
   dbId: string | null;
   budgetManwon: number | null;
   nickname: string | null;
+  precision: PrecisionData;
   refresh: () => Promise<void>;
   setBudget: (v: number) => void;
   clearLocal: () => void;
@@ -74,6 +82,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
   const [dbId, setDbId] = useState<string | null>(null);
   const [budgetManwon, setBudgetState] = useState<number | null>(null);
   const [nickname, setNickname] = useState<string | null>(null);
+  const [precision, setPrecisionState] = useState<PrecisionData>({});
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadForUser = useCallback(async (u: User | null) => {
@@ -86,6 +95,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
       setBudgetState(b);
       setDbId(id);
       setNickname(null);
+      setPrecisionState(readPrecision());
       setSource(c ? "session" : "none");
       setStatus("ready");
       return;
@@ -104,6 +114,11 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
       const c = diag.code as string;
       const id = diag.id as string;
       const b = (diag.self_budget_manwon as number | null) ?? null;
+      const situation = (diag.situation as PrecisionData | null) ?? {};
+      const condition = (diag.condition as PrecisionData | null) ?? {};
+      const merged: PrecisionData = { ...readPrecision(), ...situation, ...condition };
+      writePrecision(merged);
+      setPrecisionState(merged);
       setCode(c);
       setDbId(id);
       setBudgetState(b);
@@ -119,6 +134,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
       setCode(c);
       setDbId(readSessionDbId());
       setBudgetState(readSessionBudget());
+      setPrecisionState(readPrecision());
       setSource(c ? "session" : "none");
     }
     setStatus("ready");
@@ -148,6 +164,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
         setDbId(null);
         setBudgetState(null);
         setNickname(null);
+        setPrecisionState({});
         setSource("none");
         setStatus("ready");
         return;
@@ -187,6 +204,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
     setCode(null);
     setDbId(null);
     setBudgetState(null);
+    setPrecisionState({});
     setSource("none");
   }, []);
 
@@ -198,6 +216,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
     dbId,
     budgetManwon,
     nickname,
+    precision,
     refresh,
     setBudget,
     clearLocal,
