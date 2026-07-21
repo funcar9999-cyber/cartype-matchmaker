@@ -31,9 +31,15 @@ export interface Car {
   };
   highlights: [string, string, string];
   aliases?: string[];
+  isImport?: boolean;
 }
 
-export const CAR_DB: Car[] = [
+const IMPORT_BRANDS = new Set(["테슬라", "MINI", "BMW", "벤츠", "아우디", "볼보", "폭스바겐", "포르쉐", "렉서스", "토요타"]);
+export function isImportBrand(brand: string): boolean {
+  return IMPORT_BRANDS.has(brand);
+}
+
+const CAR_DB_RAW: Car[] = [
   { id: "casper-ev", name: "캐스퍼 일렉트릭", brand: "현대", segment: "경형", powertrain: "전기",
     emoji: "🔋", gradient: "from-sky-200 to-blue-300",
     priceRange: "2,700~3,150만원 (예시)", priceMinManwon: 2700, priceMaxManwon: 3150,
@@ -204,6 +210,8 @@ export const CAR_DB: Car[] = [
     monthlyDemo: { installment: "월 70만원대 (예시)", lease: "월 60만원대 (예시)", rent: "월 60만원대 (예시)" },
     highlights: ["국산 프리미엄 스포츠 세단", "후륜구동 주행감", "제네시스 브랜드 편의사양"] },
 ];
+
+export const CAR_DB: Car[] = CAR_DB_RAW.map((c) => ({ ...c, isImport: isImportBrand(c.brand) }));
 
 export function findCarByName(name: string): Car | undefined {
   const trimmed = name.trim();

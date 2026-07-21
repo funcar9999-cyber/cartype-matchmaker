@@ -246,11 +246,27 @@ function CarDetail() {
           {/* 방식별 월납입 */}
           <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
             <div className="mb-3" style={sectionLabel}>이 차, 방식별 월납입</div>
+            {car.isImport && (
+              <div
+                className="mb-3 rounded-xl px-3 py-2.5"
+                style={{
+                  backgroundColor: "var(--navy)",
+                  color: "var(--ivory)",
+                }}
+              >
+                <div style={{ fontSize: "11px", fontWeight: 800, color: "var(--gold)", letterSpacing: "0.05em" }}>
+                  수입차는 리스 추천
+                </div>
+                <p className="mt-1" style={{ fontSize: "11px", lineHeight: 1.55, opacity: 0.85 }}>
+                  수입차는 렌트 상품이 드물어요. 잔존가치가 낮게 잡히고 보험요율이 높아서, 리스가 월 납입에서 유리한 경우가 많습니다.
+                </p>
+              </div>
+            )}
             <div className="grid grid-cols-3 gap-2">
               {[
-                { key: "installment" as const, label: "할부", value: car.monthlyDemo.installment },
-                { key: "lease" as const, label: "리스", value: car.monthlyDemo.lease },
-                { key: "rent" as const, label: "장기렌트", value: car.monthlyDemo.rent },
+                { key: "installment" as const, label: "할부", value: car.monthlyDemo.installment, includes: "보험·세금 별도" },
+                { key: "lease" as const, label: "리스", value: car.monthlyDemo.lease, includes: "보험료·자동차세 별도" },
+                { key: "rent" as const, label: "장기렌트", value: car.monthlyDemo.rent, includes: "보험·정비·세금 포함" },
               ].map((col) => {
                 const myType = myTypeCode ? CARBTI_TYPES[myTypeCode] : null;
                 const best = myType?.bestPayment.method;
@@ -271,7 +287,7 @@ function CarDetail() {
                       backgroundColor: isBest ? "var(--navy)" : "var(--ivory)",
                       border: `1px solid ${isBest ? "var(--navy)" : "var(--hairline)"}`,
                       color: isBest ? "var(--ivory)" : "var(--ink)",
-                      minHeight: 84,
+                      minHeight: 104,
                     }}
                   >
                     {isBest && (
@@ -308,10 +324,24 @@ function CarDetail() {
                     >
                       {col.value}
                     </div>
+                    <div
+                      className="mt-1.5"
+                      style={{
+                        fontSize: "9.5px",
+                        lineHeight: 1.35,
+                        color: isBest ? "var(--gold-soft)" : "var(--warm-gray)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {col.includes}
+                    </div>
                   </div>
                 );
               })}
             </div>
+            <p className="mt-3" style={{ fontSize: "11px", lineHeight: 1.55, color: "var(--ink)", opacity: 0.75 }}>
+              장기렌트 월납입에는 보험·정비·세금이 들어 있어요. 금액만 나란히 보지 말고 포함 항목까지 보면 실제 부담 차이는 훨씬 작습니다.
+            </p>
             <p className="mt-3" style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}>
               통상 조건 기준 예시예요. 내 조건 기준 실제 견적은 위에서 받아보세요.
             </p>
