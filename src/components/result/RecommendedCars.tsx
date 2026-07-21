@@ -2,11 +2,16 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 
 import type { CarbtiType } from "@/lib/carbti-types";
+import { circled } from "@/lib/carbti-types";
 import { findCarByName } from "@/lib/car-db";
+import { REASONS, STABLE_COMPARE, TYPE_REASONS } from "@/lib/payment-reasons";
 
 export function RecommendedCars({ type }: { type: CarbtiType }) {
   const isE = type.code[2] === "E";
   const accent = isE ? "var(--teal)" : "var(--copper)";
+  const config = TYPE_REASONS[type.code];
+  const firstCar = findCarByName(type.topCars[0]);
+  const compareSearch = firstCar ? { car: firstCar.id } : {};
 
   return (
     <section
@@ -61,10 +66,91 @@ export function RecommendedCars({ type }: { type: CarbtiType }) {
       <div style={{ fontSize: "28px", fontWeight: 800, color: accent, letterSpacing: "-0.01em" }}>
         {type.bestPayment.method}
       </div>
-      <div className="mt-2 border-t pt-3" style={{ borderColor: "var(--hairline)" }}>
-        <p style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.75, lineHeight: 1.6 }}>
-          {type.bestPayment.reason}
-        </p>
+      <div className="mt-3 border-t pt-3" style={{ borderColor: "var(--hairline)" }}>
+        <div style={{ fontSize: "11px", letterSpacing: "0.05em", color: "var(--warm-gray)", fontWeight: 700 }}>
+          이 방식이 맞는 이유
+        </div>
+        {config?.kind === "flex" ? (
+          <>
+            <ul className="mt-2 space-y-2.5">
+              {config.reasons.map((key, i) => (
+                <li key={key} className="flex gap-2">
+                  <span
+                    className="flex-shrink-0"
+                    style={{ fontSize: "13px", color: accent, fontWeight: 700, lineHeight: 1.55 }}
+                  >
+                    {circled(i + 1)}
+                  </span>
+                  <span style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.85, lineHeight: 1.6 }}>
+                    {REASONS[key]}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            {config.footnote && (
+              <p
+                className="mt-3 rounded-lg px-3 py-2"
+                style={{
+                  fontSize: "11px",
+                  lineHeight: 1.55,
+                  color: "var(--warm-gray)",
+                  backgroundColor: "rgba(0,0,0,0.03)",
+                }}
+              >
+                ※ {REASONS[config.footnote]}
+              </p>
+            )}
+          </>
+        ) : (
+          <p className="mt-2" style={{ fontSize: "12px", color: "var(--ink)", opacity: 0.85, lineHeight: 1.6 }}>
+            {type.bestPayment.reason}
+          </p>
+        )}
+
+        {config?.kind === "stable" && (
+          <div
+            className="mt-4 rounded-xl p-3"
+            style={{ backgroundColor: "rgba(0,0,0,0.03)" }}
+          >
+            <div
+              className="mb-2"
+              style={{ fontSize: "11.5px", color: "var(--ink)", fontWeight: 700, lineHeight: 1.5 }}
+            >
+              {STABLE_COMPARE.title}
+            </div>
+            <ul className="space-y-2">
+              {STABLE_COMPARE.bullets.map((b) => (
+                <li key={b} className="flex gap-2">
+                  <span
+                    className="flex-shrink-0"
+                    style={{ fontSize: "11px", color: "var(--warm-gray)", lineHeight: 1.6 }}
+                  >
+                    •
+                  </span>
+                  <span style={{ fontSize: "11.5px", color: "var(--ink)", opacity: 0.8, lineHeight: 1.6 }}>
+                    {b}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p
+              className="mt-2"
+              style={{ fontSize: "10.5px", color: "var(--warm-gray)", lineHeight: 1.55 }}
+            >
+              {STABLE_COMPARE.footnote}
+            </p>
+          </div>
+        )}
+
+        <Link
+          to="/compare"
+          search={compareSearch}
+          className="mt-3 inline-flex items-center gap-1"
+          style={{ fontSize: "11.5px", color: accent, fontWeight: 700 }}
+        >
+          할부·리스·렌트, 구조가 어떻게 다른지 보기
+          <ChevronRight size={12} />
+        </Link>
       </div>
     </section>
   );
