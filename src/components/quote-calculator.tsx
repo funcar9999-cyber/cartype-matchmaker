@@ -298,7 +298,7 @@ export function QuoteCalculator({ carId, fallback }: Props) {
                 <span style={{ fontSize: "12px", fontWeight: 600, opacity: 0.75 }}>(예시)</span>
               </div>
               <div className="mt-1" style={{ fontSize: "10.5px", opacity: 0.8, lineHeight: 1.5 }}>
-                제휴 {data.count}개사 조건 중 최저 · {data.note}
+                제휴 {companyCount}개사 조건 중 최저 · {data.note}
               </div>
               {product === "lease" && best.rate_displayed != null && (
                 <div className="mt-1" style={{ fontSize: "10.5px", color: "var(--gold-soft)", fontWeight: 700 }}>
