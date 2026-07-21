@@ -95,45 +95,75 @@ export function QuoteCalculator({ carId, fallback }: Props) {
   const [data, setData] = useState<QuoteResponse | null>(null);
   const [errored, setErrored] = useState(false);
 
+  const activeProduct: "lease" | "rent" | null =
+    product === "installment" ? null : product;
+
+  const fetchQuotes = async (attempt: number): Promise<QuoteResponse | null> => {
+    const { data: res, error } = await supabase.functions.invoke("quote-calc", {
+      body: {
+        car_id: carId,
+        product: "both",
+        term_months: term,
+        mileage,
+        prepay,
+      },
+    });
+    if (error) {
+      console.warn(`[quote-calc] attempt ${attempt} error`, error);
+      return null;
+    }
+    return (res as QuoteResponse) ?? null;
+  };
+
   useEffect(() => {
     let cancelled = false;
+    let retryTimer: number | null = null;
+
     setLoading(true);
     setErrored(false);
+    setData(null);
+
     void (async () => {
-      try {
-        const { data: res, error } = await supabase.functions.invoke("quote-calc", {
-          body: {
-            car_id: carId,
-            product: "both",
-            term_months: term,
-            mileage,
-            prepay,
-          },
-        });
+      const apply = (res: QuoteResponse | null, error: boolean) => {
         if (cancelled) return;
-        if (error) {
-          setErrored(true);
-          setData(null);
-        } else {
-          setData(res as QuoteResponse);
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setErrored(true);
-          setData(null);
-          console.warn("[quote-calc] failed", e);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+        setData(res);
+        setErrored(error);
+        setLoading(false);
+      };
+
+      const first = await fetchQuotes(1);
+      if (cancelled) return;
+
+      // 정상 응답이지만 데이터 없음 → 즉시 fallback, 재시도 안 함
+      if (first && first.count === 0) {
+        apply(first, false);
+        return;
       }
+
+      // 정상 데이터 있음 → 즉시 표시
+      if (first && first.count > 0) {
+        apply(first, false);
+        return;
+      }
+
+      // 첫 호출 실패 → 1.5초 후 1회 재시도, 재시도 중 skeleton 유지
+      retryTimer = window.setTimeout(async () => {
+        const second = await fetchQuotes(2);
+        if (cancelled) return;
+        if (second && second.count > 0) {
+          apply(second, false);
+        } else {
+          apply(second ?? null, true);
+        }
+      }, 1500);
     })();
+
     return () => {
       cancelled = true;
+      if (retryTimer != null) window.clearTimeout(retryTimer);
     };
   }, [carId, term, mileage, prepay]);
 
-  const activeProduct: "lease" | "rent" | null =
-    product === "installment" ? null : product;
   const filtered =
     data && activeProduct
       ? data.quotes.filter((q) => q.product === activeProduct)
@@ -141,6 +171,10 @@ export function QuoteCalculator({ carId, fallback }: Props) {
   const sorted = [...filtered].sort((a, b) => a.monthly - b.monthly);
   const best = sorted[0] ?? null;
   const rest = sorted.slice(1);
+
+  const companyCount = activeProduct
+    ? new Set(data?.quotes.filter((q) => q.product === activeProduct).map((q) => q.company)).size
+    : 0;
 
   const showFallback = !loading && (errored || (data?.count ?? 0) === 0);
 
@@ -264,7 +298,7 @@ export function QuoteCalculator({ carId, fallback }: Props) {
                 <span style={{ fontSize: "12px", fontWeight: 600, opacity: 0.75 }}>(예시)</span>
               </div>
               <div className="mt-1" style={{ fontSize: "10.5px", opacity: 0.8, lineHeight: 1.5 }}>
-                제휴 {data.count}개사 조건 중 최저 · {data.note}
+                제휴 {companyCount}개사 조건 중 최저 · {data.note}
               </div>
               {product === "lease" && best.rate_displayed != null && (
                 <div className="mt-1" style={{ fontSize: "10.5px", color: "var(--gold-soft)", fontWeight: 700 }}>
