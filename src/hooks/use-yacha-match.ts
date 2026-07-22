@@ -46,13 +46,16 @@ export function useYachaMatch(
   typeCode: string,
   precision: PrecisionData,
   enabled: boolean,
+  approvalCapacity?: number | null,
 ): Result {
   const [data, setData] = useState<YachaMatchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [errored, setErrored] = useState(false);
   const [budgetOverride, setBudgetOverride] = useState<number | undefined>(undefined);
 
-  const monthlyBudget = budgetOverride ?? precision.monthly_budget;
+  // Priority: manual slider override > approval capacity > precision C1
+  const monthlyBudget =
+    budgetOverride ?? approvalCapacity ?? precision.monthly_budget;
 
   useEffect(() => {
     if (!enabled || !typeCode) return;
