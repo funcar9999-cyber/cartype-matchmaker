@@ -487,6 +487,32 @@ function LeadCard({
             <span>{formatTime(lead.created_at)}</span>
             <span>·</span>
             <span>{SOURCE_LABEL[lead.source ?? ""] ?? lead.source ?? "-"}</span>
+            {(lead.intent ?? "apply") === "apply" && (
+              <span
+                className="ml-1 rounded-full px-1.5 py-0.5"
+                style={{
+                  fontSize: "9.5px",
+                  fontWeight: 700,
+                  color: "var(--gold)",
+                  border: "1px solid var(--gold)",
+                  letterSpacing: "0.03em",
+                }}
+              >
+                견적 확정 요청
+              </span>
+            )}
+            {lead.intent && lead.intent !== "apply" && (
+              <span
+                className="ml-1 rounded-full px-1.5 py-0.5"
+                style={{
+                  fontSize: "9.5px",
+                  color: "var(--warm-gray)",
+                  border: "1px solid var(--hairline)",
+                }}
+              >
+                {INTENT_LABEL[lead.intent] ?? lead.intent}
+              </span>
+            )}
           </div>
           <div
             className="mt-0.5 truncate"
