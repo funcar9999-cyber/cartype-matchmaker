@@ -24,7 +24,6 @@ function Index() {
         <TopBar />
         <main className="flex-1 px-4 py-4">
           <BrandHero />
-          <DoorCards />
           <StatusCard onOpenQuote={() => setQuoteOpen(true)} />
           <QuickActions />
           <TypeShowcase />
