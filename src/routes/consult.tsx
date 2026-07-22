@@ -7,8 +7,7 @@ import { CONSULT_FAQ } from "@/lib/car-db";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
-import { insertLead } from "@/lib/carbti-data";
-import { DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
+import { DIAGNOSIS_DB_ID_KEY, supabase } from "@/lib/supabase";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 export const Route = createFileRoute("/consult")({
@@ -25,7 +24,7 @@ function ConsultPage() {
   const [code, setCode] = useState<string | null>(null);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const { user, dbId, budgetManwon } = useMyCarbti();
+  const { dbId } = useMyCarbti();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -41,15 +40,16 @@ function ConsultPage() {
       (typeof window !== "undefined"
         ? sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY)
         : null);
-    void insertLead({
-      source: "consult",
-      interestCarId: null,
-      preferredMethod: type?.bestPayment.method ?? "미정",
-      budgetManwon: budgetManwon ?? null,
-      contactPref: "chat_only",
-      diagnosisId,
-      userId: user?.id ?? null,
-    });
+    void (async () => {
+      try {
+        await supabase.from("leads").insert({
+          source: "consult",
+          diagnosis_id: diagnosisId,
+        });
+      } catch {
+        // 채널 열기는 저장 성공 여부와 무관하게 유지
+      }
+    })();
     window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
   };
 
