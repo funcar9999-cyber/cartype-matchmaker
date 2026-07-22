@@ -24,11 +24,14 @@ export function BudgetTiers({
   matchTiers?: { stable?: MatchTierCar; standard?: MatchTierCar; dream?: MatchTierCar } | null;
   onBudgetDebounced?: (budget: number) => void;
 }) {
-  const { budgetManwon, precision, setBudget: persistBudget } = useMyCarbti();
+  const { budgetManwon, precision, approval, setBudget: persistBudget } = useMyCarbti();
+  const approvalBudget = approval?.capacity_monthly ?? null;
   const precisionBudget = precision.monthly_budget ?? null;
-  const initial = budgetManwon ?? precisionBudget ?? 70;
+  const initial = approvalBudget ?? precisionBudget ?? budgetManwon ?? 70;
   const [budget, setBudget] = useState<number>(initial);
-  const [unlocked, setUnlocked] = useState<boolean>(budgetManwon != null || precisionBudget != null);
+  const [unlocked, setUnlocked] = useState<boolean>(
+    approvalBudget != null || precisionBudget != null || budgetManwon != null,
+  );
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleChange = (v: number) => {
