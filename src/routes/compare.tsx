@@ -15,6 +15,7 @@ import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { QuoteCalculator } from "@/components/quote-calculator";
+import { track } from "@/lib/events";
 
 type CompareSearch = { car?: string };
 
@@ -436,7 +437,10 @@ function ComparePage() {
           </button>
           <button
             type="button"
-            onClick={() => setQuoteOpen(true)}
+            onClick={() => {
+              track("consult_click", { from: window.location.pathname });
+              setQuoteOpen(true);
+            }}
             className="mt-2 w-full rounded-xl py-3 text-center transition active:scale-[0.98]"
             style={{
               backgroundColor: "var(--surface)",
