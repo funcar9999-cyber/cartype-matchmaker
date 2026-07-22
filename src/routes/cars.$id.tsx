@@ -60,8 +60,7 @@ function CarDetail() {
   const { car } = Route.useLoaderData();
   const navigate = useNavigate();
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const { user, code: myTypeCode } = useMyCarbti();
-  const { approval } = useMyCarbti();
+  const { user, code: myTypeCode, approval } = useMyCarbti();
   const [fav, setFav] = useState(false);
 
   useEffect(() => {
