@@ -132,6 +132,9 @@
   --steel: #4a7fa5;
   --indigo-accent: #4f5d9e;
   --warm-gray: #9a937f;
+  /* ya'cha brand accent — use only in wordmark apostrophe / favicon / home hero brand word */
+  --yacha-red: #C13529;
+  --yacha-red-deep: #7E1F17;
   /* brand-* aliases mapped to new tokens so legacy classes read midnight/gold */
   --brand-primary: #0a0f1c;
   --brand-accent: #c9a96a;
