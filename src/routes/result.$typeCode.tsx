@@ -13,6 +13,7 @@ import { AnswerRecap } from "@/components/result/AnswerRecap";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { hasPrecision, useYachaMatch } from "@/hooks/use-yacha-match";
+import { track } from "@/lib/events";
 
 export const Route = createFileRoute("/result/$typeCode")({
   head: ({ params }) => {
@@ -103,6 +104,11 @@ function ResultPage() {
 
   const goMydata = () => {
     void navigate({ to: "/mydata/intro" });
+  };
+
+  const openQuote = () => {
+    track("consult_click", { from: window.location.pathname });
+    setQuoteOpen(true);
   };
 
   if (access === "loading") {
@@ -197,7 +203,7 @@ function ResultPage() {
               </p>
               <button
                 type="button"
-                onClick={() => setQuoteOpen(true)}
+                onClick={openQuote}
                 className="mt-3 w-full rounded-xl py-3 font-medium transition-transform active:scale-[0.98]"
                 style={{ backgroundColor: "var(--midnight)", color: "var(--ivory)", fontSize: "13px" }}
               >
@@ -300,7 +306,7 @@ function ResultPage() {
 
           <button
             type="button"
-            onClick={() => setQuoteOpen(true)}
+            onClick={openQuote}
             className="mt-3 w-full rounded-xl border border-border bg-white py-3 font-medium text-slate-900"
             style={{ fontSize: "13px" }}
           >
