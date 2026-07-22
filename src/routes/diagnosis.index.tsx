@@ -69,20 +69,21 @@ function DiagnosisPage() {
     [answers, question.id],
   );
 
-  const handleSelect = (opt: { maps: string; valueScoreDelta?: number }) => {
+  const handleSelect = (opt: { maps: string; weight?: number; valueScoreDelta?: number }) => {
     const next: Answer[] = [
       ...answers.filter((a) => a.questionId !== question.id),
       {
         questionId: question.id,
         dimension: question.dimension,
         maps: opt.maps,
+        weight: opt.weight,
         valueScoreDelta: opt.valueScoreDelta,
       },
     ];
     setAnswers(next);
 
-    // 본진단 Q2(교체주기) → 정밀 데이터의 swap_cycle 자동 채움
-    if (question.id === 2) {
+    // 본진단 P3(교체주기) → 정밀 데이터의 swap_cycle 자동 채움
+    if (question.id === 3) {
       const cycle = swapCycleFromQ2(opt.maps);
       if (cycle) patchPrecision({ swap_cycle: cycle });
     }
