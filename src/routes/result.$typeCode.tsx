@@ -61,7 +61,7 @@ function ResultPage() {
   const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const { status, source, code: myCode, precision } = useMyCarbti();
+  const { status, source, code: myCode, precision, approval } = useMyCarbti();
   // 접근 판정: 훅이 준비될 때까지 대기 → 로그인/세션 진단 있음 → full, 없음 → shared
   const access: "loading" | "full" | "shared" =
     status === "loading"
@@ -72,7 +72,7 @@ function ResultPage() {
   const viewingOthers = access === "full" && myCode && myCode !== type.code;
 
   const precisionReady = access === "full" && !viewingOthers && hasPrecision(precision);
-  const match = useYachaMatch(type.code, precision, precisionReady);
+  const match = useYachaMatch(type.code, precision, precisionReady, approval?.capacity_monthly ?? null);
   const engineFallback = precisionReady && !match.loading && (match.errored || match.data?.fallback === true);
   const top3 = match.data?.top3 ?? [];
   const showTop3 = precisionReady && !engineFallback && (match.loading || top3.length > 0);
