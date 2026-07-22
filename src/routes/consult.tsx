@@ -40,14 +40,16 @@ function ConsultPage() {
       (typeof window !== "undefined"
         ? sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY)
         : null);
-    void supabase
-      .from("leads")
-      .insert({
-        source: "consult",
-        diagnosis_id: diagnosisId,
-      })
-      .then(() => undefined)
-      .catch(() => undefined);
+    void (async () => {
+      try {
+        await supabase.from("leads").insert({
+          source: "consult",
+          diagnosis_id: diagnosisId,
+        });
+      } catch {
+        // 채널 열기는 저장 성공 여부와 무관하게 유지
+      }
+    })();
     window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
   };
 
