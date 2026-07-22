@@ -1,4 +1,5 @@
 import { Bell, User } from "lucide-react";
+import { Wordmark } from "@/components/common/Wordmark";
 
 export function TopBar() {
   return (
@@ -9,16 +10,7 @@ export function TopBar() {
         backgroundColor: "rgba(245,244,240,0.9)",
       }}
     >
-      <div
-        style={{
-          fontSize: "15px",
-          fontWeight: 800,
-          letterSpacing: "0.02em",
-          color: "var(--ink)",
-        }}
-      >
-        CarBTI
-      </div>
+      <Wordmark tone="ink" size={18} />
       <div className="flex items-center gap-2">
         <button
           type="button"
