@@ -402,6 +402,93 @@ function CarDetail() {
             </p>
           </section>
 
+          {/* 상태별 개인화 · 잠금 */}
+          {showBadge && (
+            <div className="mt-3 flex justify-center">
+              <span
+                className="inline-flex items-center rounded-full px-3 py-1"
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  backgroundColor: "var(--surface)",
+                  border: "1px solid var(--hairline)",
+                  color: "var(--ink)",
+                }}
+              >
+                {withinCapacity ? "내 여력 안 (예상)" : "여력 조정 필요 (예상)"}
+              </span>
+            </div>
+          )}
+          {showCarbtiOnlyLock && (
+            <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
+              <div
+                className="mb-2 uppercase"
+                style={{ fontSize: "10px", letterSpacing: "0.1em", color: "var(--warm-gray)" }}
+              >
+                LOCKED
+              </div>
+              <div style={{ fontSize: "14px", color: "var(--ink)", fontWeight: 700, lineHeight: 1.4 }}>
+                이 차, 내 신용으로 될까?
+              </div>
+              <div
+                className="mt-3 select-none"
+                aria-hidden
+                style={{ filter: "blur(6px)", pointerEvents: "none", fontSize: "12px", color: "var(--warm-gray)", lineHeight: 1.7 }}
+              >
+                <div>예상 월 납입 --만원</div>
+                <div>승인 가능성 --</div>
+                <div>나에게 유리한 방식 --</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  track("entry_select", {
+                    door: DREAMCAR_LIVE ? "dreamcar" : "dreamcar_teaser",
+                    from: "car_detail",
+                    car_id: car.id,
+                  });
+                  if (DREAMCAR_LIVE) {
+                    void navigate({ to: "/dreamcar", search: { car: car.id } } as never);
+                  } else {
+                    window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
+                  }
+                }}
+                className="mt-4 flex w-full items-center justify-center rounded-xl py-3 transition active:scale-[0.98]"
+                style={{ backgroundColor: "var(--midnight)", color: "var(--ivory)", fontSize: "13px", fontWeight: 700 }}
+              >
+                {DREAMCAR_LIVE ? "1분 승인 확인 →" : "승인 확인이 곧 열려요 — 오픈 알림 받기"}
+              </button>
+            </section>
+          )}
+          {showApprovalOnlyLock && (
+            <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
+              <div
+                className="mb-2 uppercase"
+                style={{ fontSize: "10px", letterSpacing: "0.1em", color: "var(--warm-gray)" }}
+              >
+                LOCKED
+              </div>
+              <div style={{ fontSize: "14px", color: "var(--ink)", fontWeight: 700, lineHeight: 1.4 }}>
+                나랑 맞는 차일까?
+              </div>
+              <div
+                className="mt-3 select-none"
+                aria-hidden
+                style={{ filter: "blur(6px)", pointerEvents: "none", fontSize: "12px", color: "var(--warm-gray)", lineHeight: 1.7 }}
+              >
+                <div>성향 매칭 — 카BTI 1분 진단으로 열려요</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/diagnosis/onboarding" })}
+                className="mt-4 flex w-full items-center justify-center rounded-xl py-3 transition active:scale-[0.98]"
+                style={{ backgroundColor: "var(--midnight)", color: "var(--ivory)", fontSize: "13px", fontWeight: 700 }}
+              >
+                1분 진단하기
+              </button>
+            </section>
+          )}
+
           {/* 어울리는 유형 */}
           {matchingTypes.length > 0 && (
             <section className="mt-3 rounded-2xl p-5" style={cardStyle}>
