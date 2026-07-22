@@ -6,7 +6,7 @@ import { ResultTopBar } from "@/components/result/ResultTopBar";
 import { TypeHeroCard } from "@/components/result/TypeHeroCard";
 import { RecommendedCars } from "@/components/result/RecommendedCars";
 import { RecommendedTop3 } from "@/components/result/RecommendedTop3";
-import { BudgetTiers } from "@/components/result/BudgetTiers";
+import { AffordabilityLocked } from "@/components/result/AffordabilityLocked";
 import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
 import { AnswerRecap } from "@/components/result/AnswerRecap";
@@ -61,7 +61,7 @@ function ResultPage() {
   const navigate = useNavigate();
   const shareRef = useRef<HTMLElement>(null);
   const [quoteOpen, setQuoteOpen] = useState(false);
-  const { status, source, code: myCode, precision, approval } = useMyCarbti();
+  const { status, source, code: myCode, precision, approval, effectiveMonthlyBudget } = useMyCarbti();
   // 접근 판정: 훅이 준비될 때까지 대기 → 로그인/세션 진단 있음 → full, 없음 → shared
   const access: "loading" | "full" | "shared" =
     status === "loading"
@@ -76,6 +76,12 @@ function ResultPage() {
   const engineFallback = precisionReady && !match.loading && (match.errored || match.data?.fallback === true);
   const top3 = match.data?.top3 ?? [];
   const showTop3 = precisionReady && !engineFallback && (match.loading || top3.length > 0);
+  const top1 = top3[0];
+  const shareTop1 = top1
+    ? { name: top1.name, chip: top1.chips?.[0] }
+    : undefined;
+  const monthlyBudgetLabel =
+    effectiveMonthlyBudget != null ? `${effectiveMonthlyBudget}만원` : null;
 
   const OthersBanner = () =>
     myCode ? (
@@ -102,13 +108,13 @@ function ResultPage() {
     shareRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const goMydata = () => {
-    void navigate({ to: "/mydata/intro" });
-  };
-
   const openQuote = () => {
     track("consult_click", { from: window.location.pathname });
     setQuoteOpen(true);
+  };
+
+  const editBudget = () => {
+    void navigate({ to: "/diagnosis/precision", search: { p: 5 } });
   };
 
   if (access === "loading") {
@@ -187,8 +193,31 @@ function ResultPage() {
         <main className="flex-1 px-4 py-4">
           <TypeHeroCard type={type} />
           <AnswerRecap />
-            <RecommendedCars type={type} personalize />
-          {showTop3 && <RecommendedTop3 items={top3} loading={match.loading} />}
+          <RecommendedCars type={type} personalize />
+          {showTop3 && (
+            <>
+              <RecommendedTop3 items={top3} loading={match.loading} />
+              {monthlyBudgetLabel && (
+                <button
+                  type="button"
+                  onClick={editBudget}
+                  className="mb-4 -mt-2 flex w-full items-center justify-between rounded-xl px-4 py-3 transition active:scale-[0.99]"
+                  style={{
+                    backgroundColor: "var(--surface)",
+                    border: "1px solid var(--hairline)",
+                    boxShadow: "var(--shadow-card)",
+                    color: "var(--ink)",
+                    fontSize: "12px",
+                  }}
+                >
+                  <span>
+                    내 월 납입: <strong style={{ fontWeight: 700 }}>{monthlyBudgetLabel}</strong>
+                  </span>
+                  <span style={{ color: "var(--teal)", fontWeight: 700 }}>수정하기 →</span>
+                </button>
+              )}
+            </>
+          )}
           {engineFallback && (
             <section
               className="mb-4 rounded-2xl p-4"
@@ -211,12 +240,6 @@ function ResultPage() {
               </button>
             </section>
           )}
-          <BudgetTiers
-            type={type}
-            onCtaClick={goMydata}
-            matchTiers={precisionReady && !engineFallback ? match.data?.tiers ?? null : null}
-            onBudgetDebounced={precisionReady ? match.refetchWithBudget : undefined}
-          />
 
           {/* 3대 혜택 */}
           <section className="mb-3 rounded-2xl bg-slate-50 p-4">
@@ -243,66 +266,10 @@ function ResultPage() {
             </ul>
           </section>
 
-          <ShareSection ref={shareRef} type={type} />
           <LockedDivider />
+          <AffordabilityLocked />
 
-          {/* 2단 티저 (마이데이터 미연동 상태) */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-4">
-            <div
-              className="mb-3 uppercase text-slate-500"
-              style={{ fontSize: "10px", letterSpacing: "0.1em" }}
-            >
-              마이데이터 연동 시 공개
-            </div>
-            <div
-              className="space-y-2 select-none"
-            >
-              <div className="flex justify-between" style={{ fontSize: "12px" }}>
-                <span>승인 확률</span>
-                <span
-                  className="font-medium"
-                  style={{ filter: "blur(6px)" }}
-                  aria-hidden="true"
-                >
-                  --%
-                </span>
-              </div>
-              <div className="flex justify-between" style={{ fontSize: "12px" }}>
-                <span>예상 월 납입금</span>
-                <span
-                  className="font-medium"
-                  style={{ filter: "blur(6px)" }}
-                  aria-hidden="true"
-                >
-                  --만원
-                </span>
-              </div>
-              <div className="flex justify-between" style={{ fontSize: "12px" }}>
-                <span>유리한 금융사</span>
-                <span
-                  className="font-medium"
-                  style={{ filter: "blur(6px)" }}
-                  aria-hidden="true"
-                >
-                  -----
-                </span>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={goMydata}
-              className="mt-4 w-full rounded-xl py-3 font-medium transition-transform active:scale-[0.98]"
-              style={{ fontSize: "13px", backgroundColor: "var(--midnight)", color: "var(--ivory)" }}
-            >
-              마이데이터 연결하고 전체 결과 보기
-            </button>
-            <p
-              className="mt-2 text-center text-slate-500"
-              style={{ fontSize: "10px" }}
-            >
-              1분 안에 안전하게 연동 · 언제든 해지 가능
-            </p>
-          </section>
+          <ShareSection ref={shareRef} type={type} variant="match" top1={shareTop1} />
 
           <button
             type="button"
