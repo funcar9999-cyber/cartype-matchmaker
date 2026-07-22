@@ -11,6 +11,7 @@ import { ShareSection } from "@/components/result/ShareSection";
 import { LockedDivider } from "@/components/result/LockedDivider";
 import { AnswerRecap } from "@/components/result/AnswerRecap";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { hasPrecision, useYachaMatch } from "@/hooks/use-yacha-match";
 import { track } from "@/lib/events";
@@ -271,14 +272,11 @@ function ResultPage() {
 
           <ShareSection ref={shareRef} type={type} variant="match" top1={shareTop1} />
 
-          <button
-            type="button"
-            onClick={openQuote}
-            className="mt-3 w-full rounded-xl border border-border bg-white py-3 font-medium text-slate-900"
-            style={{ fontSize: "13px" }}
-          >
-            상담사에게 실제 견적 받기
-          </button>
+          <IntentCtaSet
+            screen="result"
+            defaultCarName={type.topCars[0]}
+            onKeep={scrollToShare}
+          />
 
           {/* 법적 고지 */}
           <p
