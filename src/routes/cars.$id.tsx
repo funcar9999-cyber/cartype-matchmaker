@@ -9,6 +9,7 @@ import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
 import { toast } from "sonner";
+import { track } from "@/lib/events";
 
 export const Route = createFileRoute("/cars/$id")({
   head: ({ params }) => {
@@ -184,7 +185,10 @@ function CarDetail() {
           {/* 주 CTA */}
           <button
             type="button"
-            onClick={() => setQuoteOpen(true)}
+            onClick={() => {
+              track("consult_click", { from: window.location.pathname });
+              setQuoteOpen(true);
+            }}
             className="mt-3 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
             style={{
               backgroundColor: "var(--midnight)",
