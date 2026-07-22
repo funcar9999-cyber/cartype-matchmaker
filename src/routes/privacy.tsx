@@ -3,7 +3,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "개인정보 처리방침 · CarBTI" },
+      { title: "개인정보 처리방침 · 야차" },
       { name: "description", content: "CarBTI 개인정보 처리방침" },
       { name: "robots", content: "noindex" },
     ],

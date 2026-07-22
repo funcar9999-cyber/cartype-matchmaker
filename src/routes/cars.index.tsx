@@ -18,7 +18,7 @@ import { Emblem } from "@/components/common/Emblem";
 export const Route = createFileRoute("/cars/")({
   head: () => ({
     meta: [
-      { title: "차량 둘러보기 · CarBTI" },
+      { title: "차량 둘러보기 · 야차" },
       { name: "description", content: "내 유형에 맞는 차부터 보여드리는 CarBTI 차량 카탈로그." },
     ],
   }),

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/compare")({
   }),
   head: () => ({
     meta: [
-      { title: "3방식 비교 · CarBTI" },
+      { title: "3방식 비교 · 야차" },
       { name: "description", content: "할부 · 리스 · 렌트, 하나의 차량으로 세 가지 방식을 한 번에 비교하세요." },
     ],
   }),

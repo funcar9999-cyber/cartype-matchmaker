@@ -6,11 +6,12 @@ import { supabase } from "@/lib/supabase";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { CAR_DB } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
+import { Wordmark } from "@/components/common/Wordmark";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin · CarBTI" },
+      { title: "Admin · 야차" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -140,7 +141,7 @@ function AdminPage() {
         }}
       >
         <div className="flex items-center gap-2">
-          <span style={{ fontSize: "15px", fontWeight: 600 }}>Admin</span>
+          <Wordmark tone="ink" size={16} />
           <span
             style={{
               fontSize: "10px",
@@ -148,7 +149,7 @@ function AdminPage() {
               color: "var(--warm-gray)",
             }}
           >
-            CARBTI
+            ADMIN
           </span>
         </div>
         <Link

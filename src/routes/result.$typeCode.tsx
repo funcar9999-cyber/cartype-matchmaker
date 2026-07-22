@@ -19,7 +19,7 @@ export const Route = createFileRoute("/result/$typeCode")({
   head: ({ params }) => {
     const type = CARBTI_TYPES[params.typeCode];
     const title = type
-      ? `${type.code} · ${type.name} · CarBTI 결과`
+      ? `${type.code} · ${type.name} · 야차 결과`
       : "CarBTI 결과";
     const description = type
       ? `${type.description} · 상위 ${type.rarityPercent}% 희소 유형`

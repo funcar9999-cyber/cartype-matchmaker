@@ -5,7 +5,7 @@ import { Check, Lock } from "lucide-react";
 export const Route = createFileRoute("/mydata/connecting")({
   head: () => ({
     meta: [
-      { title: "연결 중 · CarBTI" },
+      { title: "연결 중 · 야차" },
       { name: "robots", content: "noindex" },
     ],
   }),

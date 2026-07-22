@@ -105,13 +105,29 @@ function drawShareImage(type: CarbtiType): string | null {
   ctx.font = font(30, 500);
   ctx.fillText("만 가진 유형", W / 2, 1500);
 
-  // brand footer
+  // brand footer — ya'cha wordmark (apostrophe in red)
+  ctx.font = font(46, 800);
+  const brandLeft = "ya";
+  const brandApos = "\u2019";
+  const brandRight = "cha";
+  const wLeft = ctx.measureText(brandLeft).width;
+  const wApos = ctx.measureText(brandApos).width;
+  const wRight = ctx.measureText(brandRight).width;
+  const wTotal = wLeft + wApos + wRight;
+  let bx = W / 2 - wTotal / 2;
+  ctx.textAlign = "left";
   ctx.fillStyle = "#F5F4F0";
-  ctx.font = font(38, 700);
-  ctx.fillText("CarBTI · 1분 자동차 DNA 진단", W / 2, 1740);
+  ctx.fillText(brandLeft, bx, 1740);
+  bx += wLeft;
+  ctx.fillStyle = "#C13529";
+  ctx.fillText(brandApos, bx, 1740);
+  bx += wApos;
+  ctx.fillStyle = "#F5F4F0";
+  ctx.fillText(brandRight, bx, 1740);
+  ctx.textAlign = "center";
   ctx.fillStyle = "#F5F4F080";
   ctx.font = font(28, 400);
-  ctx.fillText("cartype-matchmaker.lovable.app", W / 2, 1790);
+  ctx.fillText("yacha.ai", W / 2, 1790);
 
   return canvas.toDataURL("image/png");
 }

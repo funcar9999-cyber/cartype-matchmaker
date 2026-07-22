@@ -15,7 +15,7 @@ import { track } from "@/lib/events";
 export const Route = createFileRoute("/mydata/result")({
   head: () => ({
     meta: [
-      { title: "예산 매칭 결과 (예시) · CarBTI" },
+      { title: "예산 매칭 결과 (예시) · 야차" },
       { name: "robots", content: "noindex" },
     ],
   }),

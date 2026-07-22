@@ -13,7 +13,7 @@ import { supabase } from "@/lib/supabase";
 export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
-      { title: "내정보 · CarBTI" },
+      { title: "내정보 · 야차" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -76,8 +76,21 @@ function MePage() {
               <p className="mb-4" style={{ fontSize: "13px", color: "var(--warm-gray)", lineHeight: 1.5 }}>
                 로그인하고 내 카BTI와 찜 목록을 저장하세요
               </p>
-              <Link
-                to="/diagnosis/gate"
+              <button
+                type="button"
+                onClick={async () => {
+                  const { error } = await supabase.auth.signInWithOAuth({
+                    provider: "kakao",
+                    options: {
+                      redirectTo: window.location.origin + "/me",
+                      scopes: "profile_nickname profile_image",
+                    },
+                  });
+                  if (error) {
+                    toast.error("카카오 로그인에 실패했어요. 잠시 후 다시 시도해주세요.");
+                    console.warn("[kakao login]", error);
+                  }
+                }}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl py-3.5 transition active:scale-[0.98]"
                 style={{
                   backgroundColor: "var(--midnight)",
@@ -88,7 +101,7 @@ function MePage() {
               >
                 <MessageCircle size={14} color="var(--gold)" strokeWidth={1.75} />
                 카카오로 시작하기
-              </Link>
+              </button>
             </section>
           ) : (
             <>

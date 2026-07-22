@@ -3,7 +3,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "서비스 이용약관 · CarBTI" },
+      { title: "서비스 이용약관 · 야차" },
       { name: "description", content: "CarBTI 서비스 이용약관" },
       { name: "robots", content: "noindex" },
     ],

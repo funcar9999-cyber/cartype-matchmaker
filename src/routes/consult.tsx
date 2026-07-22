@@ -14,7 +14,7 @@ import { track } from "@/lib/events";
 export const Route = createFileRoute("/consult")({
   head: () => ({
     meta: [
-      { title: "상담 · CarBTI" },
+      { title: "상담 · 야차" },
       { name: "description", content: "카카오톡으로 강요 없는 무료 상담을 받아보세요." },
     ],
   }),

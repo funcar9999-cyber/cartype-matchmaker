@@ -37,7 +37,7 @@ export function BrandHero() {
         className="leading-[1.15]"
         style={{ fontSize: "26px", fontWeight: 800, letterSpacing: "-0.01em" }}
       >
-        자동차 살 땐 야차
+        자동차 살 땐 <span style={{ color: "var(--yacha-red)" }}>야차</span>
       </h1>
       <p
         className="mt-1.5"
