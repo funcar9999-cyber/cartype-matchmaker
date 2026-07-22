@@ -15,6 +15,7 @@ import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { QuoteCalculator } from "@/components/quote-calculator";
+import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
 import { track } from "@/lib/events";
 
 type CompareSearch = { car?: string };
@@ -435,29 +436,12 @@ function ComparePage() {
           >
             내 신용 기준으로 정확히 비교하기
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              track("consult_click", { from: window.location.pathname });
-              setQuoteOpen(true);
-            }}
-            className="mt-2 w-full rounded-xl py-3 text-center transition active:scale-[0.98]"
-            style={{
-              backgroundColor: "var(--surface)",
-              border: "1px solid var(--hairline)",
-              color: "var(--ink)",
-              fontSize: "13px",
-              fontWeight: 700,
-            }}
-          >
-            상담사에게 실제 견적 받기
-          </button>
-          <p
-            className="mt-1.5 text-center"
-            style={{ fontSize: "10.5px", color: "var(--warm-gray)" }}
-          >
-            이 조건 그대로 상담하시면 견적이 빨라져요
-          </p>
+          <IntentCtaSet
+            screen="compare"
+            carId={car.id}
+            defaultCarName={`${car.brand} ${car.name}`}
+            product={METHOD_LABELS[method]}
+          />
 
           <p className="mt-4 px-1" style={{ fontSize: "10px", lineHeight: 1.6, color: "var(--warm-gray)" }}>
             {CAR_LEGAL_DISCLAIMER}
