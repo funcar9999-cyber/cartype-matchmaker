@@ -79,20 +79,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "야차: yacha" },
+      { title: "야차 — 자동차 살 땐 야차" },
       {
         name: "description",
         content: "야! 차 사러 가자! 할부,렌트,리스 나에게 가장 맞는 건?",
       },
       { name: "author", content: "ya'cha" },
-      { property: "og:title", content: "야차: yacha" },
+      { property: "og:title", content: "야차 — 자동차 살 땐 야차" },
       {
         property: "og:description",
         content: "야! 차 사러 가자! 할부,렌트,리스 나에게 가장 맞는 건?",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "야차: yacha" },
+      { name: "twitter:title", content: "야차 — 자동차 살 땐 야차" },
       { property: "og:description", content: "야! 차 사러 가자! 할부,렌트,리스 나에게 가장 맞는 건?" },
       { name: "twitter:description", content: "야! 차 사러 가자! 할부,렌트,리스 나에게 가장 맞는 건?" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2d8f6e9c-d5ba-4ad2-acdf-8f8efd72fc5d" },
@@ -103,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "apple-touch-icon", href: "/icon.svg" },
       { rel: "preconnect", href: "https://cdn.jsdelivr.net", crossOrigin: "" },
       {
