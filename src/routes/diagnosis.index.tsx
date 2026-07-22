@@ -31,7 +31,7 @@ export const Route = createFileRoute("/diagnosis/")({
       { title: "CarBTI 진단 · 나의 자동차 DNA 찾기" },
       {
         name: "description",
-        content: "15개 문항으로 나의 자동차 취향 유형을 1분 만에 진단하세요.",
+        content: "8개 문항으로 나의 자동차 취향 유형을 1분 만에 진단하세요.",
       },
       { name: "robots", content: "noindex" },
     ],
