@@ -15,7 +15,6 @@ import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { QuoteCalculator } from "@/components/quote-calculator";
 import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
-import { track } from "@/lib/events";
 
 type CompareSearch = { car?: string };
 
