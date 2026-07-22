@@ -10,6 +10,7 @@ import {
   type TierCar,
 } from "@/lib/mydata-tiers";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { track } from "@/lib/events";
 
 export const Route = createFileRoute("/mydata/result")({
   head: () => ({
@@ -149,7 +150,10 @@ function MydataResultPage() {
 
           <button
             type="button"
-            onClick={() => setQuoteOpen(true)}
+            onClick={() => {
+              track("consult_click", { from: window.location.pathname });
+              setQuoteOpen(true);
+            }}
             className="flex w-full items-center justify-center gap-2 rounded-xl py-4 transition active:scale-[0.98]"
             style={{
               backgroundColor: "var(--midnight)",
