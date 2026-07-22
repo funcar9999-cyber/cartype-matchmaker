@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Link2, Instagram, Download, MessageCircle } from "lucide-react";
 
 import type { CarbtiType } from "@/lib/carbti-types";
+import { track } from "@/lib/events";
 
 async function copyLink(): Promise<{ ok: boolean; url: string }> {
   const url = typeof window !== "undefined" ? window.location.href : "";
@@ -124,21 +125,25 @@ function downloadDataUrl(dataUrl: string, filename: string) {
 export const ShareSection = forwardRef<HTMLElement, { type: CarbtiType }>(
   ({ type }, ref) => {
     const handleKakao = async () => {
+      track("share_click", { channel: "kakao" });
       const { ok } = await copyLink();
       if (ok) toast.success("링크가 복사되었어요! 카카오톡에 붙여넣기 해주세요.");
       else toast.error("링크 복사에 실패했어요.");
     };
     const handleLink = async () => {
+      track("share_click", { channel: "link" });
       const { ok } = await copyLink();
       if (ok) toast.success("링크가 클립보드에 복사되었어요.");
       else toast.error("링크 복사에 실패했어요.");
     };
     const handleInstagram = async () => {
+      track("share_click", { channel: "insta" });
       const { ok } = await copyLink();
       if (ok) toast.success("링크를 복사했어요. 인스타 스토리에 붙여넣기 하세요.");
       else toast.error("링크 복사에 실패했어요.");
     };
     const handleSaveImage = () => {
+      track("share_click", { channel: "image" });
       const url = drawShareImage(type);
       if (!url) { toast.error("이미지 생성에 실패했어요."); return; }
       downloadDataUrl(url, `carbti-${type.code}.png`);
