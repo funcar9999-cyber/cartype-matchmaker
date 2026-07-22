@@ -107,6 +107,21 @@ function CarDetail() {
     boxShadow: "var(--shadow-card)",
   } as const;
 
+  const hasCarbti = !!myTypeCode;
+  const hasApproval = !!approval;
+  const monthlyNums = [
+    parseMonthlyManwon(car.monthlyDemo.installment),
+    parseMonthlyManwon(car.monthlyDemo.lease),
+    parseMonthlyManwon(car.monthlyDemo.rent),
+  ].filter((n): n is number => n != null);
+  const minMonthly = monthlyNums.length ? Math.min(...monthlyNums) : null;
+  const capacity = approval?.capacity_monthly ?? null;
+  const withinCapacity =
+    hasApproval && capacity != null && minMonthly != null ? minMonthly <= capacity : null;
+  const showCarbtiOnlyLock = hasCarbti && !hasApproval;
+  const showApprovalOnlyLock = !hasCarbti && hasApproval;
+  const showBadge = hasApproval && withinCapacity != null;
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
       <div
