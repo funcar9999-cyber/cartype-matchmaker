@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "../components/ui/sonner";
 import { MyCarbtiProvider } from "@/hooks/use-my-carbti";
-import { track } from "@/lib/events";
+import { track, rememberVia } from "@/lib/events";
 
 function NotFoundComponent() {
   return (
