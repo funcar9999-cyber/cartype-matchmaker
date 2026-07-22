@@ -10,6 +10,13 @@ import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
 import { toast } from "sonner";
 import { track } from "@/lib/events";
+import { DREAMCAR_LIVE } from "@/lib/flags";
+import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
+
+function parseMonthlyManwon(s: string): number | null {
+  const m = s.match(/(\d+)/);
+  return m ? Number(m[1]) : null;
+}
 
 export const Route = createFileRoute("/cars/$id")({
   head: ({ params }) => {
