@@ -13,7 +13,6 @@ import {
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
-import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { QuoteCalculator } from "@/components/quote-calculator";
 import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
 import { track } from "@/lib/events";
@@ -54,7 +53,6 @@ function ComparePage() {
   const navigate = useNavigate();
   const [code, setCode] = useState<string | null>(null);
   const [method, setMethod] = useState<Method>("installment");
-  const [quoteOpen, setQuoteOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -449,11 +447,6 @@ function ComparePage() {
         </main>
 
         <BottomTabBar />
-        <QuoteRequestSheet
-          open={quoteOpen}
-          onOpenChange={setQuoteOpen}
-          context={{ defaultCarName: `${car.brand} ${car.name}`, source: "compare" }}
-        />
       </div>
     </div>
   );
