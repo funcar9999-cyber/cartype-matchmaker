@@ -5,7 +5,6 @@ import { ArrowLeft, Heart, Check } from "lucide-react";
 import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
-import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
@@ -60,7 +59,6 @@ export const Route = createFileRoute("/cars/$id")({
 function CarDetail() {
   const { car } = Route.useLoaderData();
   const navigate = useNavigate();
-  const [quoteOpen, setQuoteOpen] = useState(false);
   const { user, code: myTypeCode, approval } = useMyCarbti();
   const [fav, setFav] = useState(false);
 
@@ -512,11 +510,6 @@ function CarDetail() {
             {CAR_LEGAL_DISCLAIMER}
           </p>
         </main>
-        <QuoteRequestSheet
-          open={quoteOpen}
-          onOpenChange={setQuoteOpen}
-          context={{ defaultCarName: `${car.brand} ${car.name}`, source: "car_detail" }}
-        />
       </div>
     </div>
   );
