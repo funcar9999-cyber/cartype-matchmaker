@@ -8,7 +8,7 @@ export const Route = createFileRoute("/diagnosis/onboarding")({
       { title: "CarBTI 진단 · 나의 자동차 DNA 찾기" },
       {
         name: "description",
-        content: "15개 문항으로 나의 자동차 취향 유형을 1분 만에 진단하세요.",
+        content: "8개 문항으로 나의 자동차 취향 유형을 1분 만에 진단하세요.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -34,6 +34,7 @@ function OnboardingPage() {
           questionId: 1,
           dimension: "purpose",
           maps,
+          weight: 1,
         };
         sessionStorage.setItem(
           ANSWERS_STORAGE_KEY,
@@ -87,7 +88,7 @@ function OnboardingPage() {
             진짜 개인화 진단
           </h1>
           <p style={{ fontSize: "13px", lineHeight: 1.6, color: "var(--warm-gray)" }}>
-            15문항 · 한 문항에 5초면 충분해요
+            8문항 · 한 문항에 5초면 충분해요
           </p>
         </div>
 
@@ -95,7 +96,7 @@ function OnboardingPage() {
         <main className="flex-1 px-4">
           <div className="mb-3 flex flex-col gap-2.5">
             {[
-              { Icon: Clock, title: "약 2분 소요", desc: "15개 문항 · 선택만 하시면 자동으로 넘어가요" },
+              { Icon: Clock, title: "약 1분 소요", desc: "8개 문항 · 선택만 하시면 자동으로 넘어가요" },
               { Icon: Target, title: "16가지 유형 중 하나", desc: "어울리는 대표 차량과 예산 선택지를 알려드려요" },
               { Icon: ShieldCheck, title: "진단은 회원가입 불필요", desc: "결과 저장·공유하실 때만 로그인 안내드려요" },
             ].map(({ Icon, title, desc }) => (
@@ -134,7 +135,7 @@ function OnboardingPage() {
               눌러보세요 — 바로 시작돼요
             </div>
             <div className="mb-3" style={{ fontSize: "15px", fontWeight: 700, color: "var(--ink)" }}>
-              차를 주로 어떤 상황에서 탈 것 같나요?
+              주말에 차가 생기면, 어디부터 갈까요?
             </div>
             <div className="flex gap-2">
               <button
@@ -143,7 +144,7 @@ function OnboardingPage() {
                 className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border p-2.5 transition active:scale-[0.98]"
                 style={{ borderColor: "var(--hairline)", fontSize: "11px", color: "var(--ink)" }}
               >
-                <Building2 size={14} color="var(--teal)" strokeWidth={1.75} /> 매일 출퇴근
+                <Building2 size={14} color="var(--teal)" strokeWidth={1.75} /> 시내 카페·마트
               </button>
               <button
                 type="button"
@@ -151,7 +152,7 @@ function OnboardingPage() {
                 className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border p-2.5 transition active:scale-[0.98]"
                 style={{ borderColor: "var(--hairline)", fontSize: "11px", color: "var(--ink)" }}
               >
-                <RouteIcon size={14} color="var(--teal)" strokeWidth={1.75} /> 주말 여행
+                <RouteIcon size={14} color="var(--teal)" strokeWidth={1.75} /> 바다·교외
               </button>
             </div>
           </div>

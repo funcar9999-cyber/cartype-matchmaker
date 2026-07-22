@@ -20,17 +20,13 @@ const MAP: Record<string, Record<string, Mapping>> = {
 
 // 금융 관련 개별 문항(F 선택 시) 교육형 문구
 const PAYMENT_EDU: Record<number, Mapping> = {
-  11: {
+  6: {
     said: "새 차로 갈아타는 게 좋다",
     picked: "잔존가치 하락을 금융사가 지는 리스·렌트가 교체 패턴에 맞아요",
   },
-  12: {
+  7: {
     said: "월 요금에 다 포함이면 좋겠다",
     picked: "렌트는 보험·정비·세금까지 월정액에 포함돼요 — 관리는 맡기고 기름만 넣는 방식",
-  },
-  13: {
-    said: "초기 비용은 최소로",
-    picked: "리스·렌트는 취등록세 같은 초기 목돈 없이 시작해요",
   },
 };
 

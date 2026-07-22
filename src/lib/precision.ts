@@ -130,9 +130,9 @@ export const PRECISION_QUESTIONS: PrecisionQuestion[] = [
     label: "P2 · 주행 거리",
     question: "1년에 어느 정도 달리시나요?",
     options: [
-      { value: "low", title: "1만km 이하" },
-      { value: "mid", title: "1.5만km 안팎" },
-      { value: "high", title: "2만km 이상" },
+      { value: "low", title: "1만km 이하 (출퇴근 왕복 20km 정도)" },
+      { value: "mid", title: "1.5만km 안팎 (매일 출퇴근 + 주말 나들이)" },
+      { value: "high", title: "2만km 이상 (장거리가 잦아요)" },
     ],
   },
   {
@@ -140,7 +140,7 @@ export const PRECISION_QUESTIONS: PrecisionQuestion[] = [
     kind: "choice",
     field: "biz_type",
     label: "P3 · 이용 명의",
-    question: "사업자(개인·법인)로 이용할 수 있나요?",
+    question: "사업자등록이 있으신가요?",
     options: [
       { value: "personal", title: "아니요, 개인이에요" },
       { value: "sole", title: "개인사업자예요" },
@@ -164,6 +164,7 @@ export const PRECISION_QUESTIONS: PrecisionQuestion[] = [
     field: "monthly_budget",
     label: "P5 · 월 납입",
     question: "월 납입, 어느 정도가 편하세요?",
+    subtitle: "지금 통신비+구독료처럼, 매달 부담 없는 금액으로 골라 보세요",
   },
   {
     id: "P6",
