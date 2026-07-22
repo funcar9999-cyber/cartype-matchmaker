@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { TopBar } from "@/components/home/TopBar";
 import { BrandHero } from "@/components/home/BrandHero";
-import { DoorCards } from "@/components/home/DoorCards";
 import { StatusCard } from "@/components/home/StatusCard";
 import { QuickActions } from "@/components/home/QuickActions";
 import { TypeShowcase } from "@/components/home/TypeShowcase";
