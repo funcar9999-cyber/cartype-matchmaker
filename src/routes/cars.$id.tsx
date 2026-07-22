@@ -21,7 +21,7 @@ function parseMonthlyManwon(s: string): number | null {
 export const Route = createFileRoute("/cars/$id")({
   head: ({ params }) => {
     const car = CAR_DB.find((c) => c.id === params.id);
-    const title = car ? `${car.brand} ${car.name} · CarBTI` : "차량 상세 · CarBTI";
+    const title = car ? `${car.brand} ${car.name} · 야차` : "차량 상세 · 야차";
     return {
       meta: [
         { title },

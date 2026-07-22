@@ -3,13 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "회사 소개 · CarBTI" },
+      { title: "회사 소개 · 야차" },
       {
         name: "description",
         content:
           "내 신용과 취향에 맞춰 가장 유리한 자동차 구매 방법을 찾는 CarBTI. 등록 사업자·상담팀·금융사 제휴 네트워크.",
       },
-      { property: "og:title", content: "회사 소개 · CarBTI" },
+      { property: "og:title", content: "회사 소개 · 야차" },
       {
         property: "og:description",
         content:

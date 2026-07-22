@@ -5,7 +5,7 @@ import { ArrowLeft, Shield, Unlock, BadgeCheck } from "lucide-react";
 export const Route = createFileRoute("/mydata/intro")({
   head: () => ({
     meta: [
-      { title: "내 예산 정확하게 알기 · CarBTI" },
+      { title: "내 예산 정확하게 알기 · 야차" },
       {
         name: "description",
         content:

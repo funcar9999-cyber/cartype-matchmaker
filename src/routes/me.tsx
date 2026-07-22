@@ -13,7 +13,7 @@ import { supabase } from "@/lib/supabase";
 export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
-      { title: "내정보 · CarBTI" },
+      { title: "내정보 · 야차" },
       { name: "robots", content: "noindex" },
     ],
   }),
