@@ -146,6 +146,7 @@ function RootComponent() {
       const params = new URLSearchParams(window.location.search);
       const via = params.get("via");
       if (via === "share_type" || via === "share_match") {
+        rememberVia(via);
         track("entry_select", { via });
       }
     } catch { /* ignore */ }
