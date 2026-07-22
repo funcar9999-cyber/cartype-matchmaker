@@ -5,7 +5,7 @@ import { ArrowLeft, Heart, Check } from "lucide-react";
 import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
-import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
 import { toast } from "sonner";
@@ -59,7 +59,6 @@ export const Route = createFileRoute("/cars/$id")({
 function CarDetail() {
   const { car } = Route.useLoaderData();
   const navigate = useNavigate();
-  const [quoteOpen, setQuoteOpen] = useState(false);
   const { user, code: myTypeCode, approval } = useMyCarbti();
   const [fav, setFav] = useState(false);
 
@@ -204,24 +203,12 @@ function CarDetail() {
             </div>
           </div>
 
-          {/* 주 CTA */}
-          <button
-            type="button"
-            onClick={() => {
-              track("consult_click", { from: window.location.pathname });
-              setQuoteOpen(true);
-            }}
-            className="mt-3 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
-            style={{
-              backgroundColor: "var(--midnight)",
-              color: "var(--ivory)",
-              fontSize: "14px",
-              fontWeight: 700,
-              boxShadow: "var(--shadow-dark)",
-            }}
-          >
-            이 차로 견적 받기
-          </button>
+          {/* 주 CTA — 3단 세트 */}
+          <IntentCtaSet
+            screen="car_detail"
+            carId={car.id}
+            defaultCarName={`${car.brand} ${car.name}`}
+          />
           <button
             type="button"
             onClick={() => {
@@ -523,11 +510,6 @@ function CarDetail() {
             {CAR_LEGAL_DISCLAIMER}
           </p>
         </main>
-        <QuoteRequestSheet
-          open={quoteOpen}
-          onOpenChange={setQuoteOpen}
-          context={{ defaultCarName: `${car.brand} ${car.name}`, source: "car_detail" }}
-        />
       </div>
     </div>
   );

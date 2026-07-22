@@ -5,6 +5,7 @@ import { CAR_DB, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
 import { insertLead, type LeadSource } from "@/lib/carbti-data";
+import type { LeadIntent } from "@/lib/carbti-data";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 type PayMethodChip = "할부" | "리스" | "장기렌트";
@@ -27,10 +28,14 @@ export function QuoteRequestSheet({
   open,
   onOpenChange,
   context,
+  intent,
+  reassurance,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   context: QuoteContext;
+  intent?: LeadIntent;
+  reassurance?: string;
 }) {
   const { user, code: hookCode, budgetManwon, dbId } = useMyCarbti();
   const [code, setCode] = useState<string | null>(hookCode);
@@ -76,6 +81,7 @@ export function QuoteRequestSheet({
       contactPref: contactPref === "kakao" ? "chat_only" : "call_ok",
       diagnosisId: dbId,
       userId: user?.id ?? null,
+      intent: intent ?? "apply",
     });
     try {
       await navigator.clipboard.writeText(requestText);
@@ -106,6 +112,20 @@ export function QuoteRequestSheet({
         <div className="mb-4 text-slate-500" style={{ fontSize: "11px" }}>
           자동으로 채워드렸어요
         </div>
+        {reassurance && (
+          <div
+            className="mb-3 rounded-lg px-3 py-2"
+            style={{
+              backgroundColor: "var(--ivory)",
+              border: "1px solid var(--hairline)",
+              color: "var(--ink)",
+              fontSize: "11.5px",
+              lineHeight: 1.5,
+            }}
+          >
+            {reassurance}
+          </div>
+        )}
 
         {type && (
           <Row label="유형">
