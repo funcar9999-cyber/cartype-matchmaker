@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "../components/ui/sonner";
 import { MyCarbtiProvider } from "@/hooks/use-my-carbti";
+import { track } from "@/lib/events";
 
 function NotFoundComponent() {
   return (
@@ -137,6 +138,18 @@ function RootComponent() {
   const router = useRouter();
   // Re-key on pathname so each route transition replays the CSS enter animation.
   const pathname = router.state.location.pathname;
+
+  // ?via=share_type|share_match → entry_select({via}) once on landing
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const via = params.get("via");
+      if (via === "share_type" || via === "share_match") {
+        track("entry_select", { via });
+      }
+    } catch { /* ignore */ }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
