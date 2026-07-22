@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "../components/ui/sonner";
 import { MyCarbtiProvider } from "@/hooks/use-my-carbti";
-import { track } from "@/lib/events";
+import { track, rememberVia } from "@/lib/events";
 
 function NotFoundComponent() {
   return (
@@ -146,6 +146,7 @@ function RootComponent() {
       const params = new URLSearchParams(window.location.search);
       const via = params.get("via");
       if (via === "share_type" || via === "share_match") {
+        rememberVia(via);
         track("entry_select", { via });
       }
     } catch { /* ignore */ }

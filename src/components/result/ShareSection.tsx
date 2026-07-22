@@ -71,7 +71,7 @@ function drawShareImage(
     dome.addColorStop(1, accentDeep);
     ctx.fillStyle = dome;
     ctx.beginPath(); ctx.arc(cx, cy, r - 55, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#E3C98F";
+    ctx.fillStyle = "#F5F4F0";
     ctx.font = font(r * 0.55, 800);
     ctx.fillText(isE ? "⚡" : "⚙", cx, cy + r * 0.18);
   };
@@ -197,8 +197,11 @@ function drawShareImage(
     ctx.font = font(52, 800);
     ctx.fillText(carName, W / 2, boxTop + 190);
 
-    // 이유 칩
-    const chipText = top1?.chip ?? "내 유형 최적";
+    // 이유 칩 — 금액이 들어간 칩은 카드에 넣지 않는다
+    const rawChip = top1?.chip;
+    const chipHasMoney = rawChip ? /\d|만원|원/.test(rawChip) : false;
+    const chipText = !rawChip || chipHasMoney ? null : rawChip;
+    if (chipText) {
     ctx.font = font(24, 700);
     const cw = ctx.measureText(chipText).width + 40;
     const ch = 48;
@@ -219,6 +222,7 @@ function drawShareImage(
     ctx.stroke();
     ctx.fillStyle = "#C9A96A";
     ctx.fillText(chipText, W / 2, cyb + 32);
+    }
 
     // "한 달에 ●●만원대"
     ctx.fillStyle = "#F5F4F0";
