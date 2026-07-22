@@ -9,6 +9,7 @@ import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
 import { DIAGNOSIS_DB_ID_KEY, supabase } from "@/lib/supabase";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
+import { track } from "@/lib/events";
 
 export const Route = createFileRoute("/consult")({
   head: () => ({
@@ -35,6 +36,7 @@ function ConsultPage() {
   const type = code ? CARBTI_TYPES[code] : null;
 
   const openKakaoChannel = () => {
+    track("consult_click", { from: "/consult" });
     const diagnosisId =
       dbId ??
       (typeof window !== "undefined"
