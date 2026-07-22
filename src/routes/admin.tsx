@@ -52,8 +52,8 @@ const LENDERS = [
 ];
 
 function carName(carId: string | null | undefined): string {
-  if (!carId) return "차량 미선택";
-  return CAR_DB.find((c) => c.id === carId)?.name ?? carId;
+  if (!carId) return "차량 미지정";
+  return CAR_DB.find((c) => c.id === carId)?.name ?? "차량 미지정";
 }
 
 function formatTime(ts: string | null | undefined): string {
@@ -226,7 +226,7 @@ type LeadRow = {
   id: string;
   created_at: string | null;
   source: string | null;
-  car_id: string | null;
+  interest_car_id: string | null;
   user_id: string | null;
   status: string | null;
   memo: string | null;
@@ -261,7 +261,7 @@ function LeadsInbox() {
     const { data, error } = await supabase
       .from("leads")
       .select(
-        "id, created_at, source, car_id, user_id, status, memo, diagnosis_id, budget_manwon, preferred_method, contact_pref",
+        "id, created_at, source, interest_car_id, user_id, status, memo, diagnosis_id, budget_manwon, preferred_method, contact_pref",
       )
       .order("created_at", { ascending: false })
       .limit(200);
@@ -446,8 +446,36 @@ function LeadCard({
             className="mt-0.5 truncate"
             style={{ fontSize: "14px", fontWeight: 500 }}
           >
-            {carName(lead.car_id)}
+            {carName(lead.interest_car_id)}
           </div>
+          {(lead.preferred_method || lead.budget_manwon != null) && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {lead.preferred_method && (
+                <span
+                  className="rounded-full px-2 py-0.5"
+                  style={{
+                    fontSize: "10px",
+                    border: "1px solid var(--hairline)",
+                    color: "var(--ink)",
+                  }}
+                >
+                  {lead.preferred_method}
+                </span>
+              )}
+              {lead.budget_manwon != null && (
+                <span
+                  className="rounded-full px-2 py-0.5"
+                  style={{
+                    fontSize: "10px",
+                    border: "1px solid var(--hairline)",
+                    color: "var(--ink)",
+                  }}
+                >
+                  {lead.budget_manwon}만원
+                </span>
+              )}
+            </div>
+          )}
         </div>
         <StatusBadge status={lead.status ?? "new"} />
       </button>

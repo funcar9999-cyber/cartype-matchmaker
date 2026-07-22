@@ -6,6 +6,10 @@ import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { CONSULT_FAQ } from "@/lib/car-db";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
+import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
+import { insertLead } from "@/lib/carbti-data";
+import { DIAGNOSIS_DB_ID_KEY } from "@/lib/supabase";
+import { useMyCarbti } from "@/hooks/use-my-carbti";
 
 export const Route = createFileRoute("/consult")({
   head: () => ({
@@ -21,6 +25,7 @@ function ConsultPage() {
   const [code, setCode] = useState<string | null>(null);
   const [openIdx, setOpenIdx] = useState<number | null>(0);
   const [quoteOpen, setQuoteOpen] = useState(false);
+  const { user, dbId, budgetManwon } = useMyCarbti();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -29,6 +34,24 @@ function ConsultPage() {
   }, []);
 
   const type = code ? CARBTI_TYPES[code] : null;
+
+  const openKakaoChannel = () => {
+    const diagnosisId =
+      dbId ??
+      (typeof window !== "undefined"
+        ? sessionStorage.getItem(DIAGNOSIS_DB_ID_KEY)
+        : null);
+    void insertLead({
+      source: "consult",
+      interestCarId: null,
+      preferredMethod: type?.bestPayment.method ?? "미정",
+      budgetManwon: budgetManwon ?? null,
+      contactPref: "chat_only",
+      diagnosisId,
+      userId: user?.id ?? null,
+    });
+    window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
@@ -50,7 +73,7 @@ function ConsultPage() {
           {/* 메인 카드 — 미드나이트 */}
           <button
             type="button"
-            onClick={() => setQuoteOpen(true)}
+            onClick={openKakaoChannel}
             className="block w-full rounded-2xl p-6 text-left transition active:scale-[0.99]"
             style={{
               background: "var(--gradient-hero)",
