@@ -7,6 +7,7 @@ import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { DREAMCAR_LIVE } from "@/lib/flags";
 import { KAKAO_CHANNEL_URL } from "@/lib/mydata-tiers";
+import { track } from "@/lib/events";
 
 type Approval = {
   dream_car: string | null;
@@ -151,6 +152,7 @@ export function StatusCard({ onOpenQuote }: { onOpenQuote: () => void }) {
           type="button"
           onClick={() => {
             if (!DREAMCAR_LIVE) {
+              track("entry_select", { door: "dreamcar_teaser" });
               window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
             }
           }}
