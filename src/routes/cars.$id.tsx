@@ -61,6 +61,7 @@ function CarDetail() {
   const navigate = useNavigate();
   const [quoteOpen, setQuoteOpen] = useState(false);
   const { user, code: myTypeCode } = useMyCarbti();
+  const { approval } = useMyCarbti();
   const [fav, setFav] = useState(false);
 
   useEffect(() => {
@@ -206,6 +207,33 @@ function CarDetail() {
             }}
           >
             이 차로 견적 받기
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              track("entry_select", {
+                door: DREAMCAR_LIVE ? "dreamcar" : "dreamcar_teaser",
+                from: "car_detail",
+                car_id: car.id,
+              });
+              if (DREAMCAR_LIVE) {
+                void navigate({ to: "/dreamcar", search: { car: car.id } } as never);
+              } else {
+                window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
+              }
+            }}
+            className="mt-2 w-full rounded-xl py-3 text-center transition active:scale-[0.98]"
+            style={{
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--gold)",
+              color: "var(--ink)",
+              fontSize: "13px",
+              fontWeight: 700,
+            }}
+          >
+            {DREAMCAR_LIVE
+              ? "이 차, 될까? — 1분 승인 확인"
+              : "이 차, 될까? — 승인 확인 곧 열려요 · 오픈 알림 받기"}
           </button>
           <button
             type="button"
