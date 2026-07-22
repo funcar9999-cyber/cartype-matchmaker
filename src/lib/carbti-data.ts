@@ -89,6 +89,8 @@ export type LeadSource =
   | "consult"
   | "car_detail";
 
+export type LeadIntent = "apply" | "question" | "save";
+
 export async function insertLead(input: {
   source: LeadSource;
   interestCarId: string | null;
@@ -97,6 +99,7 @@ export async function insertLead(input: {
   contactPref: "chat_only" | "call_ok";
   diagnosisId: string | null;
   userId: string | null;
+  intent?: LeadIntent;
 }) {
   const { error } = await supabase.from("leads").insert({
     source: input.source,
@@ -106,6 +109,7 @@ export async function insertLead(input: {
     contact_pref: input.contactPref,
     diagnosis_id: input.diagnosisId,
     user_id: input.userId,
+    intent: input.intent ?? "apply",
   });
   if (error) console.warn("[lead insert]", error);
 }
