@@ -235,6 +235,7 @@ type LeadRow = {
   budget_manwon: number | null;
   preferred_method: string | null;
   contact_pref: string | null;
+  intent: string | null;
 };
 
 type CustomerContext = {
@@ -251,10 +252,25 @@ type CustomerContext = {
   } | null;
 };
 
+const INTENT_FILTERS = [
+  { key: "all", label: "전체" },
+  { key: "apply", label: "확정 요청" },
+  { key: "question", label: "질문" },
+  { key: "save", label: "저장" },
+] as const;
+
+const INTENT_LABEL: Record<string, string> = {
+  apply: "견적 확정 요청",
+  question: "질문",
+  save: "저장",
+};
+
 function LeadsInbox() {
   const [rows, setRows] = useState<LeadRow[] | null>(null);
   const [filter, setFilter] =
     useState<(typeof LEAD_STATUSES)[number]["key"]>("all");
+  const [intentFilter, setIntentFilter] =
+    useState<(typeof INTENT_FILTERS)[number]["key"]>("all");
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -262,7 +278,7 @@ function LeadsInbox() {
     const { data, error } = await supabase
       .from("leads")
       .select(
-        "id, created_at, source, interest_car_id, user_id, status, memo, diagnosis_id, budget_manwon, preferred_method, contact_pref",
+        "id, created_at, source, interest_car_id, user_id, status, memo, diagnosis_id, budget_manwon, preferred_method, contact_pref, intent",
       )
       .order("created_at", { ascending: false })
       .limit(200);
@@ -280,12 +296,41 @@ function LeadsInbox() {
 
   const filtered = useMemo(() => {
     if (!rows) return null;
-    if (filter === "all") return rows;
-    return rows.filter((r) => (r.status ?? "new") === filter);
-  }, [rows, filter]);
+    let list = rows;
+    if (filter !== "all") list = list.filter((r) => (r.status ?? "new") === filter);
+    if (intentFilter !== "all")
+      list = list.filter((r) => (r.intent ?? "apply") === intentFilter);
+    // apply 리드는 최상단 고정
+    return [...list].sort((a, b) => {
+      const aA = (a.intent ?? "apply") === "apply" ? 0 : 1;
+      const bA = (b.intent ?? "apply") === "apply" ? 0 : 1;
+      if (aA !== bA) return aA - bA;
+      return 0; // 이미 created_at desc 로 정렬됨
+    });
+  }, [rows, filter, intentFilter]);
 
   return (
     <div>
+      <div className="mb-2 flex flex-wrap gap-1.5">
+        {INTENT_FILTERS.map((s) => {
+          const active = intentFilter === s.key;
+          return (
+            <button
+              key={s.key}
+              onClick={() => setIntentFilter(s.key)}
+              className="rounded-full border px-3 py-1 text-xs"
+              style={{
+                borderColor: active ? "var(--gold)" : "var(--hairline)",
+                backgroundColor: active ? "var(--gold)" : "transparent",
+                color: active ? "var(--midnight)" : "var(--ink)",
+                fontWeight: active ? 700 : 400,
+              }}
+            >
+              {s.label}
+            </button>
+          );
+        })}
+      </div>
       <div className="mb-3 flex flex-wrap gap-1.5">
         {LEAD_STATUSES.map((s) => {
           const active = filter === s.key;
