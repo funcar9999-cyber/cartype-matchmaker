@@ -36,6 +36,10 @@ const SESSION_KEYS = [
 export type MyCarbtiSource = "db" | "session" | "none";
 export type MyCarbtiStatus = "loading" | "ready";
 
+export type ApprovalInfo = {
+  capacity_monthly: number | null;
+};
+
 export type MyCarbtiState = {
   status: MyCarbtiStatus;
   source: MyCarbtiSource;
@@ -45,6 +49,8 @@ export type MyCarbtiState = {
   budgetManwon: number | null;
   nickname: string | null;
   precision: PrecisionData;
+  approval: ApprovalInfo | null;
+  effectiveMonthlyBudget: number | null;
   refresh: () => Promise<void>;
   setBudget: (v: number) => void;
   clearLocal: () => void;
@@ -83,6 +89,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
   const [budgetManwon, setBudgetState] = useState<number | null>(null);
   const [nickname, setNickname] = useState<string | null>(null);
   const [precision, setPrecisionState] = useState<PrecisionData>({});
+  const [approval, setApproval] = useState<ApprovalInfo | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadForUser = useCallback(async (u: User | null) => {
@@ -96,20 +103,34 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
       setDbId(id);
       setNickname(null);
       setPrecisionState(readPrecision());
+      setApproval(null);
       setSource(c ? "session" : "none");
       setStatus("ready");
       return;
     }
     // logged in — DB wins
-    const [{ data: prof }, diag] = await Promise.all([
+    const [{ data: prof }, diag, apprRes] = await Promise.all([
       supabase
         .from("profiles")
         .select("kakao_nickname")
         .eq("id", u.id)
         .maybeSingle(),
       getMyLatestDiagnosis(u.id),
+      supabase
+        .from("approvals")
+        .select("capacity_monthly, created_at")
+        .eq("user_id", u.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
     setNickname((prof?.kakao_nickname as string | undefined) ?? null);
+    const apprRow = (apprRes as { data?: { capacity_monthly?: number | null } | null } | null)?.data ?? null;
+    setApproval(
+      apprRow
+        ? { capacity_monthly: (apprRow.capacity_monthly as number | null) ?? null }
+        : null,
+    );
     if (diag && CARBTI_TYPES[diag.code as string]) {
       const c = diag.code as string;
       const id = diag.id as string;
@@ -165,6 +186,7 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
         setBudgetState(null);
         setNickname(null);
         setPrecisionState({});
+        setApproval(null);
         setSource("none");
         setStatus("ready");
         return;
@@ -217,6 +239,9 @@ export function MyCarbtiProvider({ children }: { children: ReactNode }) {
     budgetManwon,
     nickname,
     precision,
+    approval,
+    effectiveMonthlyBudget:
+      approval?.capacity_monthly ?? precision.monthly_budget ?? budgetManwon ?? null,
     refresh,
     setBudget,
     clearLocal,
