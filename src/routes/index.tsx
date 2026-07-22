@@ -1,16 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { TopBar } from "@/components/home/TopBar";
-import { HeroCard } from "@/components/home/HeroCard";
-import { TrustStrip } from "@/components/home/TrustStrip";
+import { BrandHero } from "@/components/home/BrandHero";
+import { DoorCards } from "@/components/home/DoorCards";
+import { StatusCard } from "@/components/home/StatusCard";
 import { QuickActions } from "@/components/home/QuickActions";
 import { TypeShowcase } from "@/components/home/TypeShowcase";
-import { ContractCases } from "@/components/home/ContractCases";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { FloatingChatButton } from "@/components/home/FloatingChatButton";
-import { ReturningBanner } from "@/components/home/ReturningBanner";
-import { TypeTeaser } from "@/components/home/TypeTeaser";
-import { FinalDiagnosisCta } from "@/components/home/FinalDiagnosisCta";
 import { QuoteRequestSheet } from "@/components/consult/QuoteRequestSheet";
 
 export const Route = createFileRoute("/")({
@@ -27,14 +24,11 @@ function Index() {
       >
         <TopBar />
         <main className="flex-1 px-4 py-4">
-          <HeroCard />
-          <ReturningBanner onOpenQuote={() => setQuoteOpen(true)} />
-          <TrustStrip />
+          <BrandHero />
+          <DoorCards />
+          <StatusCard onOpenQuote={() => setQuoteOpen(true)} />
           <QuickActions />
           <TypeShowcase />
-          <TypeTeaser />
-          <ContractCases />
-          <FinalDiagnosisCta />
           <footer
             className="mt-6 pb-4"
             style={{ fontSize: "10px", color: "var(--warm-gray)" }}
