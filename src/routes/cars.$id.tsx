@@ -253,7 +253,21 @@ function CarDetail() {
 
           {/* 가격대 */}
           <section className="mt-4 rounded-2xl p-5" style={cardStyle}>
-            <div className="mb-1" style={sectionLabel}>가격대</div>
+            <div className="mb-1 flex items-center justify-between">
+              <div style={sectionLabel}>가격대</div>
+              <span
+                className="rounded-full px-2 py-0.5"
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  backgroundColor: "var(--ivory)",
+                  border: "1px solid var(--hairline)",
+                  color: "var(--ink)",
+                }}
+              >
+                수수료 0원
+              </span>
+            </div>
             <div
               style={{
                 fontSize: "28px",
@@ -265,6 +279,12 @@ function CarDetail() {
             >
               {car.priceRange}
             </div>
+            <p className="mt-2" style={{ fontSize: "12px", fontWeight: 700, color: "var(--ink)", lineHeight: 1.5 }}>
+              이 가격, 상담에서도 그대로예요.
+            </p>
+            <p className="mt-0.5" style={{ fontSize: "11px", color: "var(--warm-gray)", lineHeight: 1.5 }}>
+              영업 수수료 0원으로 만든, 거품 뺀 가격이니까요.
+            </p>
             <p className="mt-1" style={{ fontSize: "10px", lineHeight: 1.5, color: "var(--warm-gray)" }}>
               예시 가격 · 트림별 상이 · 공식 가격표 기준 업데이트 예정
             </p>
