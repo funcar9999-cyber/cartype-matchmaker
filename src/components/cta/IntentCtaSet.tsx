@@ -35,7 +35,8 @@ export function IntentCtaSet({
   onKeep,
 }: IntentCtaSetProps) {
   const [hotOpen, setHotOpen] = useState(false);
-  const { user, code, budgetManwon, dbId } = useMyCarbti();
+  const { user, code, budgetManwon, effectiveMonthlyBudget, dbId } = useMyCarbti();
+  const leadBudget = effectiveMonthlyBudget ?? budgetManwon ?? null;
 
   const eventProps = {
     screen,
@@ -57,7 +58,7 @@ export function IntentCtaSet({
       source,
       interestCarId: carId ?? null,
       preferredMethod: product ?? (code ? "미정" : "미정"),
-      budgetManwon,
+      budgetManwon: leadBudget,
       contactPref: "chat_only",
       diagnosisId: dbId,
       userId: user?.id ?? null,
@@ -72,7 +73,7 @@ export function IntentCtaSet({
       source,
       interestCarId: carId ?? null,
       preferredMethod: product ?? "미정",
-      budgetManwon,
+      budgetManwon: leadBudget,
       contactPref: "chat_only",
       diagnosisId: dbId,
       userId: user?.id ?? null,
