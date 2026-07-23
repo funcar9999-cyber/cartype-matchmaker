@@ -11,6 +11,7 @@ const TIERS: Array<{ key: string; name: string; tagline: string }> = [
 export function AffordabilityLocked() {
   const onOpen = () => {
     track("entry_select", { door: "dreamcar_teaser" });
+    track("amp_click", { screen: "result", lock_type: "result_blur" });
     if (typeof window !== "undefined") {
       window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
     }
@@ -33,6 +34,9 @@ export function AffordabilityLocked() {
       </div>
       <div className="mb-3" style={{ fontSize: "12px", color: "var(--warm-gray)", lineHeight: 1.5 }}>
         드림카 승인 확인이 열리면, 내 여력 기준으로 채워져요 — 곧 열려요
+      </div>
+      <div className="mb-3" style={{ fontSize: "11.5px", color: "var(--ink)", lineHeight: 1.5 }}>
+        조회하면 전부 실숫자로 바뀌어요
       </div>
 
       <div className="grid grid-cols-3 gap-2 select-none" aria-hidden>

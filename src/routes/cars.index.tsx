@@ -103,6 +103,20 @@ function CarCard({ car, badge, accent }: { car: Car; badge?: string; accent?: st
       <div className="mt-1" style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
         {car.priceRange}
       </div>
+      <div className="mt-1">
+        <span
+          className="inline-block rounded-full px-1.5 py-0.5"
+          style={{
+            fontSize: "9px",
+            fontWeight: 700,
+            backgroundColor: "var(--ivory)",
+            border: "1px solid var(--hairline)",
+            color: "var(--ink)",
+          }}
+        >
+          수수료 0원
+        </span>
+      </div>
     </Link>
   );
 }
