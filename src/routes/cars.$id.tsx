@@ -233,7 +233,9 @@ function CarDetail() {
             }}
           >
             {DREAMCAR_LIVE
-              ? "이 차, 될까? — 1분 승인 확인"
+              ? (!hasCarbti && !hasApproval
+                  ? "이 차, 내 조건으론 얼마인지 — 1분 조회로 확인"
+                  : "이 차, 될까? — 1분 승인 확인")
               : "이 차, 될까? — 승인 확인 곧 열려요 · 오픈 알림 받기"}
           </button>
           <button
@@ -434,7 +436,10 @@ function CarDetail() {
                 LOCKED
               </div>
               <div style={{ fontSize: "14px", color: "var(--ink)", fontWeight: 700, lineHeight: 1.4 }}>
-                이 차, 내 신용으로 될까?
+                이 숫자, 당신 조건이면 달라져요
+              </div>
+              <div className="mt-1" style={{ fontSize: "12px", color: "var(--warm-gray)", lineHeight: 1.5 }}>
+                1분 조회로 내 월납입과 한도 확인
               </div>
               <div
                 className="mt-3 select-none"
@@ -453,6 +458,7 @@ function CarDetail() {
                     from: "car_detail",
                     car_id: car.id,
                   });
+                  track("amp_click", { screen: "car_detail", lock_type: "doorB", car_id: car.id });
                   if (DREAMCAR_LIVE) {
                     void navigate({ to: "/dreamcar", search: { car: car.id } } as never);
                   } else {
@@ -462,7 +468,7 @@ function CarDetail() {
                 className="mt-4 flex w-full items-center justify-center rounded-xl py-3 transition active:scale-[0.98]"
                 style={{ backgroundColor: "var(--midnight)", color: "var(--ivory)", fontSize: "13px", fontWeight: 700 }}
               >
-                {DREAMCAR_LIVE ? "1분 승인 확인 →" : "승인 확인이 곧 열려요 — 오픈 알림 받기"}
+                {DREAMCAR_LIVE ? "내 숫자로 보기" : "승인 확인이 곧 열려요 — 오픈 알림 받기"}
               </button>
             </section>
           )}
@@ -475,7 +481,7 @@ function CarDetail() {
                 LOCKED
               </div>
               <div style={{ fontSize: "14px", color: "var(--ink)", fontWeight: 700, lineHeight: 1.4 }}>
-                나랑 맞는 차일까?
+                이 차가 왜 당신인지, 1분이면 근거가 붙어요
               </div>
               <div
                 className="mt-3 select-none"
@@ -486,11 +492,14 @@ function CarDetail() {
               </div>
               <button
                 type="button"
-                onClick={() => void navigate({ to: "/diagnosis/onboarding" })}
+                onClick={() => {
+                  track("amp_click", { screen: "car_detail", lock_type: "doorA", car_id: car.id });
+                  void navigate({ to: "/diagnosis/onboarding" });
+                }}
                 className="mt-4 flex w-full items-center justify-center rounded-xl py-3 transition active:scale-[0.98]"
                 style={{ backgroundColor: "var(--midnight)", color: "var(--ivory)", fontSize: "13px", fontWeight: 700 }}
               >
-                1분 진단하기
+                1분 진단
               </button>
             </section>
           )}
