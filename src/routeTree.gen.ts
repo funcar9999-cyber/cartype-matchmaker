@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as DreamcarRouteImport } from './routes/dreamcar'
 import { Route as ConsultRouteImport } from './routes/consult'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -42,6 +43,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DreamcarRoute = DreamcarRouteImport.update({
+  id: '/dreamcar',
+  path: '/dreamcar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConsultRoute = ConsultRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/compare': typeof CompareRoute
   '/consult': typeof ConsultRoute
+  '/dreamcar': typeof DreamcarRoute
   '/me': typeof MeRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/compare': typeof CompareRoute
   '/consult': typeof ConsultRoute
+  '/dreamcar': typeof DreamcarRoute
   '/me': typeof MeRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/compare': typeof CompareRoute
   '/consult': typeof ConsultRoute
+  '/dreamcar': typeof DreamcarRoute
   '/me': typeof MeRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/compare'
     | '/consult'
+    | '/dreamcar'
     | '/me'
     | '/privacy'
     | '/terms'
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/compare'
     | '/consult'
+    | '/dreamcar'
     | '/me'
     | '/privacy'
     | '/terms'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/compare'
     | '/consult'
+    | '/dreamcar'
     | '/me'
     | '/privacy'
     | '/terms'
@@ -261,6 +273,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   CompareRoute: typeof CompareRoute
   ConsultRoute: typeof ConsultRoute
+  DreamcarRoute: typeof DreamcarRoute
   MeRoute: typeof MeRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dreamcar': {
+      id: '/dreamcar'
+      path: '/dreamcar'
+      fullPath: '/dreamcar'
+      preLoaderRoute: typeof DreamcarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/consult': {
@@ -421,6 +441,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   CompareRoute: CompareRoute,
   ConsultRoute: ConsultRoute,
+  DreamcarRoute: DreamcarRoute,
   MeRoute: MeRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
