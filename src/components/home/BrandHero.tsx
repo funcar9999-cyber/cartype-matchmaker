@@ -83,7 +83,7 @@ export function BrandHero() {
             className="mt-0.5"
             style={{ fontSize: "11px", color: "var(--ivory)", opacity: 0.75, lineHeight: 1.45 }}
           >
-            드림카 승인 확인 — 곧 열려요
+            {DREAMCAR_LIVE ? "드림카 승인 확인 · 1분" : "드림카 승인 확인 — 곧 열려요"}
           </div>
           {!DREAMCAR_LIVE && (
             <div

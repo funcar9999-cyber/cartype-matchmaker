@@ -151,7 +151,10 @@ export function StatusCard({ onOpenQuote }: { onOpenQuote: () => void }) {
         <button
           type="button"
           onClick={() => {
-            if (!DREAMCAR_LIVE) {
+            if (DREAMCAR_LIVE) {
+              track("entry_select", { door: "dreamcar" });
+              void navigate({ to: "/dreamcar" as never });
+            } else {
               track("entry_select", { door: "dreamcar_teaser" });
               window.open(KAKAO_CHANNEL_URL, "_blank", "noopener,noreferrer");
             }
