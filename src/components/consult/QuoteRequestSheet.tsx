@@ -37,9 +37,10 @@ export function QuoteRequestSheet({
   intent?: LeadIntent;
   reassurance?: string;
 }) {
-  const { user, code: hookCode, budgetManwon, dbId } = useMyCarbti();
+  const { user, code: hookCode, budgetManwon, effectiveMonthlyBudget, dbId } = useMyCarbti();
+  const initialBudget = effectiveMonthlyBudget ?? budgetManwon;
   const [code, setCode] = useState<string | null>(hookCode);
-  const [budget, setBudget] = useState<number | null>(budgetManwon);
+  const [budget, setBudget] = useState<number | null>(initialBudget);
   const [carName, setCarName] = useState<string>(context.defaultCarName ?? "미정");
   const [method, setMethod] = useState<PayMethodChip>("할부");
   const [contactPref, setContactPref] = useState<"kakao" | "phone">("kakao");
@@ -50,9 +51,9 @@ export function QuoteRequestSheet({
     const t = hookCode && CARBTI_TYPES[hookCode] ? hookCode : null;
     setCode(t);
     setMethod(normalizeMethod(t ? CARBTI_TYPES[t].bestPayment.method : undefined));
-    setBudget(budgetManwon);
+    setBudget(effectiveMonthlyBudget ?? budgetManwon);
     setCarName(context.defaultCarName ?? "미정");
-  }, [open, context.defaultCarName, hookCode, budgetManwon]);
+  }, [open, context.defaultCarName, hookCode, budgetManwon, effectiveMonthlyBudget]);
 
   const type = code ? CARBTI_TYPES[code] : null;
 
