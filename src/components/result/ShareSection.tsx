@@ -71,9 +71,47 @@ function drawShareImage(
     dome.addColorStop(1, accentDeep);
     ctx.fillStyle = dome;
     ctx.beginPath(); ctx.arc(cx, cy, r - 55, 0, Math.PI * 2); ctx.fill();
+    // 아이보리 단색 벡터 아이콘 (이모지 금지)
+    ctx.save();
     ctx.fillStyle = "#F5F4F0";
-    ctx.font = font(r * 0.55, 800);
-    ctx.fillText(isE ? "⚡" : "⚙", cx, cy + r * 0.18);
+    ctx.strokeStyle = "#F5F4F0";
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    if (isE) {
+      // 번개
+      const s = r * 0.55;
+      ctx.beginPath();
+      ctx.moveTo(cx + s * 0.15, cy - s * 0.75);
+      ctx.lineTo(cx - s * 0.35, cy + s * 0.1);
+      ctx.lineTo(cx - s * 0.02, cy + s * 0.1);
+      ctx.lineTo(cx - s * 0.2, cy + s * 0.8);
+      ctx.lineTo(cx + s * 0.4, cy - s * 0.15);
+      ctx.lineTo(cx + s * 0.05, cy - s * 0.15);
+      ctx.lineTo(cx + s * 0.28, cy - s * 0.75);
+      ctx.closePath();
+      ctx.fill();
+    } else {
+      // 방패
+      const s = r * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - s * 0.85);
+      ctx.lineTo(cx + s * 0.72, cy - s * 0.55);
+      ctx.lineTo(cx + s * 0.72, cy + s * 0.05);
+      ctx.quadraticCurveTo(cx + s * 0.72, cy + s * 0.7, cx, cy + s * 0.95);
+      ctx.quadraticCurveTo(cx - s * 0.72, cy + s * 0.7, cx - s * 0.72, cy + s * 0.05);
+      ctx.lineTo(cx - s * 0.72, cy - s * 0.55);
+      ctx.closePath();
+      ctx.fill();
+      // 내부 체크
+      ctx.strokeStyle = "#0A0F1C";
+      ctx.lineWidth = s * 0.18;
+      ctx.beginPath();
+      ctx.moveTo(cx - s * 0.3, cy + s * 0.05);
+      ctx.lineTo(cx - s * 0.05, cy + s * 0.35);
+      ctx.lineTo(cx + s * 0.4, cy - s * 0.25);
+      ctx.stroke();
+    }
+    ctx.restore();
   };
 
   const drawWordmark = (yBase: number) => {
@@ -201,6 +239,7 @@ function drawShareImage(
     const rawChip = top1?.chip;
     const chipHasMoney = rawChip ? /\d|만원|원/.test(rawChip) : false;
     const chipText = !rawChip || chipHasMoney ? null : rawChip;
+    const priceY = chipText ? boxTop + boxH - 60 : boxTop + 280;
     if (chipText) {
     ctx.font = font(24, 700);
     const cw = ctx.measureText(chipText).width + 40;
@@ -227,7 +266,7 @@ function drawShareImage(
     // "한 달에 ●●만원대"
     ctx.fillStyle = "#F5F4F0";
     ctx.font = font(40, 800);
-    ctx.fillText("한 달에 ●●만원대", W / 2, boxTop + boxH - 60);
+    ctx.fillText("한 달에 ●●만원대", W / 2, priceY);
 
     // 훅
     const hookY = boxTop + boxH + 90;
