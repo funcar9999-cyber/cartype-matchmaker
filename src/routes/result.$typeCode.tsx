@@ -79,7 +79,13 @@ function ResultPage() {
   const showTop3 = precisionReady && !engineFallback && (match.loading || top3.length > 0);
   const top1 = top3[0];
   const shareTop1 = top1
-    ? { name: top1.name, chip: top1.chips?.[0] }
+    ? {
+        name:
+          top1.brand && !top1.name.toLowerCase().startsWith(top1.brand.toLowerCase())
+            ? `${top1.brand} ${top1.name}`
+            : top1.name,
+        chip: top1.chips?.[0],
+      }
     : undefined;
   const monthlyBudgetLabel =
     effectiveMonthlyBudget != null ? `${effectiveMonthlyBudget}만원` : null;
