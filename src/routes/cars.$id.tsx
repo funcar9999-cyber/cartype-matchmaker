@@ -217,6 +217,9 @@ function CarDetail() {
                 from: "car_detail",
                 car_id: car.id,
               });
+              if (!hasCarbti && !hasApproval) {
+                track("amp_click", { screen: "car_detail", lock_type: "teaser", car_id: car.id });
+              }
               if (DREAMCAR_LIVE) {
                 void navigate({ to: "/dreamcar", search: { car: car.id } } as never);
               } else {
