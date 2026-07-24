@@ -1185,11 +1185,12 @@ function Bar({
   right,
 }: {
   label: string;
-  value: number;
+  value: number | null | undefined;
   max: number;
   right?: string;
 }) {
-  const pct = max > 0 ? Math.max(2, Math.round((value / max) * 100)) : 0;
+  const v = value ?? 0;
+  const pct = max > 0 ? Math.max(2, Math.round((v / max) * 100)) : 0;
   return (
     <div>
       <div
@@ -1198,7 +1199,7 @@ function Bar({
       >
         <span style={{ color: "var(--ink)" }}>{label}</span>
         <span style={{ color: "var(--warm-gray)" }}>
-          {value.toLocaleString()}
+          {v.toLocaleString()}
           {right ? ` · ${right}` : ""}
         </span>
       </div>
@@ -1313,7 +1314,7 @@ function LadderCard({ s }: { s: MarketingStats }) {
                   color: "var(--ink)",
                 }}
               >
-                {INTENT_LABEL[k] ?? k} {v}
+                {INTENT_LABEL[k] ?? k} {((v as number) ?? 0).toLocaleString()}
               </span>
             ))}
           </div>
@@ -1450,7 +1451,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
   const types = s?.popular?.types ?? [];
   const dream = s?.popular?.dream_top ?? [];
   const interest = s?.popular?.interest_top ?? [];
-  const maxT = Math.max(...types.map((t) => t.count), 1);
+  const maxT = Math.max(...types.map((t) => t?.count ?? 0), 1);
   return (
     <PanelCard title="인기 데이터">
       <div className="grid gap-3 sm:grid-cols-3">
@@ -1468,7 +1469,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
               </div>
             ) : (
               types.map((t) => (
-                <Bar key={t.code} label={t.code} value={t.count} max={maxT} />
+                <Bar key={t.code} label={t.code} value={t?.count ?? 0} max={maxT} />
               ))
             )}
           </div>
@@ -1489,7 +1490,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
                   <span>
                     {i + 1}. {r.car_id}
                   </span>
-                  <span style={{ color: "var(--warm-gray)" }}>{r.count}</span>
+                  <span style={{ color: "var(--warm-gray)" }}>{(r?.count ?? 0).toLocaleString()}</span>
                 </li>
               ))
             )}
@@ -1511,7 +1512,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
                   <span>
                     {i + 1}. {r.car_id}
                   </span>
-                  <span style={{ color: "var(--warm-gray)" }}>{r.count}</span>
+                  <span style={{ color: "var(--warm-gray)" }}>{(r?.count ?? 0).toLocaleString()}</span>
                 </li>
               ))
             )}
@@ -1545,9 +1546,9 @@ function LabelWidgetCard({
         className="flex items-center justify-between"
         style={{ fontSize: "13px", color: "var(--ink)" }}
       >
-        <span style={{ fontWeight: 600 }}>라벨 대기 {un}건</span>
+        <span style={{ fontWeight: 600 }}>라벨 대기 {(un ?? 0).toLocaleString()}건</span>
         <span style={{ fontSize: "11px", color: "var(--warm-gray)" }}>
-          이번 주 {wk}건 라벨 완료 →
+          이번 주 {(wk ?? 0).toLocaleString()}건 라벨 완료 →
         </span>
       </div>
     </button>
