@@ -1031,13 +1031,15 @@ function getWeekStart(): Date {
 // ================= Marketing Panel =================
 
 type MarketingStats = {
-  visits?: number;
-  entry_a?: number;
-  entry_b?: number;
-  complete_a?: number;
-  complete_b?: number;
-  leads?: number;
-  contracted?: number;
+  funnel?: {
+    visits?: number;
+    entry_a?: number;
+    entry_b?: number;
+    complete_a?: number;
+    complete_b?: number;
+    leads?: number;
+    contracted?: number;
+  };
   report_views?: number;
   ladder?: {
     cta?: {
@@ -1217,18 +1219,18 @@ function Bar({
 }
 
 function FunnelCard({ s }: { s: MarketingStats }) {
-  const visits = s.visits ?? 0;
-  const entryA = s.entry_a ?? 0;
-  const entryB = s.entry_b ?? 0;
-  const compA = s.complete_a ?? 0;
-  const compB = s.complete_b ?? 0;
-  const leads = s.leads ?? 0;
-  const contracted = s.contracted ?? 0;
+  const visits = s?.funnel?.visits ?? 0;
+  const entryA = s?.funnel?.entry_a ?? 0;
+  const entryB = s?.funnel?.entry_b ?? 0;
+  const compA = s?.funnel?.complete_a ?? 0;
+  const compB = s?.funnel?.complete_b ?? 0;
+  const leads = s?.funnel?.leads ?? 0;
+  const contracted = s?.funnel?.contracted ?? 0;
   const max = Math.max(visits, entryA + entryB, compA + compB, leads, contracted, 1);
   return (
     <PanelCard title="퍼널">
       <div className="space-y-2.5">
-        {visits === 0 ? (
+          {visits === 0 ? (
           <div style={{ fontSize: "12px", color: "var(--warm-gray)" }}>
             방문 계측 대기(page_view 배선 후)
           </div>
@@ -1242,7 +1244,7 @@ function FunnelCard({ s }: { s: MarketingStats }) {
           >
             <span>입구 선택</span>
             <span style={{ color: "var(--warm-gray)" }}>
-              문A {entryA.toLocaleString()} · 문B {entryB.toLocaleString()}
+              문A {(entryA ?? 0).toLocaleString()} · 문B {(entryB ?? 0).toLocaleString()}
             </span>
           </div>
           <div
@@ -1277,14 +1279,14 @@ function FunnelCard({ s }: { s: MarketingStats }) {
 }
 
 function LadderCard({ s }: { s: MarketingStats }) {
-  const cta = s.ladder?.cta ?? {};
-  const a = cta.cta_apply ?? 0;
-  const q = cta.cta_question ?? 0;
-  const sv = cta.cta_save ?? 0;
+  const cta = s?.ladder?.cta ?? {};
+  const a = cta?.cta_apply ?? 0;
+  const q = cta?.cta_question ?? 0;
+  const sv = cta?.cta_save ?? 0;
   const total = a + q + sv;
   const max = Math.max(a, q, sv, 1);
   const hotShare = total > 0 ? Math.round((a / total) * 100) : 0;
-  const intent = s.ladder?.lead_intent ?? {};
+  const intent = s?.ladder?.lead_intent ?? {};
   return (
     <PanelCard
       title="클로징 사다리"
@@ -1294,7 +1296,7 @@ function LadderCard({ s }: { s: MarketingStats }) {
         <Bar label="확정 요청 (HOT)" value={a} max={max} />
         <Bar label="질문 (WARM)" value={q} max={max} />
         <Bar label="저장 (KEEP)" value={sv} max={max} />
-        {(s.report_views ?? 0) === 0 && (
+        {(s?.report_views ?? 0) === 0 && (
           <div style={{ fontSize: "11px", color: "var(--warm-gray)" }}>
             HOT 클릭률(결과지 노출 대비)은 report_view 배선 후 표시
           </div>
@@ -1322,7 +1324,7 @@ function LadderCard({ s }: { s: MarketingStats }) {
 }
 
 function AmpCard({ s }: { s: MarketingStats }) {
-  const amp = s.amp ?? [];
+  const amp = s?.amp ?? [];
   if (amp.length === 0) {
     return (
       <PanelCard title="증폭기 (amp)">
@@ -1364,7 +1366,7 @@ function AmpCard({ s }: { s: MarketingStats }) {
                 </td>
                 {lockTypes.map((lt) => (
                   <td key={lt} className="px-2 py-1 text-right">
-                    {cell(sc, lt).toLocaleString()}
+                    {(cell(sc, lt) ?? 0).toLocaleString()}
                   </td>
                 ))}
               </tr>
@@ -1377,8 +1379,8 @@ function AmpCard({ s }: { s: MarketingStats }) {
 }
 
 function DoorBCard({ s }: { s: MarketingStats }) {
-  const submits = s.door_b?.submits ?? 0;
-  const verdicts = s.door_b?.verdicts ?? {};
+  const submits = s?.door_b?.submits ?? 0;
+  const verdicts = s?.door_b?.verdicts ?? {};
   const max = Math.max(...Object.values(verdicts), 1);
   const order: Array<{ k: string; label: string }> = [
     { k: "high", label: "높음" },
@@ -1386,10 +1388,10 @@ function DoorBCard({ s }: { s: MarketingStats }) {
     { k: "consult", label: "상담 필요" },
   ];
   return (
-    <PanelCard title="문B (승인 확인)" caption={`제출 ${submits.toLocaleString()}건`}>
+    <PanelCard title="문B (승인 확인)" caption={`제출 ${(submits ?? 0).toLocaleString()}건`}>
       <div className="space-y-2">
         {order.map((v) => (
-          <Bar key={v.k} label={v.label} value={verdicts[v.k] ?? 0} max={max} />
+          <Bar key={v.k} label={v.label} value={verdicts?.[v.k] ?? 0} max={max} />
         ))}
       </div>
     </PanelCard>
@@ -1397,7 +1399,7 @@ function DoorBCard({ s }: { s: MarketingStats }) {
 }
 
 function DailyChartCard({ s }: { s: MarketingStats }) {
-  const daily = s.daily_events ?? [];
+  const daily = s?.daily_events ?? [];
   if (daily.length === 0) {
     return (
       <PanelCard title="일별 추이">
@@ -1445,9 +1447,9 @@ function DailyChartCard({ s }: { s: MarketingStats }) {
 }
 
 function PopularCard({ s }: { s: MarketingStats }) {
-  const types = s.popular?.types ?? [];
-  const dream = s.popular?.dream_top ?? [];
-  const interest = s.popular?.interest_top ?? [];
+  const types = s?.popular?.types ?? [];
+  const dream = s?.popular?.dream_top ?? [];
+  const interest = s?.popular?.interest_top ?? [];
   const maxT = Math.max(...types.map((t) => t.count), 1);
   return (
     <PanelCard title="인기 데이터">
@@ -1527,8 +1529,8 @@ function LabelWidgetCard({
   s: MarketingStats;
   onGoLabels: () => void;
 }) {
-  const un = s.label_queue?.unlabeled ?? 0;
-  const wk = s.label_queue?.week_labeled ?? 0;
+  const un = s?.label_queue?.unlabeled ?? 0;
+  const wk = s?.label_queue?.week_labeled ?? 0;
   return (
     <button
       type="button"
@@ -1767,7 +1769,7 @@ function EngineParamRow({
 }
 
 type AccuracyResp = {
-  matrix?: Array<{ predicted: string; actual: string; count: number }>;
+  matrix?: Array<{ predicted: string; actual: string; n: number }>;
   labeled?: number;
   total?: number;
 };
@@ -1800,7 +1802,7 @@ function AccuracyMatrixCard() {
     ...(actualSet.includes("unlabeled") ? ["unlabeled"] : []),
   ];
   const cell = (p: string, a: string) =>
-    rows.find((r) => r.predicted === p && r.actual === a)?.count ?? 0;
+    rows.find((r) => r.predicted === p && r.actual === a)?.n ?? 0;
 
   return (
     <PanelCard
