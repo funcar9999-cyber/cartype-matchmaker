@@ -1178,7 +1178,7 @@ function ResultView({
       <button
         type="button"
         onClick={onGoCars}
-        className="mt-5 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
+        className="mt-4 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
         style={{
           backgroundColor: "var(--midnight)",
           color: "var(--ivory)",
@@ -1188,6 +1188,151 @@ function ResultView({
       >
         내 기준으로 차량 둘러보기 →
       </button>
+
+      {showDreamPick && (
+        <section
+          className="mt-5 rounded-2xl p-5"
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--hairline)",
+            boxShadow: "var(--shadow-card)",
+          }}
+        >
+          <div style={{ fontSize: "14px", fontWeight: 800, color: "var(--ink)", lineHeight: 1.35 }}>
+            드림카가 있다면? — 그 차, 될까 바로 알려드려요
+          </div>
+          <p className="mt-1" style={{ fontSize: "11px", color: "var(--warm-gray)" }}>
+            방금 입력한 진단으로 즉시 판정해요.
+          </p>
+
+          {dreamPickCarId ? (
+            (() => {
+              const picked = CAR_DB.find((c) => c.id === dreamPickCarId);
+              if (!picked) return null;
+              const v = dreamPickResult?.verdict;
+              const bg =
+                v === "high"
+                  ? { label: "여력 높음", bg: "var(--teal)", fg: "var(--ivory)" }
+                  : v === "mid"
+                    ? { label: "조정 필요", bg: "var(--gold)", fg: "var(--midnight)" }
+                    : v === "consult"
+                      ? { label: "상담 필요", bg: "var(--warm-gray)", fg: "var(--ivory)" }
+                      : null;
+              return (
+                <div
+                  className="mt-3 rounded-xl p-3"
+                  style={{ backgroundColor: "var(--ivory)", border: "1px solid var(--hairline)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div style={{ fontSize: "10px", color: "var(--warm-gray)", letterSpacing: "0.15em", fontWeight: 700 }}>
+                        선택됨
+                      </div>
+                      <div className="mt-0.5" style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>
+                        {picked.brand} {picked.name}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onDreamPick(null)}
+                      style={{ fontSize: "11px", color: "var(--warm-gray)" }}
+                    >
+                      변경
+                    </button>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    {dreamPickLoading || !bg ? (
+                      <span style={{ fontSize: "12px", color: "var(--warm-gray)" }}>
+                        {dreamPickLoading ? "확인 중..." : "판정 대기"}
+                      </span>
+                    ) : (
+                      <>
+                        <span
+                          className="inline-flex rounded-full px-2.5 py-0.5"
+                          style={{
+                            backgroundColor: bg.bg,
+                            color: bg.fg,
+                            fontSize: "10.5px",
+                            fontWeight: 700,
+                            letterSpacing: "0.08em",
+                          }}
+                        >
+                          {bg.label}
+                        </span>
+                        {dreamPickResult?.est_monthly != null && (
+                          <span style={{ fontSize: "12px", color: "var(--ink)", fontWeight: 700 }}>
+                            예상 월 {fmtMonthlyManwon(dreamPickResult.est_monthly)}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })()
+          ) : (
+            <>
+              <div
+                className="mt-3 flex items-center gap-2 rounded-xl border px-3 py-2.5"
+                style={{ borderColor: "var(--hairline)", backgroundColor: "var(--ivory)" }}
+              >
+                <Search size={16} color="var(--warm-gray)" />
+                <input
+                  type="text"
+                  value={dreamPickQuery}
+                  onChange={(e) => setDreamPickQuery(e.target.value)}
+                  placeholder="브랜드나 차명 검색"
+                  className="w-full bg-transparent outline-none"
+                  style={{ fontSize: "13px", color: "var(--ink)" }}
+                />
+              </div>
+              {dreamPickFiltered.length > 0 && (
+                <div
+                  className="mt-2 rounded-xl border"
+                  style={{ borderColor: "var(--hairline)", backgroundColor: "var(--ivory)" }}
+                >
+                  {dreamPickFiltered.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        onDreamPick(c.id);
+                        setDreamPickQuery("");
+                      }}
+                      className="flex w-full items-center justify-between px-3 py-2.5 text-left"
+                      style={{ borderTop: "1px solid var(--hairline)", fontSize: "13px", color: "var(--ink)" }}
+                    >
+                      <span>
+                        <span style={{ color: "var(--warm-gray)" }}>{c.brand}</span>{" "}
+                        <span style={{ fontWeight: 700 }}>{c.name}</span>
+                      </span>
+                      <span style={{ fontSize: "10px", color: "var(--warm-gray)" }}>{c.segment}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {popular.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => onDreamPick(c.id)}
+                    className="rounded-full border px-3 py-1.5 transition active:scale-[0.98]"
+                    style={{
+                      fontSize: "12px",
+                      borderColor: "var(--hairline)",
+                      backgroundColor: "var(--ivory)",
+                      color: "var(--ink)",
+                    }}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       <IntentCtaSet
         screen="car_detail"
