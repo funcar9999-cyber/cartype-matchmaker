@@ -7,6 +7,7 @@ import { findCarByName } from "@/lib/car-db";
 import { REASONS, STABLE_COMPARE, TYPE_REASONS } from "@/lib/payment-reasons";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import type { PrecisionData } from "@/lib/precision";
+import { CarImage } from "@/components/common/CarImage";
 
 type SituationReason = { key: string; text: string; removes?: string[] };
 
@@ -55,6 +56,7 @@ function hasPrecision(p: PrecisionData): boolean {
 export function RecommendedCars({ type, personalize = false }: { type: CarbtiType; personalize?: boolean }) {
   const isE = type.code[2] === "E";
   const accent = isE ? "var(--teal)" : "var(--copper)";
+  const glow = isE ? "rgba(0,181,181,0.42)" : "rgba(184,115,51,0.42)";
   const config = TYPE_REASONS[type.code];
   const firstCar = findCarByName(type.topCars[0]);
   const compareSearch = firstCar ? { car: firstCar.id } : {};
@@ -83,13 +85,19 @@ export function RecommendedCars({ type, personalize = false }: { type: CarbtiTyp
       <ul className="grid grid-cols-2 gap-2">
         {type.topCars.slice(0, 2).map((model, idx) => {
           const car = findCarByName(model);
+          const imgCar = car ?? { image_url: undefined, name: model, segment: undefined as never };
           const content = (
             <div
               className="rounded-xl p-3 h-full flex flex-col justify-between"
               style={{ backgroundColor: "var(--navy)", color: "var(--ivory)", minHeight: 96 }}
             >
-              <div style={{ fontSize: "10px", letterSpacing: "0.2em", color: "var(--gold)", fontWeight: 700 }}>
-                RANK {idx + 1}
+              <div>
+                <div style={{ fontSize: "10px", letterSpacing: "0.2em", color: "var(--gold)", fontWeight: 700 }}>
+                  RANK {idx + 1}
+                </div>
+                <div className="mt-2">
+                  <CarImage car={imgCar} height={96} rounded={10} glowColor={glow} />
+                </div>
               </div>
               <div className="mt-2 flex items-end justify-between gap-2">
                 <span style={{ fontSize: "13px", fontWeight: 700, lineHeight: 1.3 }}>{model}</span>
