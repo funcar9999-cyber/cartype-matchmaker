@@ -363,19 +363,32 @@ function DreamcarPage() {
 function TopBar({
   step,
   onBack,
+  entryMode,
 }: {
   step: 1 | 2 | 3 | "result";
   onBack: () => void;
+  entryMode: "prefill" | "direct";
 }) {
   const label =
-    step === 1
-      ? "1 / 3 · 드림카 선택"
-      : step === 2
-        ? "2 / 3 · 조건"
+    entryMode === "direct"
+      ? step === 2
+        ? "1 / 2 · 조건"
         : step === 3
-          ? "3 / 3 · 1분 예상 진단"
-          : "결과";
-  const pct = step === "result" ? 100 : ((step as number) / 3) * 100;
+          ? "2 / 2 · 1분 예상 진단"
+          : "결과"
+      : step === 1
+        ? "1 / 3 · 드림카 선택"
+        : step === 2
+          ? "2 / 3 · 조건"
+          : step === 3
+            ? "3 / 3 · 1분 예상 진단"
+            : "결과";
+  const pct =
+    step === "result"
+      ? 100
+      : entryMode === "direct"
+        ? (((step as number) - 1) / 2) * 100
+        : ((step as number) / 3) * 100;
 
   return (
     <div>
