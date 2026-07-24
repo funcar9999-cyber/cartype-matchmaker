@@ -1451,7 +1451,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
   const types = s?.popular?.types ?? [];
   const dream = s?.popular?.dream_top ?? [];
   const interest = s?.popular?.interest_top ?? [];
-  const maxT = Math.max(...types.map((t) => t.count), 1);
+  const maxT = Math.max(...types.map((t) => t?.count ?? 0), 1);
   return (
     <PanelCard title="인기 데이터">
       <div className="grid gap-3 sm:grid-cols-3">
@@ -1469,7 +1469,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
               </div>
             ) : (
               types.map((t) => (
-                <Bar key={t.code} label={t.code} value={t.count} max={maxT} />
+                <Bar key={t.code} label={t.code} value={t?.count ?? 0} max={maxT} />
               ))
             )}
           </div>
