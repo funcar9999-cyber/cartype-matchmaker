@@ -1314,7 +1314,7 @@ function LadderCard({ s }: { s: MarketingStats }) {
                   color: "var(--ink)",
                 }}
               >
-                {INTENT_LABEL[k] ?? k} {v}
+                {INTENT_LABEL[k] ?? k} {((v as number) ?? 0).toLocaleString()}
               </span>
             ))}
           </div>
