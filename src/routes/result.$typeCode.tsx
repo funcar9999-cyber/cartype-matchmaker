@@ -203,7 +203,7 @@ function ResultPage() {
           <RecommendedCars type={type} personalize />
           {showTop3 && (
             <>
-              <RecommendedTop3 items={top3} loading={match.loading} />
+              <RecommendedTop3 items={top3} loading={match.loading} typeCode={type.code} />
               {monthlyBudgetLabel && (
                 <button
                   type="button"
