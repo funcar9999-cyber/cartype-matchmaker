@@ -375,6 +375,8 @@ function DreamcarPage() {
               setDreamPickQuery={setDreamPickQuery}
               dreamPickFiltered={dreamPickFiltered}
               popular={popular}
+              term={term}
+              prepayPct={prepayPct}
             />
           )}
         </main>
