@@ -70,6 +70,12 @@ function fmtMonthlyManwon(won: number | null | undefined): string {
   if (won == null || !Number.isFinite(won)) return "—";
   return `${Math.round(won / 10000).toLocaleString("ko-KR")}만원`;
 }
+function fmtMonthlyRoundedTens(won: number | null | undefined): string | null {
+  if (won == null || !Number.isFinite(won)) return null;
+  const manwon = Math.round(won / 10000);
+  const tens = Math.max(10, Math.round(manwon / 10) * 10);
+  return `약 ${tens.toLocaleString("ko-KR")}만원대`;
+}
 
 function DreamcarPage() {
   const navigate = useNavigate();
