@@ -1490,7 +1490,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
                   <span>
                     {i + 1}. {r.car_id}
                   </span>
-                  <span style={{ color: "var(--warm-gray)" }}>{r.count}</span>
+                  <span style={{ color: "var(--warm-gray)" }}>{(r?.count ?? 0).toLocaleString()}</span>
                 </li>
               ))
             )}
@@ -1512,7 +1512,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
                   <span>
                     {i + 1}. {r.car_id}
                   </span>
-                  <span style={{ color: "var(--warm-gray)" }}>{r.count}</span>
+                  <span style={{ color: "var(--warm-gray)" }}>{(r?.count ?? 0).toLocaleString()}</span>
                 </li>
               ))
             )}
