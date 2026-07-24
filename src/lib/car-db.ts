@@ -32,6 +32,7 @@ export interface Car {
   highlights: [string, string, string];
   aliases?: string[];
   isImport?: boolean;
+  image_url?: string;
 }
 
 const IMPORT_BRANDS = new Set(["테슬라", "MINI", "BMW", "벤츠", "아우디", "볼보", "폭스바겐", "포르쉐", "렉서스", "토요타"]);

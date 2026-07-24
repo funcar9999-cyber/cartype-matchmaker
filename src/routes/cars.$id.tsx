@@ -6,6 +6,7 @@ import { CAR_DB, CAR_LEGAL_DISCLAIMER, findCarByName } from "@/lib/car-db";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
+import { CarImage } from "@/components/common/CarImage";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { isFavorite, toggleFavorite } from "@/lib/carbti-data";
 import { toast } from "sonner";
@@ -158,49 +159,54 @@ function CarDetail() {
         <main className="flex-1 px-4 py-4">
           {/* 히어로 — 다크 네이비 쇼룸 */}
           <div
-            className="flex h-44 flex-col items-center justify-center rounded-2xl px-6 text-center"
+            className="relative overflow-hidden rounded-2xl"
+            style={{ boxShadow: "var(--shadow-dark)" }}
+          >
+            <CarImage car={car} height={176} rounded={16} />
+            <div
+              className="pointer-events-none absolute inset-0 flex flex-col items-center justify-between px-6 py-4 text-center"
+              style={{ color: "var(--ivory)" }}
+            >
+              <div
+                style={{
+                  fontSize: "11px",
+                  letterSpacing: "0.3em",
+                  color: "var(--gold-soft)",
+                  fontWeight: 700,
+                  textTransform: "lowercase",
+                }}
+              >
+                {car.brand}
+              </div>
+              <div className="flex flex-1 items-end justify-center pb-1" style={{ width: "100%" }}>
+                <div className="flex gap-1.5">
+                  <span
+                    className="rounded-full px-2 py-0.5"
+                    style={{ fontSize: "10px", backgroundColor: "rgba(10,15,28,0.55)", color: "var(--ivory)" }}
+                  >
+                    {car.segment}
+                  </span>
+                  <span
+                    className="rounded-full px-2 py-0.5"
+                    style={{ fontSize: "10px", backgroundColor: "rgba(10,15,28,0.55)", color: "var(--ivory)" }}
+                  >
+                    {car.powertrain}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="mt-2 text-center"
             style={{
-              backgroundColor: "var(--navy)",
-              color: "var(--ivory)",
-              boxShadow: "var(--shadow-dark)",
+              fontSize: "clamp(22px, 6.5vw, 28px)",
+              fontWeight: 800,
+              letterSpacing: "-0.01em",
+              lineHeight: 1.1,
+              color: "var(--ink)",
             }}
           >
-            <div
-              style={{
-                fontSize: "11px",
-                letterSpacing: "0.3em",
-                color: "var(--gold-soft)",
-                fontWeight: 700,
-                textTransform: "lowercase",
-              }}
-            >
-              {car.brand}
-            </div>
-            <div
-              className="mt-2"
-              style={{
-                fontSize: "clamp(26px, 8vw, 34px)",
-                fontWeight: 800,
-                letterSpacing: "-0.01em",
-                lineHeight: 1.1,
-              }}
-            >
-              {car.name.replace(car.brand, "").trim() || car.name}
-            </div>
-            <div className="mt-3 flex gap-1.5">
-              <span
-                className="rounded-full px-2 py-0.5"
-                style={{ fontSize: "10px", backgroundColor: "rgba(245,244,240,0.12)", color: "var(--ivory)" }}
-              >
-                {car.segment}
-              </span>
-              <span
-                className="rounded-full px-2 py-0.5"
-                style={{ fontSize: "10px", backgroundColor: "rgba(245,244,240,0.12)", color: "var(--ivory)" }}
-              >
-                {car.powertrain}
-              </span>
-            </div>
+            {car.name.replace(car.brand, "").trim() || car.name}
           </div>
 
           {/* 주 CTA — 3단 세트 */}

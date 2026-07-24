@@ -2,8 +2,20 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 
 import type { MatchTop3Car } from "@/hooks/use-yacha-match";
+import { CAR_DB } from "@/lib/car-db";
+import { CarImage } from "@/components/common/CarImage";
 
-export function RecommendedTop3({ items, loading }: { items: MatchTop3Car[]; loading: boolean }) {
+export function RecommendedTop3({
+  items,
+  loading,
+  typeCode,
+}: {
+  items: MatchTop3Car[];
+  loading: boolean;
+  typeCode?: string;
+}) {
+  const isE = typeCode?.[2] === "E";
+  const glow = isE ? "rgba(0,181,181,0.42)" : "rgba(184,115,51,0.42)";
   return (
     <section
       className="mb-4 rounded-2xl p-5"
@@ -41,6 +53,8 @@ export function RecommendedTop3({ items, loading }: { items: MatchTop3Car[]; loa
         <ul className="space-y-2">
           {items.slice(0, 3).map((c, idx) => {
             const chips = (c.chips ?? []).slice(0, 3);
+            const dbCar = CAR_DB.find((x) => x.id === c.car_id);
+            const showImage = idx < 2;
             return (
               <li key={`${c.car_id}-${idx}`}>
                 <Link
@@ -62,6 +76,11 @@ export function RecommendedTop3({ items, loading }: { items: MatchTop3Car[]; loa
                     </span>
                     <ChevronRight size={14} color="var(--gold)" />
                   </div>
+                  {showImage && dbCar && (
+                    <div className="mt-2">
+                      <CarImage car={dbCar} height={110} rounded={10} glowColor={glow} />
+                    </div>
+                  )}
                   <div className="mt-1.5 flex items-baseline gap-1.5">
                     <span style={{ fontSize: "10.5px", opacity: 0.7 }}>{c.brand}</span>
                     <span style={{ fontSize: "14px", fontWeight: 700, lineHeight: 1.3 }}>{c.name}</span>
