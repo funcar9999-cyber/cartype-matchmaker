@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { CAR_DB } from "@/lib/car-db";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
 import { IntentCtaSet } from "@/components/cta/IntentCtaSet";
+import { CarImage } from "@/components/common/CarImage";
 import { track } from "@/lib/events";
 import { CARBTI_TYPES } from "@/lib/carbti-types";
 
@@ -469,12 +470,17 @@ function Step1({
             backgroundColor: "var(--surface)",
           }}
         >
-          <div>
-            <div style={{ fontSize: "10px", color: "var(--gold)", letterSpacing: "0.15em", fontWeight: 700 }}>
-              선택됨
+          <div className="flex items-center gap-3">
+            <div style={{ width: 88, flexShrink: 0 }}>
+              <CarImage car={selected} height={52} rounded={8} />
             </div>
-            <div className="mt-0.5" style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>
-              {selected.brand} {selected.name}
+            <div>
+              <div style={{ fontSize: "10px", color: "var(--gold)", letterSpacing: "0.15em", fontWeight: 700 }}>
+                선택됨
+              </div>
+              <div className="mt-0.5" style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>
+                {selected.brand} {selected.name}
+              </div>
             </div>
           </div>
           <button
