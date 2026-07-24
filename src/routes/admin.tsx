@@ -1451,7 +1451,7 @@ function PopularCard({ s }: { s: MarketingStats }) {
   const types = s?.popular?.types ?? [];
   const dream = s?.popular?.dream_top ?? [];
   const interest = s?.popular?.interest_top ?? [];
-  const maxT = Math.max(...types.map((t) => t?.count ?? 0), 1);
+  const maxT = Math.max(...types.map((t: any) => t?.n ?? t?.count ?? 0), 1);
   return (
     <PanelCard title="인기 데이터">
       <div className="grid gap-3 sm:grid-cols-3">
@@ -1468,8 +1468,8 @@ function PopularCard({ s }: { s: MarketingStats }) {
                 데이터 없음
               </div>
             ) : (
-              types.map((t) => (
-                <Bar key={t.code} label={t.code} value={t?.count ?? 0} max={maxT} />
+              types.map((t: any) => (
+                <Bar key={t.code} label={t.code} value={t?.n ?? t?.count ?? 0} max={maxT} />
               ))
             )}
           </div>
@@ -1485,12 +1485,12 @@ function PopularCard({ s }: { s: MarketingStats }) {
             {dream.length === 0 ? (
               <li style={{ color: "var(--warm-gray)" }}>데이터 없음</li>
             ) : (
-              dream.slice(0, 10).map((r, i) => (
+              dream.slice(0, 10).map((r: any, i) => (
                 <li key={r.car_id} className="flex justify-between">
                   <span>
                     {i + 1}. {r.car_id}
                   </span>
-                  <span style={{ color: "var(--warm-gray)" }}>{(r?.count ?? 0).toLocaleString()}</span>
+                  <span style={{ color: "var(--warm-gray)" }}>{(r?.n ?? r?.count ?? 0).toLocaleString()}</span>
                 </li>
               ))
             )}
@@ -1507,12 +1507,12 @@ function PopularCard({ s }: { s: MarketingStats }) {
             {interest.length === 0 ? (
               <li style={{ color: "var(--warm-gray)" }}>데이터 없음</li>
             ) : (
-              interest.slice(0, 10).map((r, i) => (
+              interest.slice(0, 10).map((r: any, i) => (
                 <li key={r.car_id} className="flex justify-between">
                   <span>
                     {i + 1}. {r.car_id}
                   </span>
-                  <span style={{ color: "var(--warm-gray)" }}>{(r?.count ?? 0).toLocaleString()}</span>
+                  <span style={{ color: "var(--warm-gray)" }}>{(r?.n ?? r?.count ?? 0).toLocaleString()}</span>
                 </li>
               ))
             )}
