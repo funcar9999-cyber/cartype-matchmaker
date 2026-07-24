@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /me
+Disallow: /mydata/
+Disallow: /diagnosis/gate
+Disallow: /diagnosis/precision
+Disallow: /diagnosis/reveal
+
+Sitemap: https://yacha.ai/sitemap.xml
