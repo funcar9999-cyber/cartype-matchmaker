@@ -76,7 +76,11 @@ function DreamcarPage() {
   const { car: prefillCarId } = Route.useSearch();
   const { user, code: carbtiCode, refresh } = useMyCarbti();
 
-  const [step, setStep] = useState<1 | 2 | 3 | "result">(1);
+  // 진입 모드: 차량 프리필(차량 상세 진입) vs 직접 진입(홈/URL)
+  const entryMode: "prefill" | "direct" = prefillCarId ? "prefill" : "direct";
+  const [step, setStep] = useState<1 | 2 | 3 | "result">(
+    entryMode === "direct" ? 2 : 1,
+  );
 
   // Step 1
   const [carId, setCarId] = useState<string | null>(prefillCarId ?? null);
@@ -99,6 +103,11 @@ function DreamcarPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ApproveResponse | null>(null);
+  // 결과 화면에서 드림카 판정을 위한 추가 상태
+  const [dreamPickCarId, setDreamPickCarId] = useState<string | null>(null);
+  const [dreamPickQuery, setDreamPickQuery] = useState("");
+  const [dreamPickResult, setDreamPickResult] = useState<ApproveResponse | null>(null);
+  const [dreamPickLoading, setDreamPickLoading] = useState(false);
 
   useEffect(() => {
     if (prefillCarId) {
@@ -132,7 +141,7 @@ function DreamcarPage() {
     Number(debt) >= 0;
 
   const handleBack = () => {
-    if (step === 1) {
+    if (step === 1 || (entryMode === "direct" && step === 2)) {
       void navigate({ to: "/" });
       return;
     }
@@ -195,6 +204,7 @@ function DreamcarPage() {
         product,
         term,
         car_id: carId ?? null,
+        entry_mode: entryMode,
       });
       // 로그인 사용자의 approvals 재조회
       void refresh();
@@ -207,13 +217,67 @@ function DreamcarPage() {
     }
   };
 
+  // 결과 화면에서 드림카를 골랐을 때 저장된 진단으로 재판정
+  const runDreamPick = async (pickId: string) => {
+    setDreamPickLoading(true);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const session_id =
+        typeof localStorage !== "undefined"
+          ? localStorage.getItem("yacha_sid")
+          : null;
+      const body: Record<string, unknown> = {
+        source: "self",
+        inputs: {
+          score,
+          income_year_manwon: Number(income),
+          debt_monthly_manwon: Number(debt),
+          delinq_now: delinqNow,
+          delinq_past: delinqPast,
+          cardloan,
+        },
+        product,
+        term_months: term,
+        prepay_ratio: prepayPct / 100,
+        session_id,
+        user_id: sess.session?.user?.id ?? null,
+        car_id: pickId,
+      };
+      const { data, error: fnErr } = await supabase.functions.invoke("yacha-approve", { body });
+      if (fnErr) throw fnErr;
+      setDreamPickResult(data as ApproveResponse);
+      track("dreamcar_submit", {
+        verdict: (data as ApproveResponse).verdict,
+        product,
+        term,
+        car_id: pickId,
+        entry_mode: "direct_result_pick",
+      });
+    } catch (e) {
+      console.warn("[yacha-approve pick]", e);
+    } finally {
+      setDreamPickLoading(false);
+    }
+  };
+
+  const dreamPickFiltered = useMemo(() => {
+    const q = dreamPickQuery.trim().toLowerCase();
+    if (!q) return [] as typeof CAR_DB;
+    return CAR_DB.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.brand.toLowerCase().includes(q) ||
+        (c.aliases ?? []).some((a) => a.toLowerCase().includes(q)),
+    ).slice(0, 8);
+  }, [dreamPickQuery]);
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
       <div
         className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
         style={{ backgroundColor: "var(--ivory)" }}
       >
-        <TopBar step={step} onBack={handleBack} />
+        <TopBar step={step} onBack={handleBack} entryMode={entryMode} />
         <main className="flex-1 px-4 py-4">
           {step === 1 && (
             <Step1
@@ -273,6 +337,19 @@ function DreamcarPage() {
               hasCarbti={!!(carbtiCode && CARBTI_TYPES[carbtiCode])}
               userSignedIn={!!user}
               onGoCars={() => void navigate({ to: "/cars" })}
+              showDreamPick={entryMode === "direct" && !carId}
+              dreamPickCarId={dreamPickCarId}
+              onDreamPick={(id) => {
+                setDreamPickCarId(id);
+                setDreamPickResult(null);
+                if (id) void runDreamPick(id);
+              }}
+              dreamPickResult={dreamPickResult}
+              dreamPickLoading={dreamPickLoading}
+              dreamPickQuery={dreamPickQuery}
+              setDreamPickQuery={setDreamPickQuery}
+              dreamPickFiltered={dreamPickFiltered}
+              popular={popular}
             />
           )}
         </main>
