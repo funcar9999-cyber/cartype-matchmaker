@@ -975,6 +975,8 @@ function ResultView({
   setDreamPickQuery,
   dreamPickFiltered,
   popular,
+  term,
+  prepayPct,
 }: {
   result: ApproveResponse;
   car: (typeof CAR_DB)[number] | null;
@@ -990,6 +992,8 @@ function ResultView({
   setDreamPickQuery: (v: string) => void;
   dreamPickFiltered: typeof CAR_DB;
   popular: typeof CAR_DB;
+  term: 36 | 48 | 60;
+  prepayPct: number;
 }) {
   const carName = car ? `${car.brand} ${car.name}` : null;
   const heroTitle =
