@@ -55,6 +55,7 @@ export function RecommendedTop3({
             const chips = (c.chips ?? []).slice(0, 3);
             const dbCar = CAR_DB.find((x) => x.id === c.car_id);
             const showImage = idx < 2;
+            const imgCar = dbCar ?? { image_url: undefined, name: c.name, segment: undefined as never };
             return (
               <li key={`${c.car_id}-${idx}`}>
                 <Link
@@ -76,9 +77,9 @@ export function RecommendedTop3({
                     </span>
                     <ChevronRight size={14} color="var(--gold)" />
                   </div>
-                  {showImage && dbCar && (
+                  {showImage && (
                     <div className="mt-2">
-                      <CarImage car={dbCar} height={110} rounded={10} glowColor={glow} />
+                      <CarImage car={imgCar} height={110} rounded={10} glowColor={glow} />
                     </div>
                   )}
                   <div className="mt-1.5 flex items-baseline gap-1.5">
