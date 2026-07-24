@@ -86,6 +86,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "야! 차 사러 가자! 할부,렌트,리스 나에게 가장 맞는 건?",
       },
       { name: "author", content: "ya'cha" },
+      { name: "google-site-verification", content: "N0-wdXcGyHOXmTYeLn1QysRLKFDqLdsbEiRsBrtI2VA" },
+      { name: "naver-site-verification", content: "990c0f609610e64d8c73dc10310ec187a7d5cda1" },
       { property: "og:title", content: "야차 — 자동차 살 땐 야차" },
       {
         property: "og:description",
