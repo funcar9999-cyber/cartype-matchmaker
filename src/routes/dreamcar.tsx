@@ -674,24 +674,30 @@ function Step2({
         })}
       </div>
 
-      <div className="mt-5 flex items-baseline justify-between">
-        <div style={{ fontSize: "11px", color: "var(--warm-gray)", letterSpacing: "0.1em" }}>
-          선납 비율
-        </div>
-        <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>{prepayPct}%</div>
+      <div className="mt-5" style={{ fontSize: "11px", color: "var(--warm-gray)", letterSpacing: "0.1em" }}>
+        선납 비율
       </div>
-      <input
-        type="range"
-        min={0}
-        max={30}
-        step={5}
-        value={prepayPct}
-        onChange={(e) => setPrepayPct(Number(e.target.value))}
-        className="mt-2 w-full"
-        style={{ accentColor: "var(--midnight)" }}
-      />
-      <div className="mt-1 flex justify-between" style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
-        <span>0%</span><span>15%</span><span>30%</span>
+      <div className="mt-2 grid grid-cols-4 gap-2">
+        {[0, 10, 20, 30].map((v) => {
+          const active = prepayPct === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setPrepayPct(v)}
+              className="rounded-xl border py-2.5 transition active:scale-[0.98]"
+              style={{
+                borderColor: active ? "var(--midnight)" : "var(--hairline)",
+                backgroundColor: active ? "var(--midnight)" : "var(--surface)",
+                color: active ? "var(--ivory)" : "var(--ink)",
+                fontSize: "13px",
+                fontWeight: active ? 700 : 500,
+              }}
+            >
+              {v}%
+            </button>
+          );
+        })}
       </div>
 
       <button
