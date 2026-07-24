@@ -76,7 +76,11 @@ function DreamcarPage() {
   const { car: prefillCarId } = Route.useSearch();
   const { user, code: carbtiCode, refresh } = useMyCarbti();
 
-  const [step, setStep] = useState<1 | 2 | 3 | "result">(1);
+  // 진입 모드: 차량 프리필(차량 상세 진입) vs 직접 진입(홈/URL)
+  const entryMode: "prefill" | "direct" = prefillCarId ? "prefill" : "direct";
+  const [step, setStep] = useState<1 | 2 | 3 | "result">(
+    entryMode === "direct" ? 2 : 1,
+  );
 
   // Step 1
   const [carId, setCarId] = useState<string | null>(prefillCarId ?? null);
@@ -99,6 +103,11 @@ function DreamcarPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ApproveResponse | null>(null);
+  // 결과 화면에서 드림카 판정을 위한 추가 상태
+  const [dreamPickCarId, setDreamPickCarId] = useState<string | null>(null);
+  const [dreamPickQuery, setDreamPickQuery] = useState("");
+  const [dreamPickResult, setDreamPickResult] = useState<ApproveResponse | null>(null);
+  const [dreamPickLoading, setDreamPickLoading] = useState(false);
 
   useEffect(() => {
     if (prefillCarId) {
@@ -132,7 +141,7 @@ function DreamcarPage() {
     Number(debt) >= 0;
 
   const handleBack = () => {
-    if (step === 1) {
+    if (step === 1 || (entryMode === "direct" && step === 2)) {
       void navigate({ to: "/" });
       return;
     }
@@ -195,6 +204,7 @@ function DreamcarPage() {
         product,
         term,
         car_id: carId ?? null,
+        entry_mode: entryMode,
       });
       // 로그인 사용자의 approvals 재조회
       void refresh();
@@ -207,13 +217,67 @@ function DreamcarPage() {
     }
   };
 
+  // 결과 화면에서 드림카를 골랐을 때 저장된 진단으로 재판정
+  const runDreamPick = async (pickId: string) => {
+    setDreamPickLoading(true);
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      const session_id =
+        typeof localStorage !== "undefined"
+          ? localStorage.getItem("yacha_sid")
+          : null;
+      const body: Record<string, unknown> = {
+        source: "self",
+        inputs: {
+          score,
+          income_year_manwon: Number(income),
+          debt_monthly_manwon: Number(debt),
+          delinq_now: delinqNow,
+          delinq_past: delinqPast,
+          cardloan,
+        },
+        product,
+        term_months: term,
+        prepay_ratio: prepayPct / 100,
+        session_id,
+        user_id: sess.session?.user?.id ?? null,
+        car_id: pickId,
+      };
+      const { data, error: fnErr } = await supabase.functions.invoke("yacha-approve", { body });
+      if (fnErr) throw fnErr;
+      setDreamPickResult(data as ApproveResponse);
+      track("dreamcar_submit", {
+        verdict: (data as ApproveResponse).verdict,
+        product,
+        term,
+        car_id: pickId,
+        entry_mode: "direct_result_pick",
+      });
+    } catch (e) {
+      console.warn("[yacha-approve pick]", e);
+    } finally {
+      setDreamPickLoading(false);
+    }
+  };
+
+  const dreamPickFiltered = useMemo(() => {
+    const q = dreamPickQuery.trim().toLowerCase();
+    if (!q) return [] as typeof CAR_DB;
+    return CAR_DB.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.brand.toLowerCase().includes(q) ||
+        (c.aliases ?? []).some((a) => a.toLowerCase().includes(q)),
+    ).slice(0, 8);
+  }, [dreamPickQuery]);
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--ivory)" }}>
       <div
         className="relative mx-auto flex min-h-screen max-w-[480px] flex-col"
         style={{ backgroundColor: "var(--ivory)" }}
       >
-        <TopBar step={step} onBack={handleBack} />
+        <TopBar step={step} onBack={handleBack} entryMode={entryMode} />
         <main className="flex-1 px-4 py-4">
           {step === 1 && (
             <Step1
@@ -273,6 +337,19 @@ function DreamcarPage() {
               hasCarbti={!!(carbtiCode && CARBTI_TYPES[carbtiCode])}
               userSignedIn={!!user}
               onGoCars={() => void navigate({ to: "/cars" })}
+              showDreamPick={entryMode === "direct" && !carId}
+              dreamPickCarId={dreamPickCarId}
+              onDreamPick={(id) => {
+                setDreamPickCarId(id);
+                setDreamPickResult(null);
+                if (id) void runDreamPick(id);
+              }}
+              dreamPickResult={dreamPickResult}
+              dreamPickLoading={dreamPickLoading}
+              dreamPickQuery={dreamPickQuery}
+              setDreamPickQuery={setDreamPickQuery}
+              dreamPickFiltered={dreamPickFiltered}
+              popular={popular}
             />
           )}
         </main>
@@ -286,19 +363,32 @@ function DreamcarPage() {
 function TopBar({
   step,
   onBack,
+  entryMode,
 }: {
   step: 1 | 2 | 3 | "result";
   onBack: () => void;
+  entryMode: "prefill" | "direct";
 }) {
   const label =
-    step === 1
-      ? "1 / 3 · 드림카 선택"
-      : step === 2
-        ? "2 / 3 · 조건"
+    entryMode === "direct"
+      ? step === 2
+        ? "1 / 2 · 조건"
         : step === 3
-          ? "3 / 3 · 1분 예상 진단"
-          : "결과";
-  const pct = step === "result" ? 100 : ((step as number) / 3) * 100;
+          ? "2 / 2 · 1분 예상 진단"
+          : "결과"
+      : step === 1
+        ? "1 / 3 · 드림카 선택"
+        : step === 2
+          ? "2 / 3 · 조건"
+          : step === 3
+            ? "3 / 3 · 1분 예상 진단"
+            : "결과";
+  const pct =
+    step === "result"
+      ? 100
+      : entryMode === "direct"
+        ? (((step as number) - 1) / 2) * 100
+        : ((step as number) / 3) * 100;
 
   return (
     <div>
@@ -584,24 +674,30 @@ function Step2({
         })}
       </div>
 
-      <div className="mt-5 flex items-baseline justify-between">
-        <div style={{ fontSize: "11px", color: "var(--warm-gray)", letterSpacing: "0.1em" }}>
-          선납 비율
-        </div>
-        <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--ink)" }}>{prepayPct}%</div>
+      <div className="mt-5" style={{ fontSize: "11px", color: "var(--warm-gray)", letterSpacing: "0.1em" }}>
+        선납 비율
       </div>
-      <input
-        type="range"
-        min={0}
-        max={30}
-        step={5}
-        value={prepayPct}
-        onChange={(e) => setPrepayPct(Number(e.target.value))}
-        className="mt-2 w-full"
-        style={{ accentColor: "var(--midnight)" }}
-      />
-      <div className="mt-1 flex justify-between" style={{ fontSize: "10px", color: "var(--warm-gray)" }}>
-        <span>0%</span><span>15%</span><span>30%</span>
+      <div className="mt-2 grid grid-cols-4 gap-2">
+        {[0, 10, 20, 30].map((v) => {
+          const active = prepayPct === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setPrepayPct(v)}
+              className="rounded-xl border py-2.5 transition active:scale-[0.98]"
+              style={{
+                borderColor: active ? "var(--midnight)" : "var(--hairline)",
+                backgroundColor: active ? "var(--midnight)" : "var(--surface)",
+                color: active ? "var(--ivory)" : "var(--ink)",
+                fontSize: "13px",
+                fontWeight: active ? 700 : 500,
+              }}
+            >
+              {v}%
+            </button>
+          );
+        })}
       </div>
 
       <button
@@ -838,12 +934,30 @@ function ResultView({
   hasCarbti,
   userSignedIn: _userSignedIn,
   onGoCars,
+  showDreamPick,
+  dreamPickCarId,
+  onDreamPick,
+  dreamPickResult,
+  dreamPickLoading,
+  dreamPickQuery,
+  setDreamPickQuery,
+  dreamPickFiltered,
+  popular,
 }: {
   result: ApproveResponse;
   car: (typeof CAR_DB)[number] | null;
   hasCarbti: boolean;
   userSignedIn: boolean;
   onGoCars: () => void;
+  showDreamPick: boolean;
+  dreamPickCarId: string | null;
+  onDreamPick: (id: string | null) => void;
+  dreamPickResult: ApproveResponse | null;
+  dreamPickLoading: boolean;
+  dreamPickQuery: string;
+  setDreamPickQuery: (v: string) => void;
+  dreamPickFiltered: typeof CAR_DB;
+  popular: typeof CAR_DB;
 }) {
   const carName = car ? `${car.brand} ${car.name}` : null;
   const heroTitle =
@@ -955,6 +1069,20 @@ function ResultView({
                     한도 최대
                   </span>
                 )}
+                {r.k === "rent" && (
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: i === 0 ? "var(--ivory)" : "var(--warm-gray)",
+                      border: `1px solid ${i === 0 ? "rgba(245,244,240,0.35)" : "var(--hairline)"}`,
+                      padding: "1px 6px",
+                      borderRadius: "999px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    보험·정비·세금 다 포함
+                  </span>
+                )}
               </div>
               <div className="text-right">
                 <div style={{ fontSize: "13px", fontWeight: 700 }}>{fmtManwon(r.limit)}</div>
@@ -1050,7 +1178,7 @@ function ResultView({
       <button
         type="button"
         onClick={onGoCars}
-        className="mt-5 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
+        className="mt-4 w-full rounded-xl py-3.5 transition active:scale-[0.98]"
         style={{
           backgroundColor: "var(--midnight)",
           color: "var(--ivory)",
@@ -1060,6 +1188,151 @@ function ResultView({
       >
         내 기준으로 차량 둘러보기 →
       </button>
+
+      {showDreamPick && (
+        <section
+          className="mt-5 rounded-2xl p-5"
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--hairline)",
+            boxShadow: "var(--shadow-card)",
+          }}
+        >
+          <div style={{ fontSize: "14px", fontWeight: 800, color: "var(--ink)", lineHeight: 1.35 }}>
+            드림카가 있다면? — 그 차, 될까 바로 알려드려요
+          </div>
+          <p className="mt-1" style={{ fontSize: "11px", color: "var(--warm-gray)" }}>
+            방금 입력한 진단으로 즉시 판정해요.
+          </p>
+
+          {dreamPickCarId ? (
+            (() => {
+              const picked = CAR_DB.find((c) => c.id === dreamPickCarId);
+              if (!picked) return null;
+              const v = dreamPickResult?.verdict;
+              const bg =
+                v === "high"
+                  ? { label: "여력 높음", bg: "var(--teal)", fg: "var(--ivory)" }
+                  : v === "mid"
+                    ? { label: "조정 필요", bg: "var(--gold)", fg: "var(--midnight)" }
+                    : v === "consult"
+                      ? { label: "상담 필요", bg: "var(--warm-gray)", fg: "var(--ivory)" }
+                      : null;
+              return (
+                <div
+                  className="mt-3 rounded-xl p-3"
+                  style={{ backgroundColor: "var(--ivory)", border: "1px solid var(--hairline)" }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div style={{ fontSize: "10px", color: "var(--warm-gray)", letterSpacing: "0.15em", fontWeight: 700 }}>
+                        선택됨
+                      </div>
+                      <div className="mt-0.5" style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>
+                        {picked.brand} {picked.name}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onDreamPick(null)}
+                      style={{ fontSize: "11px", color: "var(--warm-gray)" }}
+                    >
+                      변경
+                    </button>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between">
+                    {dreamPickLoading || !bg ? (
+                      <span style={{ fontSize: "12px", color: "var(--warm-gray)" }}>
+                        {dreamPickLoading ? "확인 중..." : "판정 대기"}
+                      </span>
+                    ) : (
+                      <>
+                        <span
+                          className="inline-flex rounded-full px-2.5 py-0.5"
+                          style={{
+                            backgroundColor: bg.bg,
+                            color: bg.fg,
+                            fontSize: "10.5px",
+                            fontWeight: 700,
+                            letterSpacing: "0.08em",
+                          }}
+                        >
+                          {bg.label}
+                        </span>
+                        {dreamPickResult?.est_monthly != null && (
+                          <span style={{ fontSize: "12px", color: "var(--ink)", fontWeight: 700 }}>
+                            예상 월 {fmtMonthlyManwon(dreamPickResult.est_monthly)}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              );
+            })()
+          ) : (
+            <>
+              <div
+                className="mt-3 flex items-center gap-2 rounded-xl border px-3 py-2.5"
+                style={{ borderColor: "var(--hairline)", backgroundColor: "var(--ivory)" }}
+              >
+                <Search size={16} color="var(--warm-gray)" />
+                <input
+                  type="text"
+                  value={dreamPickQuery}
+                  onChange={(e) => setDreamPickQuery(e.target.value)}
+                  placeholder="브랜드나 차명 검색"
+                  className="w-full bg-transparent outline-none"
+                  style={{ fontSize: "13px", color: "var(--ink)" }}
+                />
+              </div>
+              {dreamPickFiltered.length > 0 && (
+                <div
+                  className="mt-2 rounded-xl border"
+                  style={{ borderColor: "var(--hairline)", backgroundColor: "var(--ivory)" }}
+                >
+                  {dreamPickFiltered.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        onDreamPick(c.id);
+                        setDreamPickQuery("");
+                      }}
+                      className="flex w-full items-center justify-between px-3 py-2.5 text-left"
+                      style={{ borderTop: "1px solid var(--hairline)", fontSize: "13px", color: "var(--ink)" }}
+                    >
+                      <span>
+                        <span style={{ color: "var(--warm-gray)" }}>{c.brand}</span>{" "}
+                        <span style={{ fontWeight: 700 }}>{c.name}</span>
+                      </span>
+                      <span style={{ fontSize: "10px", color: "var(--warm-gray)" }}>{c.segment}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {popular.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => onDreamPick(c.id)}
+                    className="rounded-full border px-3 py-1.5 transition active:scale-[0.98]"
+                    style={{
+                      fontSize: "12px",
+                      borderColor: "var(--hairline)",
+                      backgroundColor: "var(--ivory)",
+                      color: "var(--ink)",
+                    }}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       <IntentCtaSet
         screen="car_detail"
