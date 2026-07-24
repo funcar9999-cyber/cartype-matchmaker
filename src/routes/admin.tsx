@@ -1546,9 +1546,9 @@ function LabelWidgetCard({
         className="flex items-center justify-between"
         style={{ fontSize: "13px", color: "var(--ink)" }}
       >
-        <span style={{ fontWeight: 600 }}>라벨 대기 {un}건</span>
+        <span style={{ fontWeight: 600 }}>라벨 대기 {(un ?? 0).toLocaleString()}건</span>
         <span style={{ fontSize: "11px", color: "var(--warm-gray)" }}>
-          이번 주 {wk}건 라벨 완료 →
+          이번 주 {(wk ?? 0).toLocaleString()}건 라벨 완료 →
         </span>
       </div>
     </button>
