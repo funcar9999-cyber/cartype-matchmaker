@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Legend,
+} from "recharts";
 
 import { supabase } from "@/lib/supabase";
 import { useMyCarbti } from "@/hooks/use-my-carbti";
@@ -82,7 +92,10 @@ const SOURCE_LABEL: Record<string, string> = {
 function AdminPage() {
   const { user, status: authStatus } = useMyCarbti();
   const [gate, setGate] = useState<GateState>("loading");
-  const [tab, setTab] = useState<"leads" | "labels">("leads");
+  const [role, setRole] = useState<Role>(null);
+  const [tab, setTab] = useState<"leads" | "labels" | "marketing" | "system">(
+    "leads",
+  );
 
   useEffect(() => {
     if (authStatus === "loading") return;
@@ -98,8 +111,9 @@ function AdminPage() {
         .eq("id", user.id)
         .maybeSingle();
       if (cancelled) return;
-      const role = (data?.role as Role) ?? null;
-      if (role === "staff" || role === "admin") {
+      const r = (data?.role as Role) ?? null;
+      setRole(r);
+      if (r === "staff" || r === "admin") {
         setGate("ok");
         // Access log — best effort
         void supabase
@@ -166,9 +180,13 @@ function AdminPage() {
       >
         {(
           [
-            { k: "leads", label: "리드" },
-            { k: "labels", label: "심사 라벨" },
-          ] as const
+            { k: "leads" as const, label: "리드" },
+            { k: "labels" as const, label: "심사 라벨" },
+            { k: "marketing" as const, label: "마케팅" },
+            ...(role === "admin"
+              ? [{ k: "system" as const, label: "시스템" }]
+              : []),
+          ]
         ).map((t) => {
           const active = tab === t.k;
           return (
@@ -191,7 +209,12 @@ function AdminPage() {
       </nav>
 
       <main className="mx-auto max-w-[880px] px-3 py-4">
-        {tab === "leads" ? <LeadsInbox /> : <LabelsQueue />}
+        {tab === "leads" && <LeadsInbox />}
+        {tab === "labels" && <LabelsQueue />}
+        {tab === "marketing" && (
+          <MarketingPanel onGoLabels={() => setTab("labels")} />
+        )}
+        {tab === "system" && role === "admin" && <SystemPanel />}
       </main>
     </div>
   );
