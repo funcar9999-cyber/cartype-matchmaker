@@ -78,6 +78,24 @@ function fmtMonthlyRoundedTens(won: number | null | undefined): string | null {
   return `약 ${tens.toLocaleString("ko-KR")}만원대`;
 }
 
+/**
+ * Fallback: rough monthly payment (won) from car price when the engine
+ * response omits est_monthly. PMT annuity at ~6% APR on (price × (1−prepay)).
+ */
+function estimateMonthlyFallback(
+  car: { priceMinManwon: number; priceMaxManwon: number } | null | undefined,
+  termMonths: number,
+  prepayRatio: number,
+): number | null {
+  if (!car || !termMonths) return null;
+  const avgManwon = (car.priceMinManwon + car.priceMaxManwon) / 2;
+  if (!Number.isFinite(avgManwon) || avgManwon <= 0) return null;
+  const principalWon = avgManwon * 10000 * Math.max(0, 1 - (prepayRatio || 0));
+  const r = 0.06 / 12;
+  const pow = Math.pow(1 + r, termMonths);
+  return (principalWon * (r * pow)) / (pow - 1);
+}
+
 function DreamcarPage() {
   const navigate = useNavigate();
   const { car: prefillCarId } = Route.useSearch();
@@ -357,6 +375,8 @@ function DreamcarPage() {
               setDreamPickQuery={setDreamPickQuery}
               dreamPickFiltered={dreamPickFiltered}
               popular={popular}
+              term={term}
+              prepayPct={prepayPct}
             />
           )}
         </main>
@@ -955,6 +975,8 @@ function ResultView({
   setDreamPickQuery,
   dreamPickFiltered,
   popular,
+  term,
+  prepayPct,
 }: {
   result: ApproveResponse;
   car: (typeof CAR_DB)[number] | null;
@@ -970,6 +992,8 @@ function ResultView({
   setDreamPickQuery: (v: string) => void;
   dreamPickFiltered: typeof CAR_DB;
   popular: typeof CAR_DB;
+  term: 36 | 48 | 60;
+  prepayPct: number;
 }) {
   const carName = car ? `${car.brand} ${car.name}` : null;
   const heroTitle =
@@ -1263,9 +1287,9 @@ function ResultView({
                         {dreamPickLoading ? "확인 중..." : "판정 대기"}
                       </span>
                     ) : (
-                      <>
+                      <div className="flex w-full flex-col gap-1.5">
                         <span
-                          className="inline-flex rounded-full px-2.5 py-0.5"
+                          className="inline-flex w-fit rounded-full px-2.5 py-0.5"
                           style={{
                             backgroundColor: bg.bg,
                             color: bg.fg,
@@ -1277,7 +1301,12 @@ function ResultView({
                           {bg.label}
                         </span>
                         {(() => {
-                          const label = fmtMonthlyRoundedTens(dreamPickResult?.est_monthly);
+                          const engineMonthly = dreamPickResult?.est_monthly;
+                          const monthly =
+                            engineMonthly != null && Number.isFinite(engineMonthly)
+                              ? engineMonthly
+                              : estimateMonthlyFallback(picked, term, prepayPct / 100);
+                          const label = fmtMonthlyRoundedTens(monthly);
                           if (!label) return null;
                           return (
                             <span style={{ fontSize: "12px", color: "var(--ink)", fontWeight: 700 }}>
@@ -1285,7 +1314,7 @@ function ResultView({
                             </span>
                           );
                         })()}
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
