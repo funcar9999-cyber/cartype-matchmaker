@@ -1185,11 +1185,12 @@ function Bar({
   right,
 }: {
   label: string;
-  value: number;
+  value: number | null | undefined;
   max: number;
   right?: string;
 }) {
-  const pct = max > 0 ? Math.max(2, Math.round((value / max) * 100)) : 0;
+  const v = value ?? 0;
+  const pct = max > 0 ? Math.max(2, Math.round((v / max) * 100)) : 0;
   return (
     <div>
       <div
@@ -1198,7 +1199,7 @@ function Bar({
       >
         <span style={{ color: "var(--ink)" }}>{label}</span>
         <span style={{ color: "var(--warm-gray)" }}>
-          {value.toLocaleString()}
+          {v.toLocaleString()}
           {right ? ` · ${right}` : ""}
         </span>
       </div>
