@@ -1235,13 +1235,18 @@ function ResultView({
                   className="mt-3 rounded-xl p-3"
                   style={{ backgroundColor: "var(--ivory)", border: "1px solid var(--hairline)" }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div style={{ fontSize: "10px", color: "var(--warm-gray)", letterSpacing: "0.15em", fontWeight: 700 }}>
-                        선택됨
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div style={{ width: 88, flexShrink: 0 }}>
+                        <CarImage car={picked} height={52} rounded={8} />
                       </div>
-                      <div className="mt-0.5" style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>
-                        {picked.brand} {picked.name}
+                      <div>
+                        <div style={{ fontSize: "10px", color: "var(--warm-gray)", letterSpacing: "0.15em", fontWeight: 700 }}>
+                          선택됨
+                        </div>
+                        <div className="mt-0.5" style={{ fontSize: "13px", fontWeight: 700, color: "var(--ink)" }}>
+                          {picked.brand} {picked.name}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -1271,11 +1276,15 @@ function ResultView({
                         >
                           {bg.label}
                         </span>
-                        {dreamPickResult?.est_monthly != null && (
-                          <span style={{ fontSize: "12px", color: "var(--ink)", fontWeight: 700 }}>
-                            예상 월 {fmtMonthlyManwon(dreamPickResult.est_monthly)}
-                          </span>
-                        )}
+                        {(() => {
+                          const label = fmtMonthlyRoundedTens(dreamPickResult?.est_monthly);
+                          if (!label) return null;
+                          return (
+                            <span style={{ fontSize: "12px", color: "var(--ink)", fontWeight: 700 }}>
+                              예상 월납입 {label}
+                            </span>
+                          );
+                        })()}
                       </>
                     )}
                   </div>
