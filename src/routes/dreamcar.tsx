@@ -934,12 +934,30 @@ function ResultView({
   hasCarbti,
   userSignedIn: _userSignedIn,
   onGoCars,
+  showDreamPick,
+  dreamPickCarId,
+  onDreamPick,
+  dreamPickResult,
+  dreamPickLoading,
+  dreamPickQuery,
+  setDreamPickQuery,
+  dreamPickFiltered,
+  popular,
 }: {
   result: ApproveResponse;
   car: (typeof CAR_DB)[number] | null;
   hasCarbti: boolean;
   userSignedIn: boolean;
   onGoCars: () => void;
+  showDreamPick: boolean;
+  dreamPickCarId: string | null;
+  onDreamPick: (id: string | null) => void;
+  dreamPickResult: ApproveResponse | null;
+  dreamPickLoading: boolean;
+  dreamPickQuery: string;
+  setDreamPickQuery: (v: string) => void;
+  dreamPickFiltered: typeof CAR_DB;
+  popular: typeof CAR_DB;
 }) {
   const carName = car ? `${car.brand} ${car.name}` : null;
   const heroTitle =
@@ -1049,6 +1067,20 @@ function ResultView({
                     }}
                   >
                     한도 최대
+                  </span>
+                )}
+                {r.k === "rent" && (
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      color: i === 0 ? "var(--ivory)" : "var(--warm-gray)",
+                      border: `1px solid ${i === 0 ? "rgba(245,244,240,0.35)" : "var(--hairline)"}`,
+                      padding: "1px 6px",
+                      borderRadius: "999px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    보험·정비·세금 다 포함
                   </span>
                 )}
               </div>
