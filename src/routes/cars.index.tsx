@@ -14,6 +14,7 @@ import { CARBTI_TYPES } from "@/lib/carbti-types";
 import { TIER_CARS } from "@/lib/mydata-tiers";
 import { BottomTabBar } from "@/components/home/BottomTabBar";
 import { Emblem } from "@/components/common/Emblem";
+import { CarImage } from "@/components/common/CarImage";
 
 export const Route = createFileRoute("/cars/")({
   head: () => ({
@@ -33,27 +34,8 @@ function priceBucket(min: number) {
 
 function CarThumb({ car, badge, accent }: { car: Car; badge?: string; accent?: string }) {
   return (
-    <div
-      className="relative flex h-24 flex-col items-center justify-center overflow-hidden rounded-xl px-2"
-      style={{ backgroundColor: "var(--navy)", color: "var(--ivory)" }}
-    >
-      <div
-        style={{
-          fontSize: "9px",
-          letterSpacing: "0.25em",
-          color: "var(--gold-soft)",
-          fontWeight: 700,
-          textTransform: "uppercase",
-        }}
-      >
-        {car.brand}
-      </div>
-      <div
-        className="mt-1 text-center"
-        style={{ fontSize: "15px", fontWeight: 800, letterSpacing: "-0.01em", lineHeight: 1.15 }}
-      >
-        {car.name.replace(car.brand, "").trim() || car.name}
-      </div>
+    <div className="relative">
+      <CarImage car={car} height={96} rounded={12} />
       {badge ? (
         <span
           className="absolute left-2 top-2 rounded-full px-1.5 py-0.5"
